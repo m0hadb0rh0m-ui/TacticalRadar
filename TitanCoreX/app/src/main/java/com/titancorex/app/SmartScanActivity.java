@@ -11,11 +11,11 @@ import android.widget.*;
 import java.util.*;
 
 public class SmartScanActivity extends Activity {
- private static final int BG=0xff080C16,CYAN=0xff42E8F5,WHITE=0xffF4F8FF,MUTED=0xffA7BCD2,GOLD=0xffFFD27D,GREEN=0xff54E5AD;
+ private static final int BG=0xffF2F8FF,CYAN=0xff087BEA,WHITE=0xff183456,MUTED=0xff536D88,GOLD=0xffA66D00,GREEN=0xff087C58;
  private LinearLayout root,results;private TextView headline;
  private int dp(int x){return (int)(x*getResources().getDisplayMetrics().density+.5f);}
  private TextView label(String s,int z,int color){TextView t=new TextView(this);t.setText(s);t.setTextSize(z);t.setTextColor(color);t.setPadding(dp(10),dp(8),dp(10),dp(8));return t;}
- private GradientDrawable bg(){GradientDrawable d=new GradientDrawable(GradientDrawable.Orientation.TL_BR,new int[]{0xff192F49,0xff101C30});d.setCornerRadius(dp(18));d.setStroke(dp(1),0xff35566D);return d;}
+ private GradientDrawable bg(){GradientDrawable d=new GradientDrawable(GradientDrawable.Orientation.TL_BR,new int[]{0xffFFFFFF,0xffEAF4FF});d.setCornerRadius(dp(18));d.setStroke(dp(1),0xff35566D);return d;}
  private void addResult(String name,boolean ok,String detail,Runnable action){
   LinearLayout c=new LinearLayout(this);c.setOrientation(1);c.setPadding(dp(12),dp(10),dp(12),dp(10));c.setBackground(bg());
   c.addView(label((ok?"✓  ":"!  ")+name,17,ok?GREEN:GOLD));c.addView(label(detail,13,MUTED));
