@@ -19,7 +19,7 @@ public class MainActivity extends Activity {
   private int page=0;
   private BatteryManager battery;
   private android.app.ActivityManager memory;
-  private final String[] sections={"HOME","DEVICE","SECURITY","BOOST","TOOLS"};
+  private final String[] sections={"الرئيسية","الجهاز","الأمان","الألعاب","الأدوات"};
   @Override public void onCreate(Bundle b) {
     super.onCreate(b);
     getWindow().setStatusBarColor(BG);getWindow().setNavigationBarColor(BG);
@@ -37,7 +37,7 @@ public class MainActivity extends Activity {
   private void space(LinearLayout p,int height){View v=new View(this);p.addView(v,new LinearLayout.LayoutParams(1,dp(height)));}
   private void add(LinearLayout p,View v){p.addView(v,new LinearLayout.LayoutParams(-1,-2));}
   private void buildShell(){
-    LinearLayout root=vertical();root.setBackgroundColor(BG);setContentView(root);
+    LinearLayout root=vertical();root.setBackgroundColor(BG);root.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);setContentView(root);
     LinearLayout top=vertical();pad(top,22,18,22,14);top.setBackgroundColor(BG);
     TextView brand=label("◈  TITAN CORE X",25,WHITE,true);add(top,brand);
     TextView strap=label("SYSTEM INTELLIGENCE  /  ANDROID",10,CYAN,true);strap.setLetterSpacing(.17f);add(top,strap);
@@ -85,7 +85,7 @@ public class MainActivity extends Activity {
     }
   }
   private void show(int index){
-    page=index;content.removeAllViews();nav();subtitle.setText(new String[]{"COMMAND CENTER","DEVICE DIAGNOSTICS","SECURITY AUDIT","GAME PERFORMANCE","SYSTEM UTILITIES"}[page]);
+    page=index;content.removeAllViews();nav();subtitle.setText(new String[]{"مركز التحكم","تشخيص الجهاز","تدقيق الأمان","أداء الألعاب","أدوات النظام"}[page]);
     if(page==0)home();else if(page==1)device();else if(page==2)security();else if(page==3)boost();else tools();
   }
   private Intent batteryIntent(){return registerReceiver(null,new IntentFilter(Intent.ACTION_BATTERY_CHANGED));}
@@ -106,50 +106,50 @@ public class MainActivity extends Activity {
   }
   private void home(){
     LinearLayout hero=vertical();pad(hero,22,23,22,23);hero.setBackground(border(0xff102B39,0xff22667A,24));
-    add(hero,label("LIVE DEVICE HEALTH",12,CYAN,true));space(hero,10);
+    add(hero,label("صحة الجهاز المباشرة",12,CYAN,true));space(hero,10);
     add(hero,label(score()+" / 100",47,WHITE,true));
-    add(hero,label("Estimated from RAM, battery temperature and storage headroom",12,MUTED,false));
+    add(hero,label("مؤشر تقديري يعتمد على الذاكرة وحرارة البطارية والتخزين",12,MUTED,false));
     space(hero,14);
     ProgressBar bar=new ProgressBar(this,null,android.R.attr.progressBarStyleHorizontal);bar.setMax(100);bar.setProgress(score());bar.setProgressTintList(android.content.res.ColorStateList.valueOf(CYAN));add(hero,bar);
     block(hero);
-    section("LIVE TELEMETRY");
-    LinearLayout c=card("Device snapshot","Values read from Android system APIs");
-    metric(c,"Battery level",level()<0?"Unavailable":level()+"%",GREEN);
-    metric(c,"Battery temperature",temp()<0?"Unavailable":String.format(Locale.US,"%.1f °C",temp()),CYAN);
+    section("القياسات المباشرة");
+    LinearLayout c=card("ملخص الجهاز","قياسات حقيقية من نظام Android");
+    metric(c,"مستوى البطارية",level()<0?"Unavailable":level()+"%",GREEN);
+    metric(c,"حرارة البطارية",temp()<0?"Unavailable":String.format(Locale.US,"%.1f °C",temp()),CYAN);
     android.app.ActivityManager.MemoryInfo m=ram();
-    metric(c,"RAM available",format(m.availMem)+" / "+format(m.totalMem),WHITE);
-    metric(c,"Storage available",format(disk().getAvailableBytes()),GOLD);
+    metric(c,"الذاكرة المتاحة",format(m.availMem)+" / "+format(m.totalMem),WHITE);
+    metric(c,"التخزين المتاح",format(disk().getAvailableBytes()),GOLD);
     block(c);
-    LinearLayout actions=card("QUICK ACCESS","Launch diagnostics and safe system utilities");
-    action(actions,"Run device inspection","Battery, RAM, storage and network",()->show(1));
-    action(actions,"Review security posture","Installed apps and permissions",()->show(2));
-    action(actions,"Gaming performance hub","Prepare a game session",()->show(3));
+    LinearLayout actions=card("الوصول السريع","تشخيص الجهاز وأدوات النظام الآمنة");
+    action(actions,"فحص الهاتف","البطارية والذاكرة والتخزين والشبكة",()->show(1));
+    action(actions,"مراجعة الحماية","التطبيقات والأذونات",()->show(2));
+    action(actions,"مركز أداء الألعاب","تهيئة جلسة لعب",()->show(3));
     block(actions);
     note("Privacy first: measurements stay on your device. No cloud upload or background scanning in this release.");
   }
   private void device(){
-    section("HARDWARE & SYSTEM");
-    LinearLayout c=card("DEVICE PROFILE","Live Android properties");
-    metric(c,"Manufacturer",android.os.Build.MANUFACTURER,WHITE);
-    metric(c,"Model",android.os.Build.MODEL,WHITE);
-    metric(c,"Android",android.os.Build.VERSION.RELEASE,WHITE);
-    metric(c,"API level",String.valueOf(android.os.Build.VERSION.SDK_INT),WHITE);
-    metric(c,"CPU cores",String.valueOf(Runtime.getRuntime().availableProcessors()),CYAN);
-    metric(c,"Available RAM",format(ram().availMem),GREEN);
-    metric(c,"Total RAM",format(ram().totalMem),WHITE);
-    metric(c,"Storage free",format(disk().getAvailableBytes()),GREEN);
-    metric(c,"Storage total",format(disk().getTotalBytes()),WHITE);
+    section("الأجهزة والنظام");
+    LinearLayout c=card("معلومات الهاتف","مواصفات النظام المباشرة");
+    metric(c,"الشركة المصنعة",android.os.Build.MANUFACTURER,WHITE);
+    metric(c,"الطراز",android.os.Build.MODEL,WHITE);
+    metric(c,"إصدار أندرويد",android.os.Build.VERSION.RELEASE,WHITE);
+    metric(c,"مستوى API",String.valueOf(android.os.Build.VERSION.SDK_INT),WHITE);
+    metric(c,"أنوية المعالج",String.valueOf(Runtime.getRuntime().availableProcessors()),CYAN);
+    metric(c,"الرام المتاحة",format(ram().availMem),GREEN);
+    metric(c,"إجمالي الرام",format(ram().totalMem),WHITE);
+    metric(c,"التخزين الحر",format(disk().getAvailableBytes()),GREEN);
+    metric(c,"إجمالي التخزين",format(disk().getTotalBytes()),WHITE);
     block(c);
-    section("BATTERY LAB");
-    LinearLayout b=card("BATTERY ANALYZER","Readings depend on manufacturer support");
+    section("مختبر البطارية");
+    LinearLayout b=card("تحليل البطارية","تعتمد القياسات على دعم الشركة المصنعة");
     Intent i=batteryIntent();
     int status=i==null?-1:i.getIntExtra(BatteryManager.EXTRA_STATUS,-1);
-    metric(b,"Charging",status==BatteryManager.BATTERY_STATUS_CHARGING?"Yes":status==BatteryManager.BATTERY_STATUS_FULL?"Full":"No / unknown",GREEN);
-    metric(b,"Temperature",temp()<0?"Unavailable":String.format(Locale.US,"%.1f °C",temp()),CYAN);
+    metric(b,"حالة الشحن",status==BatteryManager.BATTERY_STATUS_CHARGING?"Yes":status==BatteryManager.BATTERY_STATUS_FULL?"Full":"No / unknown",GREEN);
+    metric(b,"درجة الحرارة",temp()<0?"Unavailable":String.format(Locale.US,"%.1f °C",temp()),CYAN);
     int voltage=i==null?-1:i.getIntExtra(BatteryManager.EXTRA_VOLTAGE,-1);
-    metric(b,"Voltage",voltage<0?"Unavailable":voltage+" mV",WHITE);
+    metric(b,"الجهد",voltage<0?"Unavailable":voltage+" mV",WHITE);
     long current=battery.getLongProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW);
-    metric(b,"Current (device dependent)",current==Long.MIN_VALUE?"Unavailable":String.format(Locale.US,"%.0f mA",current/1000.0),WHITE);
+    metric(b,"التيار (حسب الجهاز)",current==Long.MIN_VALUE?"Unavailable":String.format(Locale.US,"%.0f mA",current/1000.0),WHITE);
     block(b);
     note("Battery temperature is not the CPU temperature. Battery health percentage is not estimated without reliable cycle/capacity data.");
   }
@@ -158,62 +158,63 @@ public class MainActivity extends Activity {
     return getPackageManager().queryIntentActivities(intent,0);
   }
   private void security(){
-    section("SECURITY CONTROL");
-    LinearLayout c=card("APP VISIBILITY AUDIT","Review launchable applications visible to Android");
+    section("مركز الحماية");
+    LinearLayout c=card("تدقيق التطبيقات","التطبيقات المرئية المسموح بفحصها");
     List<android.content.pm.ResolveInfo> apps=launchers();
     HashSet<String> names=new HashSet<>();for(android.content.pm.ResolveInfo r:apps)if(r.activityInfo!=null)names.add(r.activityInfo.packageName);
-    metric(c,"Visible launchable apps",String.valueOf(names.size()),CYAN);
-    metric(c,"Malware engine","Not included",GOLD);
-    metric(c,"Antivirus status","Not certified",GOLD);
+    metric(c,"التطبيقات الظاهرة",String.valueOf(names.size()),CYAN);
+    metric(c,"محرك كشف البرمجيات الضارة","غير متوفر حاليًا",GOLD);
+    metric(c,"حالة مضاد الفيروسات","غير معتمد",GOLD);
     block(c);
-    LinearLayout a=card("SECURITY SHORTCUTS","Use official Android security controls");
-    action(a,"App permissions","Review camera, microphone and location access",()->open(Settings.ACTION_APPLICATION_SETTINGS));
-    action(a,"Security settings","Device security and protection controls",()->open(Settings.ACTION_SECURITY_SETTINGS));
-    action(a,"Install unknown apps","Review risky sideloading access",()->open(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES));
-    action(a,"Privacy settings","Review Android privacy controls",()->open(Settings.ACTION_PRIVACY_SETTINGS));
+    LinearLayout a=card("اختصارات الأمان","أدوات الحماية الرسمية في Android");
+    action(a,"أذونات التطبيقات","مراجعة الكاميرا والميكروفون والموقع",()->open(Settings.ACTION_APPLICATION_SETTINGS));
+    action(a,"إعدادات الأمان","خيارات حماية الهاتف",()->open(Settings.ACTION_SECURITY_SETTINGS));
+    action(a,"تثبيت التطبيقات غير المعروفة","مراجعة صلاحيات التثبيت الخارجية",()->open(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES));
+    action(a,"إعدادات الخصوصية","مراجعة إعدادات الخصوصية",()->open(Settings.ACTION_PRIVACY_SETTINGS));
     block(a);
     note("This is a security audit dashboard, NOT an antivirus scanner. A genuine malware detector requires an updated detection engine and permitted package visibility.");
   }
   private void boost(){
-    section("GAME PERFORMANCE");
-    LinearLayout c=card("GAME SESSION READINESS","Measured device state — no fake FPS or RAM boost");
-    metric(c,"RAM free",format(ram().availMem),CYAN);
-    metric(c,"Battery temperature",temp()<0?"Unavailable":String.format(Locale.US,"%.1f °C",temp()),GREEN);
-    metric(c,"Battery",level()<0?"Unavailable":level()+"%",WHITE);
+    section("أداء الألعاب");
+    LinearLayout c=card("جاهزية اللعب","قياسات فعلية دون ادعاءات تسريع وهمية");
+    metric(c,"الرام الحرة",format(ram().availMem),CYAN);
+    metric(c,"حرارة البطارية",temp()<0?"Unavailable":String.format(Locale.US,"%.1f °C",temp()),GREEN);
+    metric(c,"البطارية",level()<0?"Unavailable":level()+"%",WHITE);
     block(c);
-    LinearLayout a=card("PREPARE TO PLAY","Android-supported optimizations");
-    action(a,"Manage background apps","Inspect apps manually in Android settings",()->open(Settings.ACTION_APPLICATION_SETTINGS));
-    action(a,"Do Not Disturb settings","Reduce interruptions during games",()->open(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS));
-    action(a,"Battery optimization settings","Review background battery restrictions",()->open(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS));
-    action(a,"Network settings","Check connectivity before multiplayer games",()->open(Settings.ACTION_WIRELESS_SETTINGS));
+    LinearLayout a=card("استعد للعب","إعدادات تحسين يدعمها Android");
+    action(a,"إدارة التطبيقات الخلفية","مراجعة التطبيقات من إعدادات النظام",()->open(Settings.ACTION_APPLICATION_SETTINGS));
+    action(a,"إعدادات عدم الإزعاج","تقليل الإشعارات أثناء اللعب",()->open(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS));
+    action(a,"إعدادات تحسين البطارية","مراجعة قيود البطارية",()->open(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS));
+    action(a,"إعدادات الشبكة","فحص الاتصال قبل اللعب الجماعي",()->open(Settings.ACTION_WIRELESS_SETTINGS));
     block(a);
     note("Android prevents ordinary apps from force-closing all other apps or guaranteeing higher FPS. This release provides diagnostics and safe shortcuts.");
   }
   private void tools(){
-    section("NETWORK LAB");
-    LinearLayout n=card("CONNECTION DIAGNOSTICS","Live connectivity state");
+    section("مختبر الشبكة");
+    LinearLayout n=card("تشخيص الاتصال","حالة الاتصال الفعلية");
     ConnectivityManager cm=(ConnectivityManager)getSystemService(CONNECTIVITY_SERVICE);
     Network network=cm.getActiveNetwork();
     NetworkCapabilities cap=network==null?null:cm.getNetworkCapabilities(network);
     String type=cap==null?"Disconnected":cap.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)?"Wi-Fi":cap.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)?"Cellular":cap.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)?"Ethernet":"Other";
-    metric(n,"Connection",type,CYAN);
-    metric(n,"Internet capability",cap!=null&&cap.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)?"Advertised":"Unavailable",WHITE);
-    metric(n,"Validated by Android",cap!=null&&cap.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)?"Yes":"No / unknown",GREEN);
+    metric(n,"نوع الاتصال",type,CYAN);
+    metric(n,"إمكانية الاتصال بالإنترنت",cap!=null&&cap.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)?"Advertised":"Unavailable",WHITE);
+    metric(n,"اتصال مؤكد من Android",cap!=null&&cap.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)?"Yes":"No / unknown",GREEN);
     block(n);
-    section("STORAGE CONTROL");
-    LinearLayout s=card("STORAGE INSPECTOR","Safe cleanup via Android tools");
-    metric(s,"Total internal storage",format(disk().getTotalBytes()),WHITE);
-    metric(s,"Free internal storage",format(disk().getAvailableBytes()),GREEN);
-    action(s,"Open storage management","Inspect and remove files with Android controls",()->open(Settings.ACTION_INTERNAL_STORAGE_SETTINGS));
-    action(s,"Open file picker","Browse documents without automatic deletion",()->{
+    section("إدارة التخزين");
+    LinearLayout s=card("فحص التخزين","تنظيف آمن بأدوات Android");
+    metric(s,"إجمالي التخزين الداخلي",format(disk().getTotalBytes()),WHITE);
+    metric(s,"التخزين الداخلي المتاح",format(disk().getAvailableBytes()),GREEN);
+    action(s,"فتح إدارة التخزين","مراجعة الملفات وحذفها من النظام",()->open(Settings.ACTION_INTERNAL_STORAGE_SETTINGS));
+    action(s,"فتح مستعرض الملفات","استعراض الملفات دون حذف تلقائي",()->{
       try{Intent i=new Intent(Intent.ACTION_OPEN_DOCUMENT);i.setType("*/*");i.addCategory(Intent.CATEGORY_OPENABLE);startActivityForResult(i,4);}catch(Exception e){toast("No file picker available");}
     });
+    action(s,"فحص الملفات المكررة بدقة","مقارنة SHA-256 داخل مجلد تختاره",()->startActivity(new Intent(this,StorageAuditActivity.class)));
     block(s);
-    section("SYSTEM UTILITIES");
-    LinearLayout u=card("CONTROL PANEL","Device-native system tools");
-    action(u,"Network settings","Wi-Fi, mobile data and connection settings",()->open(Settings.ACTION_WIRELESS_SETTINGS));
-    action(u,"Battery settings","Battery usage and charging options",()->open(Settings.ACTION_BATTERY_SAVER_SETTINGS));
-    action(u,"Refresh measurements","Read current values again",()->show(page));
+    section("أدوات النظام");
+    LinearLayout u=card("لوحة الأدوات","أدوات نظام الهاتف");
+    action(u,"إعدادات الشبكة","إعدادات Wi-Fi وبيانات الهاتف",()->open(Settings.ACTION_WIRELESS_SETTINGS));
+    action(u,"إعدادات البطارية","استهلاك البطارية وخيارات الشحن",()->open(Settings.ACTION_BATTERY_SAVER_SETTINGS));
+    action(u,"تحديث القياسات","إعادة قراءة بيانات الهاتف",()->show(page));
     block(u);
     note("Deep app caches and protected system files cannot be erased silently on modern Android. Cleanup always requires user-approved access.");
   }
