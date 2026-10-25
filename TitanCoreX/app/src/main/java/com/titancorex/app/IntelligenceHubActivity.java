@@ -13,11 +13,11 @@ import java.net.*;
 import java.util.*;
 
 public class IntelligenceHubActivity extends Activity {
- private final int BG=0xff070B14,CARD=0xff15243B,CYAN=0xff42E8F5,WHITE=0xffF3F8FF,MUTED=0xffA9BED5,GOLD=0xffFFD07D,GREEN=0xff4EE5A4;
+ private final int BG=0xffF1F8FF,CARD=0xffFFFFFF,CYAN=0xff087BEA,WHITE=0xff193657,MUTED=0xff526B88,GOLD=0xffA66D00,GREEN=0xff087C58;
  private LinearLayout root;private EditText urlInput;private TextView result;
  private int dp(int v){return (int)(v*getResources().getDisplayMetrics().density+.5f);}
  private TextView text(String s,int z,int color){TextView t=new TextView(this);t.setText(s);t.setTextSize(z);t.setTextColor(color);t.setPadding(dp(9),dp(8),dp(9),dp(8));return t;}
- private GradientDrawable shape(){GradientDrawable d=new GradientDrawable(GradientDrawable.Orientation.TL_BR,new int[]{0xff19304B,0xff101C2D});d.setCornerRadius(dp(20));d.setStroke(dp(1),0xff315B70);return d;}
+ private GradientDrawable shape(){GradientDrawable d=new GradientDrawable(GradientDrawable.Orientation.TL_BR,new int[]{0xffFFFFFF,0xffE8F3FF});d.setCornerRadius(dp(20));d.setStroke(dp(1),0xff315B70);return d;}
  private LinearLayout card(String title,String subtitle){LinearLayout c=new LinearLayout(this);c.setOrientation(1);c.setPadding(dp(12),dp(13),dp(12),dp(13));c.setBackground(shape());c.addView(text(title,19,CYAN));c.addView(text(subtitle,12,MUTED));root.addView(c);View gap=new View(this);root.addView(gap,new LinearLayout.LayoutParams(1,dp(13)));return c;}
  private void button(LinearLayout c,String label,Runnable action){Button b=new Button(this);b.setText(label);b.setAllCaps(false);c.addView(b);b.setOnClickListener(v->action.run());}
  private void launch(Class<?> c){startActivity(new Intent(this,c));}
