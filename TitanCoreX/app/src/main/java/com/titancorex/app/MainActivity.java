@@ -125,7 +125,7 @@ public class MainActivity extends Activity {
   add(body,hero);gap(body,8);
  }
  private void stat(LinearLayout c,String name,String value,int color){
-  LinearLayout l=row();l.setPadding(0,dp(9),0,dp(9));TextView n=txt(name,13,MUTED,false);l.addView(n,new LinearLayout.LayoutParams(0,-2,1));l.addView(txt(value,14,color,true));add(c,l);
+  LinearLayout l=row();l.setPadding(0,dp(9),0,dp(9));TextView n=txt(name,13,MUTED,false);l.addView(n,new LinearLayout.LayoutParams(0,-2,1));TextView val=txt(value,14,color,true);l.addView(val);if(page==0){if(name.equals("مستوى البطارية"))liveBattery=val;else if(name.equals("حرارة البطارية"))liveTemp=val;else if(name.equals("الذاكرة المتاحة"))liveRam=val;else if(name.equals("التخزين المتاح"))liveDisk=val;}add(c,l);
   View rule=new View(this);rule.setBackgroundColor(0xffD7E5F5);c.addView(rule,new LinearLayout.LayoutParams(-1,dp(1)));
  }
  private void hero(){
