@@ -19,7 +19,7 @@ public class MainActivity extends Activity {
   private int page=0;
   private BatteryManager battery;
   private android.app.ActivityManager memory;
-  private final String[] sections={"الرئيسية","الجهاز","الأمان","الألعاب","الأدوات"};
+  private final String[] sectionKeys={"home","device","security","games","tools"};
   @Override public void onCreate(Bundle b) {
     super.onCreate(b);
     getWindow().setStatusBarColor(BG);getWindow().setNavigationBarColor(BG);
@@ -73,17 +73,18 @@ public class MainActivity extends Activity {
   }
   private void nav(){
     navigation.removeAllViews();
-    for(int i=0;i<sections.length;i++){
+    for(int i=0;i<sectionKeys.length;i++){
       final int index=i;
       LinearLayout cell=vertical();cell.setGravity(Gravity.CENTER);pad(cell,1,8,1,8);
       if(i==page)cell.setBackground(shape(0xff173448,12));
       String[] symbols={"◈","▣","⬡","⚡","☷"};
       TextView ico=label(symbols[i],21,i==page?CYAN:MUTED,true);ico.setGravity(Gravity.CENTER);add(cell,ico);
-      TextView txt=label(sections[i],9,i==page?CYAN:MUTED,true);txt.setGravity(Gravity.CENTER);add(cell,txt);
+      TextView txt=label(LanguageActivity.tr(this,sectionKeys[i]),9,i==page?CYAN:MUTED,true);txt.setGravity(Gravity.CENTER);add(cell,txt);
       navigation.addView(cell,new LinearLayout.LayoutParams(0,-2,1));
       cell.setOnClickListener(v->show(index));
     }
   }
+  @Override protected void onResume(){super.onResume();if(content!=null)show(page);}
   private void show(int index){
     page=index;content.removeAllViews();nav();subtitle.setText(new String[]{"مركز التحكم","تشخيص الجهاز","تدقيق الأمان","أداء الألعاب","أدوات النظام"}[page]);
     if(page==0)home();else if(page==1)device();else if(page==2)security();else if(page==3)boost();else tools();
@@ -121,6 +122,7 @@ public class MainActivity extends Activity {
     metric(c,"التخزين المتاح",format(disk().getAvailableBytes()),GOLD);
     block(c);
     LinearLayout actions=card("الوصول السريع","تشخيص الجهاز وأدوات النظام الآمنة");
+    action(actions,"🌐  "+LanguageActivity.tr(this,"language"),"اختيار لغة الواجهة من 20 لغة",()->startActivity(new Intent(this,LanguageActivity.class)));
     action(actions,"مختبر التبريد والرام والتخزين","مراقبة الحرارة والذاكرة والتنظيف الآمن",()->startActivity(new Intent(this,ResourceLabActivity.class)));
     action(actions,"فحص الهاتف","البطارية والذاكرة والتخزين والشبكة",()->show(1));
     action(actions,"مراجعة الحماية","التطبيقات والأذونات",()->show(2));
@@ -219,6 +221,7 @@ public class MainActivity extends Activity {
     block(s);
     section("أدوات النظام");
     LinearLayout u=card("لوحة الأدوات","أدوات نظام الهاتف");
+    action(u,"🌐  "+LanguageActivity.tr(this,"language"),"20 لغة للاختيار — ترجمة الأقسام الأساسية حاليًا",()->startActivity(new Intent(this,LanguageActivity.class)));
     action(u,"إعدادات الشبكة","إعدادات Wi-Fi وبيانات الهاتف",()->open(Settings.ACTION_WIRELESS_SETTINGS));
     action(u,"إعدادات البطارية","استهلاك البطارية وخيارات الشحن",()->open(Settings.ACTION_BATTERY_SAVER_SETTINGS));
     action(u,"مركز استعادة الموارد","الحرارة والرام والتخزين في لوحة واحدة",()->startActivity(new Intent(this,ResourceLabActivity.class)));
