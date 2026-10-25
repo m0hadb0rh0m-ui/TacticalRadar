@@ -10,14 +10,14 @@ import java.text.*;
 import java.util.*;
 
 public class PowerStationActivity extends Activity {
- private final int BG=0xff080C16,CYAN=0xff42E8F5,WHITE=0xffF4F8FF,MUTED=0xffABC1D6,GOLD=0xffFFD07D,GREEN=0xff4EE5A4;
+ private final int BG=0xff050915,CYAN=0xffFFD044,WHITE=0xffF4F8FF,MUTED=0xffABC1D6,GOLD=0xffFFD07D,GREEN=0xff4EE5A4;
  private LinearLayout root,live,history;
  private Handler handler=new Handler(Looper.getMainLooper());
  private Runnable ticker=new Runnable(){public void run(){update();handler.postDelayed(this,3000);}};
  private long startTime=0;private int startPct=-1;private float maxTemp=-1;
  private int dp(int x){return (int)(x*getResources().getDisplayMetrics().density+.5f);}
  private TextView txt(String s,int size,int color){TextView v=new TextView(this);v.setText(s);v.setTextSize(size);v.setTextColor(color);v.setPadding(dp(8),dp(7),dp(8),dp(7));return v;}
- private GradientDrawable cardBg(){GradientDrawable d=new GradientDrawable(GradientDrawable.Orientation.TL_BR,new int[]{0xff1A304A,0xff101D30});d.setCornerRadius(dp(19));d.setStroke(dp(1),0xff31546B);return d;}
+ private GradientDrawable cardBg(){GradientDrawable d=new GradientDrawable(GradientDrawable.Orientation.TL_BR,new int[]{0xff44331C,0xff191E2B});d.setCornerRadius(dp(19));d.setStroke(dp(1),0xff88652A);return d;}
  private LinearLayout card(String title){LinearLayout c=new LinearLayout(this);c.setOrientation(1);c.setPadding(dp(13),dp(13),dp(13),dp(13));c.setBackground(cardBg());c.addView(txt(title,18,CYAN));root.addView(c);View gap=new View(this);root.addView(gap,new LinearLayout.LayoutParams(1,dp(14)));return c;}
  private Intent battery(){return registerReceiver(null,new IntentFilter(Intent.ACTION_BATTERY_CHANGED));}
  private int pct(Intent i){if(i==null)return -1;int n=i.getIntExtra(BatteryManager.EXTRA_LEVEL,-1),s=i.getIntExtra(BatteryManager.EXTRA_SCALE,-1);return n<0||s<=0?-1:n*100/s;}
@@ -27,7 +27,8 @@ public class PowerStationActivity extends Activity {
  @Override public void onCreate(Bundle b){
   super.onCreate(b);getWindow().setStatusBarColor(BG);getWindow().setNavigationBarColor(BG);
   ScrollView sc=new ScrollView(this);root=new LinearLayout(this);root.setOrientation(1);root.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);root.setPadding(dp(18),dp(22),dp(18),dp(24));root.setBackgroundColor(BG);sc.addView(root);setContentView(sc);
-  root.addView(txt("⚡  TITAN POWER STATION",25,CYAN));root.addView(txt("مختبر الشحن والطاقة الاحترافي",16,WHITE));
+  root.addView(new TitanCyberSceneView(this,CYAN),new LinearLayout.LayoutParams(-1,dp(168)));
+  TextView title=txt("⚡  TITAN POWER STATION",25,CYAN);title.setTypeface(android.graphics.Typeface.create("sans-serif-black",1));root.addView(title);root.addView(txt("مختبر الشحن والطاقة الاحترافي",16,WHITE));
   root.addView(txt("القراءات من واجهات Android المتاحة؛ التيار والقدرة قد لا يتوفران أو قد يعكسان استهلاك البطارية الصافي، لا قدرة الشاحن الفعلية.",12,MUTED));
   live=card("القياسات المباشرة");
   LinearLayout session=card("جلسة مراقبة الشحن");
