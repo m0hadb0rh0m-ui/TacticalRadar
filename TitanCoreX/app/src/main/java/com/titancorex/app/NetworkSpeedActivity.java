@@ -13,6 +13,7 @@ import java.util.*;
 /** User-initiated transfer test; real bytes and monotonic clock, not estimated link rate. */
 public class NetworkSpeedActivity extends Activity {
  private TextView result;private volatile boolean cancelled=false;
+ private volatile boolean running=false;
  private SpeedVisual visual;private TextView visualLabel;
  private static final String BASE="https://speed.cloudflare.com";
  @Override public void onCreate(Bundle state){super.onCreate(state);
@@ -22,7 +23,7 @@ public class NetworkSpeedActivity extends Activity {
   visualLabel=new TextView(this);visualLabel.setText("جاهز للفحص");visualLabel.setTextColor(0xff087BEA);visualLabel.setTextSize(18);visualLabel.setGravity(Gravity.CENTER);root.addView(visualLabel);
   result=new TextView(this);result.setTextColor(0xff183453);result.setTextSize(16);root.addView(result);
   Button start=new Button(this);start.setText("ϟ  بدء قياس سرعة التنزيل والرفع");start.setAllCaps(false);start.setTextColor(0xffffffff);start.setBackground(buttonBackground(0xff078DFF,0xff535FF0));root.addView(start);start.setOnClickListener(v->runTest());
-  Button stop=new Button(this);stop.setText("■  إيقاف القياس");stop.setAllCaps(false);stop.setTextColor(0xffffffff);stop.setBackground(buttonBackground(0xffFF9860,0xffE45480));root.addView(stop);stop.setOnClickListener(v->{cancelled=true;result.setText("تم طلب إيقاف الاختبار");});
+  Button stop=new Button(this);stop.setText("■  إيقاف القياس");stop.setAllCaps(false);stop.setTextColor(0xffffffff);stop.setBackground(buttonBackground(0xffFF9860,0xffE45480));root.addView(stop);stop.setOnClickListener(v->{cancelled=true;result.setText("تم طلب إيقاف الاختبار");visual.stop();});
   result.setText("اختبار نقل بيانات فعلي إلى Cloudflare. يستهلك قرابة 6 MB في كل تشغيل وقد يستهلك بيانات الهاتف. لا يختبر فقدان حزم ICMP.");
  }
  private GradientDrawable buttonBackground(int a,int b){GradientDrawable d=new GradientDrawable(GradientDrawable.Orientation.TL_BR,new int[]{a,b});d.setCornerRadius(22);return d;}
@@ -48,12 +49,12 @@ public class NetworkSpeedActivity extends Activity {
    return bytes*8.0/((System.nanoTime()-start)/1e9)/1e6;
   }finally{c.disconnect();}
  }
- private void runTest(){cancelled=false;visual.start();display("جارٍ نقل بيانات الاختبار...");
+ private void runTest(){if(running)return;running=true;cancelled=false;visual.start();display("جارٍ نقل بيانات الاختبار...");
   new Thread(()->{try{
    double down=download(4*1024*1024);if(cancelled)return;display(String.format(Locale.US,"تنزيل: %.2f Mbps\nجارٍ اختبار الرفع...",down));
    double up=upload(2*1024*1024);if(cancelled)return;
    display(String.format(Locale.US,"تنزيل: %.2f Mbps\nرفع: %.2f Mbps\n\nالنتائج مرتبطة بخادم Cloudflare وحالة الشبكة وقت الاختبار، ولا تمثل السرعة القصوى المضمونة.",down,up));
-  }catch(Exception e){display("فشل القياس أو الخادم غير متاح: "+e.getMessage());}finally{runOnUiThread(()->visual.stop());}}).start();
+  }catch(Exception e){display("فشل القياس أو الخادم غير متاح: "+e.getMessage());}finally{runOnUiThread(()->{visual.stop();running=false;});}}).start();
  }
  private final class SpeedVisual extends View {
   private final Paint paint=new Paint(3);
