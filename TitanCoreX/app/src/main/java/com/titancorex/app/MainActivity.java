@@ -167,6 +167,22 @@ public class MainActivity extends Activity {
   link(system,"تثبيت التطبيقات الخارجية","مراجعة مصادر التثبيت",()->settings(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES));
   note("لا يوجد في هذا الإصدار محرك مضاد فيروسات، ولا يمكن إعلان الهاتف خاليًا من البرمجيات الضارة.");
  }
+ private void network(){
+  title("NETWORK LAB");
+  LinearLayout c=card("حالة الاتصال","بيانات الشبكة من Android");
+  ConnectivityManager cm=(ConnectivityManager)getSystemService(CONNECTIVITY_SERVICE);
+  Network net=cm.getActiveNetwork();NetworkCapabilities caps=net==null?null:cm.getNetworkCapabilities(net);
+  String type=caps==null?"غير متصل":caps.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)?"Wi-Fi":caps.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)?"بيانات الهاتف":"اتصال آخر";
+  stat(c,"نوع الاتصال",type,CYAN);
+  stat(c,"تحقق Android من الإنترنت",caps!=null&&caps.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)?"متصل":"غير مؤكد",GREEN);
+  LinearLayout tests=card("اختبارات الشبكة","نتائج فعلية تعتمد على الاتصال الحالي");
+  link(tests,"اختبار سرعة الإنترنت","قياس التنزيل والرفع وسجل الاختبارات",()->launch(NetworkSpeedActivity.class));
+  link(tests,"تدقيق Wi-Fi","التشفير والإشارة ومعلومات الشبكة",()->launch(WifiAuditActivity.class));
+  link(tests,"تشخيص DNS","الخوادم وحالة التهيئة",()->launch(DnsDiagnosticsActivity.class));
+  link(tests,"Network Defense","فحص HTTPS وجودة الاتصال",()->launch(NetworkDefenseActivity.class));
+  link(tests,"جدار حماية DNS","إعدادات الحجب بإذن المستخدم",()->launch(DnsFirewallActivity.class));
+  note("قد يستهلك اختبار السرعة بيانات الهاتف. لا تُفسر نتيجة اتصال Android على أنها فحص أمني شامل.");
+ }
  private void performance(){
   title("PERFORMANCE LAB");
   LinearLayout c=card("مراقبة الموارد","حالة فعلية لحرارة البطارية والذاكرة والتخزين");
