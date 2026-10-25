@@ -40,6 +40,8 @@ public class ApkInspectorActivity extends Activity {
    ThreatEngine.Verdict verdict;
    try(InputStream check=new FileInputStream(temp)){verdict=ThreatEngine.scan(this,check);}
    StringBuilder report=new StringBuilder();
+   report.append("Threat Engine: ").append(verdict.status).append("\n").append(verdict.reason).append("\n").append(ThreatEngine.feedStatus(this)).append("\n");
+
    report.append("SHA-256: ").append(hex).append("\n");
    report.append("الحجم: ").append(String.format(Locale.US,"%.2f MB",bytes/1048576.0)).append("\n");
    report.append("عدد الملفات: ").append(entries).append("\n");
