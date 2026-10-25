@@ -107,7 +107,7 @@ public class MainActivity extends Activity {
   int[] accents={CYAN,RED,AMBER,0xffBA75FF,GREEN};
   LinearLayout hero=col();hero.setPadding(dp(22),dp(24),dp(22),dp(23));
   hero.setBackground(gradient(0xff243D60,0xff111D33,26,accents[index]));
-  TextView emblem=txt(symbols[index],53,accents[index],true);emblem.setGravity(Gravity.CENTER);add(hero,emblem);
+  TitanCyberSceneView scene=new TitanCyberSceneView(this,accents[index]);hero.addView(scene,new LinearLayout.LayoutParams(-1,dp(168)));
   gap(hero,7);TextView heading=txt(titles[index],21,WHITE,true);
   heading.setTypeface(Typeface.create("sans-serif-black",Typeface.BOLD));heading.setGravity(Gravity.CENTER);add(hero,heading);
   gap(hero,10);TextView description=txt(descriptions[index],13,MUTED,false);description.setGravity(Gravity.CENTER);add(hero,description);
@@ -120,6 +120,7 @@ public class MainActivity extends Activity {
  private void hero(){
   LinearLayout h=col();h.setPadding(dp(22),dp(23),dp(22),dp(23));h.setBackground(gradient(0xff0C6F95,0xff152047,28,0xff39D8FF));
   add(h,txt("LIVE DEVICE STATUS",11,CYAN,true));gap(h,9);
+  TitanCyberSceneView visual=new TitanCyberSceneView(this,CYAN);h.addView(visual,new LinearLayout.LayoutParams(-1,dp(145)));gap(h,5);
   TextView scoreText=txt(score()+" / 100",54,WHITE,true);scoreText.setTypeface(Typeface.create("sans-serif-black",Typeface.BOLD));add(h,scoreText);gap(h,4);add(h,txt("مؤشر تقديري للموارد، وليس نتيجة فحص فيروسات",12,0xffD0E2EF,false));gap(h,18);
   ProgressBar p=new ProgressBar(this,null,android.R.attr.progressBarStyleHorizontal);p.setMax(100);p.setProgress(score());p.setProgressTintList(ColorStateList.valueOf(CYAN));add(h,p);gap(h,19);
   Button scan=new Button(this);scan.setText("⬡   ابدأ الفحص الأمني الآن");scan.setTextSize(17);scan.setTypeface(Typeface.create("sans-serif-black",Typeface.BOLD));scan.setAllCaps(false);scan.setTextColor(BG);scan.setBackground(gradient(0xff26C9FF,0xff82F2FF,17,0));add(h,scan);scan.setOnClickListener(v->launch(SmartScanActivity.class));
