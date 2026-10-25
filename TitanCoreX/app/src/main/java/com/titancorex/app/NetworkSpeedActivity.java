@@ -35,15 +35,15 @@ public class NetworkSpeedActivity extends Activity {
   String stamp=new SimpleDateFormat("yyyy-MM-dd HH:mm",Locale.getDefault()).format(new Date());
   lastReport=String.format(Locale.US,"%s | Download %.2f Mbps | Upload %.2f Mbps",stamp,down,up);
   android.content.SharedPreferences prefs=getSharedPreferences("titan_speed_history",MODE_PRIVATE);
-  String old=prefs.getString("entries","");String[] rows=old.split("\\n");StringBuilder sb=new StringBuilder(lastReport);
-  for(int i=0;i<Math.min(9,rows.length);i++)if(!rows[i].isEmpty())sb.append("\\n").append(rows[i]);
+  String old=prefs.getString("entries","");String[] rows=old.split("\\\\n|\\n");StringBuilder sb=new StringBuilder(lastReport);
+  for(int i=0;i<Math.min(9,rows.length);i++)if(!rows[i].isEmpty())sb.append((char)10).append(rows[i]);
   prefs.edit().putString("entries",sb.toString()).apply();runOnUiThread(this::refreshHistory);
  }
  private void refreshHistory(){if(history!=null){String saved=getSharedPreferences("titan_speed_history",MODE_PRIVATE).getString("entries","");history.setText(saved.isEmpty()?"لا توجد اختبارات محفوظة بعد":saved);}}
  private void shareReport(){
-  String text=lastReport.isEmpty()?getSharedPreferences("titan_speed_history",MODE_PRIVATE).getString("entries","").split("\\n")[0]:lastReport;
+  String text=lastReport.isEmpty()?getSharedPreferences("titan_speed_history",MODE_PRIVATE).getString("entries","").split("\\\\n|\\n")[0]:lastReport;
   if(text.isEmpty()){Toast.makeText(this,"أجرِ اختبارًا أولًا",Toast.LENGTH_SHORT).show();return;}
-  Intent send=new Intent(Intent.ACTION_SEND);send.setType("text/plain");send.putExtra(Intent.EXTRA_TEXT,"TITAN CORE X — Network speed\\n"+text);
+  Intent send=new Intent(Intent.ACTION_SEND);send.setType("text/plain");send.putExtra(Intent.EXTRA_TEXT,"TITAN CORE X — Network speed"+System.lineSeparator()+text);
   startActivity(Intent.createChooser(send,"مشاركة تقرير السرعة"));
  }
  private GradientDrawable buttonBackground(int a,int b){GradientDrawable d=new GradientDrawable(GradientDrawable.Orientation.TL_BR,new int[]{a,b});d.setCornerRadius(22);return d;}
