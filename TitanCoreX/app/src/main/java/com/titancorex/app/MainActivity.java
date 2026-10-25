@@ -92,7 +92,7 @@ public class MainActivity extends Activity {
  private void navigation(){
   nav.removeAllViews();String[] names={"الرئيسية","الحماية","الشبكة","الأداء","الخصوصية"},icons={"⌂","⬡","◎","⚡","◈"};
   for(int i=0;i<5;i++){final int index=i;LinearLayout item=col();item.setGravity(Gravity.CENTER);item.setPadding(0,dp(8),0,dp(8));if(i==page)item.setBackground(gradient(0xffDBEFFF,0xffC4E0FF,13,0xffA0C9F5));
-   TextView icon=txt(icons[i],25,i==page?new int[]{CYAN,RED,AMBER,0xffBA75FF,GREEN}[i]:MUTED,true);icon.setGravity(Gravity.CENTER);add(item,icon);gap(item,4);
+   TextView icon=txt(icons[i],25,i==page?new int[]{CYAN,RED,CYAN,AMBER,0xff8051D1}[i]:MUTED,true);icon.setGravity(Gravity.CENTER);add(item,icon);gap(item,4);
    TextView label=txt(names[i],11,i==page?WHITE:MUTED,i==page);label.setGravity(Gravity.CENTER);add(item,label);
    nav.addView(item,new LinearLayout.LayoutParams(0,-2,1));item.setContentDescription("فتح قسم "+names[i]);item.setOnClickListener(v->show(index));
   }
@@ -186,6 +186,7 @@ public class MainActivity extends Activity {
   stat(c,"تحقق Android من الإنترنت",caps!=null&&caps.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)?"متصل":"غير مؤكد",GREEN);
   LinearLayout tests=card("اختبارات الشبكة","نتائج فعلية تعتمد على الاتصال الحالي");
   link(tests,"اختبار سرعة الإنترنت","قياس التنزيل والرفع وسجل الاختبارات",()->launch(NetworkSpeedActivity.class));
+  link(tests,"V3  |  تحليلات الشبكة","اختبار HTTPS والتذبذب ومراقبة البيانات",()->launch(NetworkInsightActivity.class));
   link(tests,"تدقيق Wi-Fi","التشفير والإشارة ومعلومات الشبكة",()->launch(WifiAuditActivity.class));
   link(tests,"تشخيص DNS","الخوادم وحالة التهيئة",()->launch(DnsDiagnosticsActivity.class));
   link(tests,"Network Defense","فحص HTTPS وجودة الاتصال",()->launch(NetworkDefenseActivity.class));
