@@ -5,6 +5,7 @@
   <intent><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.LAUNCHER"/></intent>
  </queries>
  <application android:label="TITAN CORE X" android:theme="@android:style/Theme.Material.NoActionBar" android:usesCleartextTraffic="false" android:allowBackup="false">
+  <activity android:name=".ResourceLabActivity" android:exported="false"/>
   <activity android:name=".PrivacyAuditActivity" android:exported="false"/>
   <activity android:name=".StorageAuditActivity" android:exported="false"/>
   <activity android:name=".MainActivity" android:exported="true">
