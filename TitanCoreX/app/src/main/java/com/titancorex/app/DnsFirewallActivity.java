@@ -10,12 +10,12 @@ import android.widget.*;
 public class DnsFirewallActivity extends Activity {
  private static final int VPN_REQUEST=401;
  private EditText domains;private TextView status;
- @Override public void onCreate(Bundle b){super.onCreate(b);
-  LinearLayout root=new LinearLayout(this);root.setOrientation(1);root.setPadding(24,28,24,24);root.setBackgroundColor(0xffF1F8FF);root.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+ @Override public void onCreate(Bundle b){super.onCreate(b);getWindow().setStatusBarColor(0xff0B0F19);getWindow().setNavigationBarColor(0xff0B0F19);
+  LinearLayout root=new LinearLayout(this);root.setOrientation(1);root.setPadding(24,28,24,24);root.setBackgroundColor(0xff0B0F19);root.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
   ScrollView sc=new ScrollView(this);sc.addView(root);setContentView(sc);
-  TextView title=new TextView(this);title.setText("TITAN DNS FIREWALL");title.setTextColor(0xff087BEA);title.setTextSize(24);root.addView(title);
-  TextView description=new TextView(this);description.setText("حماية DNS تجريبية: تمرير طلبات DNS العادية عبر DNS-over-HTTPS مشفر إلى Cloudflare، وإرجاع NXDOMAIN للنطاقات المدرجة أدناه. لا تفك تشفير HTTPS ولا تعترض DoH الخاص بالتطبيقات أو DNS عبر IPv6. يتطلب التشغيل موافقتك على VPN.");description.setTextColor(0xff173557);description.setTextSize(15);root.addView(description);
-  domains=new EditText(this);domains.setTextColor(0xff173557);domains.setHint("نطاق واحد في كل سطر");domains.setMinLines(6);
+  TextView title=new TextView(this);title.setText("TITAN DNS FIREWALL");title.setTextColor(0xff06B6D4);title.setTextSize(24);root.addView(title);
+  TextView description=new TextView(this);description.setText("حماية DNS تجريبية: تمرير طلبات DNS العادية عبر DNS-over-HTTPS مشفر إلى Cloudflare، وإرجاع NXDOMAIN للنطاقات المدرجة أدناه. لا تفك تشفير HTTPS ولا تعترض DoH الخاص بالتطبيقات أو DNS عبر IPv6. يتطلب التشغيل موافقتك على VPN.");description.setTextColor(0xffEDF9FF);description.setTextSize(15);root.addView(description);
+  domains=new EditText(this);domains.setTextColor(0xffEDF9FF);domains.setHint("نطاق واحد في كل سطر");domains.setMinLines(6);
   domains.setText(getSharedPreferences("titan_dns_vpn",MODE_PRIVATE).getString("domains",""));root.addView(domains);
   Button save=new Button(this);save.setText("حفظ قائمة الحجب");root.addView(save);
   save.setOnClickListener(v->{String input=domains.getText().toString().toLowerCase(java.util.Locale.US);StringBuilder valid=new StringBuilder();
