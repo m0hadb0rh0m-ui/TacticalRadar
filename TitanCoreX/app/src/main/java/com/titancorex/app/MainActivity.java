@@ -122,6 +122,7 @@ public class MainActivity extends Activity {
     metric(c,"التخزين المتاح",format(disk().getAvailableBytes()),GOLD);
     block(c);
     LinearLayout actions=card("الوصول السريع","تشخيص الجهاز وأدوات النظام الآمنة");
+    action(actions,"📈  سجل الأداء والحرارة","تسجيل قياسات ومخطط حرارة البطارية",()->startActivity(new Intent(this,TrendsActivity.class)));
     action(actions,"🌐  "+LanguageActivity.tr(this,"language"),"اختيار لغة الواجهة من 20 لغة",()->startActivity(new Intent(this,LanguageActivity.class)));
     action(actions,"مختبر التبريد والرام والتخزين","مراقبة الحرارة والذاكرة والتنظيف الآمن",()->startActivity(new Intent(this,ResourceLabActivity.class)));
     action(actions,"فحص الهاتف","البطارية والذاكرة والتخزين والشبكة",()->show(1));
@@ -221,6 +222,7 @@ public class MainActivity extends Activity {
     block(s);
     section("أدوات النظام");
     LinearLayout u=card("لوحة الأدوات","أدوات نظام الهاتف");
+    action(u,"📈  سجل أداء الهاتف","متابعة تاريخ البطارية والذاكرة",()->startActivity(new Intent(this,TrendsActivity.class)));
     action(u,"🌐  "+LanguageActivity.tr(this,"language"),"20 لغة للاختيار — ترجمة الأقسام الأساسية حاليًا",()->startActivity(new Intent(this,LanguageActivity.class)));
     action(u,"إعدادات الشبكة","إعدادات Wi-Fi وبيانات الهاتف",()->open(Settings.ACTION_WIRELESS_SETTINGS));
     action(u,"إعدادات البطارية","استهلاك البطارية وخيارات الشحن",()->open(Settings.ACTION_BATTERY_SAVER_SETTINGS));
