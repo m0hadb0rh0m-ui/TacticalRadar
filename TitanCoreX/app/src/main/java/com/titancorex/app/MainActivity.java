@@ -122,6 +122,7 @@ public class MainActivity extends Activity {
     metric(c,"التخزين المتاح",format(disk().getAvailableBytes()),GOLD);
     block(c);
     LinearLayout actions=card("الوصول السريع","تشخيص الجهاز وأدوات النظام الآمنة");
+    action(actions,"⬡  TITAN SMART SCAN","فحص موحد لإعدادات الحماية والحرارة والتخزين",()->startActivity(new Intent(this,SmartScanActivity.class)));
     action(actions,"TITAN INTELLIGENCE X","10 أنظمة للأمان والأداء والخصوصية",()->startActivity(new Intent(this,IntelligenceHubActivity.class)));
     action(actions,"⚡  TITAN POWER STATION","تحليل تيار البطارية والجهد وتسجيل جلسات الشحن",()->startActivity(new Intent(this,PowerStationActivity.class)));
     action(actions,"◈  TITAN TIME CAPSULE","اكشف تغيّر إعدادات الحماية منذ آخر لقطة محفوظة",()->startActivity(new Intent(this,TimeCapsuleActivity.class)));
