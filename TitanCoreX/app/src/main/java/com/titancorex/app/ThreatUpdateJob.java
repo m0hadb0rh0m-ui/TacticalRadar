@@ -5,6 +5,7 @@ import android.os.*;
 
 public class ThreatUpdateJob extends JobService {
  @Override public boolean onStartJob(JobParameters params){
+  if(!ThreatFeedUpdater.configured()){ThreatFeedUpdater.cancel(this);return false;}
   new Thread(()->{
    boolean retry=false;
    try{ThreatFeedUpdater.update(this);getSharedPreferences("titan_feed_update",MODE_PRIVATE).edit().putString("last_error","").putLong("last_success",System.currentTimeMillis()).apply();}
