@@ -13,9 +13,9 @@ public class NetworkSpeedActivity extends Activity {
  private TextView result;private volatile boolean cancelled=false;
  private static final String BASE="https://speed.cloudflare.com";
  @Override public void onCreate(Bundle state){super.onCreate(state);
-  ScrollView scroll=new ScrollView(this);LinearLayout root=new LinearLayout(this);root.setOrientation(1);root.setPadding(24,24,24,24);root.setBackgroundColor(0xff080D18);scroll.addView(root);setContentView(scroll);
-  TextView title=new TextView(this);title.setText("TITAN SPEED & RELIABILITY LAB");title.setTextColor(0xff59E6EF);title.setTextSize(23);root.addView(title);
-  result=new TextView(this);result.setTextColor(-1);result.setTextSize(16);root.addView(result);
+  ScrollView scroll=new ScrollView(this);LinearLayout root=new LinearLayout(this);root.setOrientation(1);root.setPadding(24,24,24,24);root.setBackgroundColor(0xffF1F8FF);scroll.addView(root);setContentView(scroll);
+  TextView title=new TextView(this);title.setText("TITAN SPEED & RELIABILITY LAB");title.setTextColor(0xff087BEA);title.setTextSize(23);root.addView(title);
+  result=new TextView(this);result.setTextColor(0xff183453);result.setTextSize(16);root.addView(result);
   Button start=new Button(this);start.setText("قياس سرعة التنزيل والرفع");root.addView(start);start.setOnClickListener(v->runTest());
   Button stop=new Button(this);stop.setText("إيقاف القياس");root.addView(stop);stop.setOnClickListener(v->{cancelled=true;result.setText("تم طلب إيقاف الاختبار");});
   result.setText("اختبار نقل بيانات فعلي إلى Cloudflare. يستهلك قرابة 6 MB في كل تشغيل وقد يستهلك بيانات الهاتف. لا يختبر فقدان حزم ICMP.");
