@@ -42,7 +42,7 @@ public class SmartScanActivity extends Activity {
   boolean adb=Settings.Global.getInt(getContentResolver(),Settings.Global.ADB_ENABLED,0)==1;if(adb)issues++;
   addResult("تصحيح USB",!adb,adb?"تصحيح USB مفعّل؛ راجع حاجتك إليه":"تصحيح USB غير مفعّل",adb?()->settings(Settings.ACTION_APPLICATION_DEVELOPMENT_SETTINGS):null);
   String patch=Build.VERSION.SECURITY_PATCH;boolean patchKnown=patch!=null&&!patch.isEmpty();
-  addResult("تحديث الأمان",patchKnown,"تاريخ آخر تصحيح معلن: "+(patchKnown?patch:"غير متاح")+" — لا نتحقق من وجود تحديث أحدث",()->settings(Settings.ACTION_SYSTEM_UPDATE_SETTINGS));
+  addResult("تحديث الأمان",patchKnown,"تاريخ آخر تصحيح معلن: "+(patchKnown?patch:"غير متاح")+" — لا نتحقق من وجود تحديث أحدث",()->settings(Settings.ACTION_DEVICE_INFO_SETTINGS));
   android.os.StatFs fs=new android.os.StatFs(android.os.Environment.getDataDirectory().getAbsolutePath());
   long total=fs.getTotalBytes(),free=fs.getAvailableBytes();boolean space=total>0&&free*10>=total;if(!space)issues++;
   addResult("مساحة التخزين",space,"المساحة المتاحة: "+(free/1048576)+" MB؛ أقل من 10% قد يؤثر على الاستخدام",space?null:()->settings(Settings.ACTION_INTERNAL_STORAGE_SETTINGS));
