@@ -168,6 +168,7 @@ public class MainActivity extends Activity {
     metric(c,"حالة مضاد الفيروسات","غير معتمد",GOLD);
     block(c);
     LinearLayout a=card("اختصارات الأمان","أدوات الحماية الرسمية في Android");
+    action(a,"مختبر الخصوصية المتقدم","فحص الأذونات الحساسة الممنوحة لكل تطبيق ظاهر",()->startActivity(new Intent(this,PrivacyAuditActivity.class)));
     action(a,"أذونات التطبيقات","مراجعة الكاميرا والميكروفون والموقع",()->open(Settings.ACTION_APPLICATION_SETTINGS));
     action(a,"إعدادات الأمان","خيارات حماية الهاتف",()->open(Settings.ACTION_SECURITY_SETTINGS));
     action(a,"تثبيت التطبيقات غير المعروفة","مراجعة صلاحيات التثبيت الخارجية",()->open(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES));
