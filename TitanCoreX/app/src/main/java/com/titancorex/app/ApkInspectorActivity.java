@@ -14,15 +14,15 @@ import java.util.*;
 import java.util.zip.*;
 
 public class ApkInspectorActivity extends Activity {
- private static final int PICK=7041,BG=0xffF2F8FF,WHITE=0xff173557,CYAN=0xff087BEA,MUTED=0xff536B85,AMBER=0xffA66D00;
+ private static final int PICK=7041,BG=0xff0B0F19,WHITE=0xffEDF9FF,CYAN=0xff06B6D4,MUTED=0xff9DB6C7,AMBER=0xffF59E0B;
  private LinearLayout root;private TextView status;private Button pick,vaultButton;private Uri selectedUri;
  private int dp(int v){return (int)(v*getResources().getDisplayMetrics().density+.5f);}
  private TextView text(String s,int size,int color){TextView t=new TextView(this);t.setText(s);t.setTextColor(color);t.setTextSize(size);t.setPadding(dp(5),dp(8),dp(5),dp(8));return t;}
- private void result(String label,String value){LinearLayout c=new LinearLayout(this);c.setOrientation(1);c.setPadding(dp(13),dp(10),dp(13),dp(10));GradientDrawable d=new GradientDrawable(GradientDrawable.Orientation.TL_BR,new int[]{0xffFFFFFF,0xffEAF4FF});d.setCornerRadius(dp(16));c.setBackground(d);c.addView(text(label,13,CYAN));c.addView(text(value,14,WHITE));root.addView(c);View gap=new View(this);root.addView(gap,new LinearLayout.LayoutParams(1,dp(9)));}
- @Override public void onCreate(Bundle b){super.onCreate(b);getWindow().setStatusBarColor(BG);getWindow().setNavigationBarColor(BG);
+ private void result(String label,String value){LinearLayout c=new LinearLayout(this);c.setOrientation(1);c.setPadding(dp(13),dp(10),dp(13),dp(10));GradientDrawable d=new GradientDrawable(GradientDrawable.Orientation.TL_BR,new int[]{0xff18283A,0xff121D2C});d.setCornerRadius(dp(16));c.setBackground(d);c.addView(text(label,13,CYAN));c.addView(text(value,14,WHITE));root.addView(c);View gap=new View(this);root.addView(gap,new LinearLayout.LayoutParams(1,dp(9)));}
+ @Override public void onCreate(Bundle b){super.onCreate(b);getWindow().setStatusBarColor(BG);getWindow().setNavigationBarColor(BG);getWindow().getDecorView().setSystemUiVisibility(0);
   ScrollView sc=new ScrollView(this);root=new LinearLayout(this);root.setOrientation(1);root.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);root.setPadding(dp(18),dp(22),dp(18),dp(22));root.setBackgroundColor(BG);sc.addView(root);setContentView(sc);
   root.addView(text("TITAN APK INSPECTOR",25,CYAN));root.addView(text("تحليل ملف APK تختاره أنت. لا يرفع الملف إلى الإنترنت ولا يثبت التطبيق.",14,MUTED));
-  pick=new Button(this);pick.setText("اختيار ملف APK للفحص");root.addView(pick);pick.setOnClickListener(v->{Intent i=new Intent(Intent.ACTION_OPEN_DOCUMENT);i.setType("*/*");i.addCategory(Intent.CATEGORY_OPENABLE);i.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);startActivityForResult(i,PICK);});
+  pick=new Button(this);pick.setText("اختيار ملف APK للفحص");pick.setAllCaps(false);root.addView(pick);pick.setOnClickListener(v->{Intent i=new Intent(Intent.ACTION_OPEN_DOCUMENT);i.setType("*/*");i.addCategory(Intent.CATEGORY_OPENABLE);i.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);startActivityForResult(i,PICK);});
   vaultButton=new Button(this);vaultButton.setText("حفظ نسخة مشفرة من الملف المختار");vaultButton.setAllCaps(false);vaultButton.setEnabled(false);
   root.addView(vaultButton);vaultButton.setOnClickListener(v->saveEncryptedSample());
   Button clearVault=new Button(this);clearVault.setText("حذف جميع النسخ المحفوظة المشفرة");clearVault.setAllCaps(false);root.addView(clearVault);
