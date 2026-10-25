@@ -57,9 +57,9 @@ public final class NetworkInsightActivity extends Activity {
   stop=new Button(this);stop.setText("إيقاف الاختبار");stop.setAllCaps(false);stop.setEnabled(false);
   stop.setTextColor(-1);stop.setBackground(bg(0xffFF9363,0xffDA4C83,0));latency.addView(stop);
   stop.setOnClickListener(v->halt());
-  LinearLayout saved=box("سجل النتائج المحلي");
-  history=text("",13,MUTED);saved.addView(history);
-  Button clear=new Button(this);clear.setText("مسح السجل");clear.setAllCaps(false);saved.addView(clear);
+  LinearLayout savedPanel=box("سجل النتائج المحلي");
+  history=text("",13,MUTED);savedPanel.addView(history);
+  Button clear=new Button(this);clear.setText("مسح السجل");clear.setAllCaps(false);savedPanel.addView(clear);
   clear.setOnClickListener(v->new AlertDialog.Builder(this).setMessage("هل تريد حذف سجل الاستجابة المحلي؟")
    .setNegativeButton("إلغاء",null).setPositiveButton("حذف",(d,w)->{
     getSharedPreferences("titan_network_insights_v3",0).edit().clear().apply();loadHistory();
