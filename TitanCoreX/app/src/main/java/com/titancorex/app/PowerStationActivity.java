@@ -10,7 +10,7 @@ import java.text.*;
 import java.util.*;
 
 public class PowerStationActivity extends Activity {
- private final int BG=0xff050915,CYAN=0xffFFD044,WHITE=0xffF4F8FF,MUTED=0xffABC1D6,GOLD=0xffFFD07D,GREEN=0xff4EE5A4;
+ private final int BG=0xffFFF9EC,CYAN=0xffBD7800,WHITE=0xff253650,MUTED=0xff5E7087,GOLD=0xffA96C00,GREEN=0xff087F58;
  private LinearLayout root,live,history;
  private Handler handler=new Handler(Looper.getMainLooper());
  private Runnable ticker=new Runnable(){public void run(){update();handler.postDelayed(this,3000);}};
