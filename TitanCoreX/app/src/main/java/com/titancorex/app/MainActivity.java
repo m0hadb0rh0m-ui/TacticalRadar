@@ -124,6 +124,7 @@ public class MainActivity extends Activity {
     action(actions,"فحص الهاتف","البطارية والذاكرة والتخزين والشبكة",()->show(1));
     action(actions,"مراجعة الحماية","التطبيقات والأذونات",()->show(2));
     action(actions,"مركز أداء الألعاب","تهيئة جلسة لعب",()->show(3));
+    action(actions,"مشاركة تقرير الفحص","تصدير قياسات الجهاز إلى نص",()->shareReport());
     block(actions);
     note("Privacy first: measurements stay on your device. No cloud upload or background scanning in this release.");
   }
@@ -186,6 +187,10 @@ public class MainActivity extends Activity {
     action(a,"إعدادات عدم الإزعاج","تقليل الإشعارات أثناء اللعب",()->open(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS));
     action(a,"إعدادات تحسين البطارية","مراجعة قيود البطارية",()->open(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS));
     action(a,"إعدادات الشبكة","فحص الاتصال قبل اللعب الجماعي",()->open(Settings.ACTION_WIRELESS_SETTINGS));
+    action(a,"بدء جلسة لعب","تسجيل وقت البداية وقياسات الجهاز",()->startGameSession());
+    action(a,"إنهاء جلسة لعب","حفظ المدة وحرارة البطارية",()->endGameSession());
+    String last=getPreferences(MODE_PRIVATE).getString("last_game","لا توجد جلسة محفوظة");
+    a.addView(label("آخر جلسة: "+last,12,MUTED,false));
     block(a);
     note("Android prevents ordinary apps from force-closing all other apps or guaranteeing higher FPS. This release provides diagnostics and safe shortcuts.");
   }
@@ -219,6 +224,35 @@ public class MainActivity extends Activity {
     note("Deep app caches and protected system files cannot be erased silently on modern Android. Cleanup always requires user-approved access.");
   }
   private void note(String s){LinearLayout c=vertical();pad(c,14,14,14,14);c.setBackground(border(0xff18212B,0xff37475A,12));add(c,label("ⓘ  "+s,12,GOLD,false));block(c);}
+  private void startGameSession(){
+    getPreferences(MODE_PRIVATE).edit().putLong("game_start",System.currentTimeMillis()).putFloat("game_temp",temp()).apply();
+    toast("بدأ تسجيل جلسة اللعب");show(3);
+  }
+  private void endGameSession(){
+    android.content.SharedPreferences p=getPreferences(MODE_PRIVATE);
+    long start=p.getLong("game_start",0);
+    if(start==0){toast("ابدأ جلسة أولًا");return;}
+    long mins=Math.max(0,(System.currentTimeMillis()-start)/60000);
+    float startTemp=p.getFloat("game_temp",-1);
+    String report=mins+" دقيقة | حرارة البداية "+startTemp+"° | النهاية "+temp()+"°";
+    p.edit().remove("game_start").putString("last_game",report).apply();
+    toast("تم حفظ الجلسة");show(3);
+  }
+  private void shareReport(){
+    android.app.ActivityManager.MemoryInfo m=ram();
+    String report="TITAN CORE X - Device Report\\n"
+      +"Model: "+android.os.Build.MANUFACTURER+" "+android.os.Build.MODEL+"\\n"
+      +"Android: "+android.os.Build.VERSION.RELEASE+"\\n"
+      +"Health estimate: "+score()+"/100\\n"
+      +"Battery: "+level()+"%\\n"
+      +"Battery temperature: "+temp()+" C\\n"
+      +"RAM free: "+format(m.availMem)+"\\n"
+      +"Storage free: "+format(disk().getAvailableBytes())+"\\n"
+      +"Generated on device. No malware scan was performed.";
+    Intent send=new Intent(Intent.ACTION_SEND);
+    send.setType("text/plain");send.putExtra(Intent.EXTRA_TEXT,report);
+    startActivity(Intent.createChooser(send,"مشاركة تقرير TITAN CORE X"));
+  }
   private void open(String action){try{startActivity(new Intent(action));}catch(Exception e){toast("This settings page is unavailable on your device");}}
   private void toast(String msg){Toast.makeText(this,msg,Toast.LENGTH_SHORT).show();}
 }
