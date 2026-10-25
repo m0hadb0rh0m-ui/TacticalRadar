@@ -112,7 +112,7 @@ public class MainActivity extends Activity {
   link(s,"فحص أذونات التطبيقات","مراجعة الأذونات الحساسة",()->launch(PrivacyAuditActivity.class));
   LinearLayout system=card("حماية Android الرسمية","اختصارات إلى إعدادات النظام");
   link(system,"إعدادات الأمان","قفل الشاشة وحماية الجهاز",()->settings(Settings.ACTION_SECURITY_SETTINGS));
-  link(system,"تحديثات النظام","مراجعة التحديثات المتاحة",()->settings(Settings.ACTION_SYSTEM_UPDATE_SETTINGS));
+  link(system,"تحديثات النظام","مراجعة التحديثات المتاحة",()->settings(Settings.ACTION_DEVICE_INFO_SETTINGS));
   link(system,"تثبيت التطبيقات الخارجية","مراجعة مصادر التثبيت",()->settings(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES));
   note("لا يوجد في هذا الإصدار محرك مضاد فيروسات، ولا يمكن إعلان الهاتف خاليًا من البرمجيات الضارة.");
  }
