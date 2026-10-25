@@ -12,11 +12,11 @@ import java.text.*;
 import java.util.*;
 
 public class TimeCapsuleActivity extends Activity {
- private final int BG=0xff050915,CYAN=0xff4DE7FF,WHITE=0xffF3F8FF,MUTED=0xffB0C4D9,GOLD=0xffFFD07D,GREEN=0xff4DEBB1;
+ private final int BG=0xffF2F8FF,CYAN=0xff087BEA,WHITE=0xff142D50,MUTED=0xff4D6686,GOLD=0xffA96C00,GREEN=0xff087C57;
  private LinearLayout root,results;
  private int dp(int n){return (int)(n*getResources().getDisplayMetrics().density+.5f);}
  private TextView text(String s,int size,int color){TextView t=new TextView(this);t.setText(s);t.setTextSize(size);t.setTextColor(color);t.setPadding(dp(8),dp(8),dp(8),dp(8));return t;}
- private GradientDrawable card(){GradientDrawable d=new GradientDrawable();d.setColor(0xff14253E);d.setCornerRadius(dp(20));d.setStroke(dp(1),0xff3A7897);return d;}
+ private GradientDrawable card(){GradientDrawable d=new GradientDrawable();d.setColor(0xffFFFFFF);d.setCornerRadius(dp(20));d.setStroke(dp(1),0xffC4DCF5);return d;}
  private void styleButton(Button button,int first,int second){
    button.setAllCaps(false);button.setTextSize(16);button.setTextColor(0xffF7FAFF);
    button.setTypeface(android.graphics.Typeface.create("sans-serif-medium",1));
@@ -57,7 +57,7 @@ public class TimeCapsuleActivity extends Activity {
    return m;
  }
  @Override public void onCreate(Bundle state){
-   super.onCreate(state);getWindow().setStatusBarColor(BG);getWindow().setNavigationBarColor(BG);
+   super.onCreate(state);getWindow().setStatusBarColor(BG);getWindow().setNavigationBarColor(BG);getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR|View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
    ScrollView sc=new ScrollView(this);root=new LinearLayout(this);root.setOrientation(1);root.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
    root.setPadding(dp(18),dp(23),dp(18),dp(24));root.setBackgroundColor(BG);sc.addView(root);setContentView(sc);
    TitanCyberSceneView scene=new TitanCyberSceneView(this,CYAN);
@@ -70,14 +70,14 @@ public class TimeCapsuleActivity extends Activity {
    animateIn(heading,100);
    root.addView(text("ذاكرة التغييرات الأمنية للجهاز",17,WHITE));
    root.addView(text("قارن حالة الهاتف اليوم بلقطة سابقة. كل البيانات تبقى محليًا، ولا نراقب الهاتف في الخلفية.",13,MUTED));
-   Button save=new Button(this);save.setText("◈   حفظ بصمة الحالة الحالية");styleButton(save,0xff076A87,0xff174269);animateIn(save,180);
+   Button save=new Button(this);save.setText("◈   حفظ بصمة الحالة الحالية");styleButton(save,0xff0089F7,0xff3B63F4);animateIn(save,180);
    save.setOnClickListener(v->new AlertDialog.Builder(this).setTitle("حفظ لقطة مرجعية جديدة")
     .setMessage("سيتم استبدال اللقطة السابقة. هل تريد المتابعة؟")
     .setNegativeButton("إلغاء",null).setPositiveButton("حفظ",(d,w)->{
       getSharedPreferences("titan_capsule",0).edit().putString("baseline",encode(snapshot())).putLong("date",System.currentTimeMillis()).apply();render();
     }).show());
-   Button compare=new Button(this);compare.setText("◎   مقارنة الجهاز مع اللقطة المحفوظة");styleButton(compare,0xff28447C,0xff152C52);animateIn(compare,260);compare.setOnClickListener(v->render());
-   Button export=new Button(this);export.setText("↗   مشاركة تقرير المقارنة");styleButton(export,0xff334E6A,0xff182B42);animateIn(export,340);
+   Button compare=new Button(this);compare.setText("◎   مقارنة الجهاز مع اللقطة المحفوظة");styleButton(compare,0xff00BDB4,0xff008CBE);animateIn(compare,260);compare.setOnClickListener(v->render());
+   Button export=new Button(this);export.setText("↗   مشاركة تقرير المقارنة");styleButton(export,0xffF4A62A,0xffEE7C32);animateIn(export,340);
    export.setOnClickListener(v->{Intent i=new Intent(Intent.ACTION_SEND);i.setType("text/plain");i.putExtra(Intent.EXTRA_TEXT,report());startActivity(Intent.createChooser(i,"مشاركة تقرير التغييرات"));});
    results=new LinearLayout(this);results.setOrientation(1);root.addView(results);render();
  }
