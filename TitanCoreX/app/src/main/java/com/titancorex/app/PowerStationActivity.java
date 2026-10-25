@@ -10,14 +10,14 @@ import java.text.*;
 import java.util.*;
 
 public class PowerStationActivity extends Activity {
- private final int BG=0xffFFF9EC,CYAN=0xffBD7800,WHITE=0xff253650,MUTED=0xff5E7087,GOLD=0xffA96C00,GREEN=0xff087F58;
+ private final int BG=0xff0B0F19,CYAN=0xff06B6D4,WHITE=0xffEDF9FF,MUTED=0xff9FB3C6,GOLD=0xffF59E0B,GREEN=0xff10B981;
  private LinearLayout root,live,history;
  private Handler handler=new Handler(Looper.getMainLooper());
  private Runnable ticker=new Runnable(){public void run(){update();handler.postDelayed(this,3000);}};
  private long startTime=0;private int startPct=-1;private float maxTemp=-1;
  private int dp(int x){return (int)(x*getResources().getDisplayMetrics().density+.5f);}
  private TextView txt(String s,int size,int color){TextView v=new TextView(this);v.setText(s);v.setTextSize(size);v.setTextColor(color);v.setPadding(dp(8),dp(7),dp(8),dp(7));return v;}
- private GradientDrawable cardBg(){GradientDrawable d=new GradientDrawable(GradientDrawable.Orientation.TL_BR,new int[]{0xffffffff,0xffFFF0D4});d.setCornerRadius(dp(19));d.setStroke(dp(1),0xffEFD4A5);return d;}
+ private GradientDrawable cardBg(){GradientDrawable d=new GradientDrawable(GradientDrawable.Orientation.TL_BR,new int[]{0xff192B3C,0xff121E2D});d.setCornerRadius(dp(19));d.setStroke(dp(1),0xff3D5262);return d;}
  private LinearLayout card(String title){LinearLayout c=new LinearLayout(this);c.setOrientation(1);c.setPadding(dp(13),dp(13),dp(13),dp(13));c.setBackground(cardBg());c.addView(txt(title,18,CYAN));root.addView(c);View gap=new View(this);root.addView(gap,new LinearLayout.LayoutParams(1,dp(14)));return c;}
  private void styleButton(Button v,int start,int end){
   v.setAllCaps(false);v.setTextSize(15);v.setTextColor(0xffffffff);
@@ -31,7 +31,7 @@ public class PowerStationActivity extends Activity {
  private String state(int n){if(n==BatteryManager.BATTERY_STATUS_CHARGING)return "يشحن";if(n==BatteryManager.BATTERY_STATUS_FULL)return "ممتلئ";if(n==BatteryManager.BATTERY_STATUS_DISCHARGING)return "يفرغ";return "غير معروف";}
  @Override public void onCreate(Bundle b){
   super.onCreate(b);getWindow().setStatusBarColor(BG);getWindow().setNavigationBarColor(BG);
-  getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR|View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
+  getWindow().getDecorView().setSystemUiVisibility(0);
   ScrollView sc=new ScrollView(this);root=new LinearLayout(this);root.setOrientation(1);root.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);root.setPadding(dp(18),dp(22),dp(18),dp(24));root.setBackgroundColor(BG);sc.addView(root);setContentView(sc);
   root.addView(new TitanCyberSceneView(this,CYAN),new LinearLayout.LayoutParams(-1,dp(168)));
   TextView title=txt("⚡  TITAN POWER STATION",25,CYAN);title.setTypeface(android.graphics.Typeface.create("sans-serif-black",1));root.addView(title);root.addView(txt("مختبر الشحن والطاقة الاحترافي",16,WHITE));
