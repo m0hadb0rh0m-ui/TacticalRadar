@@ -3,9 +3,15 @@ android {
  namespace 'com.titancorex.app'
  compileSdk 35
  defaultConfig { applicationId 'com.titancorex.app'; minSdk 26; targetSdk 35; versionCode 2; versionName '0.2.0' }
+ buildFeatures { buildConfig true }
+ def signingFingerprint = providers.gradleProperty('TITAN_SIGNING_SHA256').orElse('').get()
+ if (signingFingerprint && !(signingFingerprint ==~ /(?i)[0-9a-f:]{64,95}/)) {
+  throw new GradleException('TITAN_SIGNING_SHA256 must be a SHA-256 certificate fingerprint')
+ }
  buildTypes {
-  debug { debuggable true }
+  debug { debuggable true; buildConfigField 'String', 'EXPECTED_SIGNING_SHA256', '""' }
   release {
+   buildConfigField 'String', 'EXPECTED_SIGNING_SHA256', '"' + signingFingerprint + '"'
    debuggable false
    minifyEnabled true
    shrinkResources true
