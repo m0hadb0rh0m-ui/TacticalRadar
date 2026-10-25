@@ -20,6 +20,9 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.9'
+      - name: Compile hardened release without publishing unsigned output
+        working-directory: TitanCoreX
+        run: gradle --no-daemon :app:assembleRelease
       - name: Build real Android APK
         working-directory: TitanCoreX
         run: gradle --no-daemon :app:assembleDebug
