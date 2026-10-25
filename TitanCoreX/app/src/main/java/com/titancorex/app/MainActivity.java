@@ -22,10 +22,16 @@ public class MainActivity extends Activity {
  private LinearLayout row(){LinearLayout l=new LinearLayout(this);l.setOrientation(0);l.setGravity(Gravity.CENTER_VERTICAL);return l;}
  private void gap(LinearLayout p,int h){View v=new View(this);p.addView(v,new LinearLayout.LayoutParams(1,dp(h)));}
  private void add(LinearLayout p,View v){p.addView(v,new LinearLayout.LayoutParams(-1,-2));}
- private void title(String s){TextView t=txt(s,19,WHITE,true);t.setPadding(dp(2),dp(14),0,dp(13));add(body,t);}
+ private void title(String s){
+  LinearLayout section=row();section.setPadding(dp(2),dp(18),dp(2),dp(14));
+  View marker=new View(this);marker.setBackground(gradient(CYAN,0xff3677FF,3,0));
+  section.addView(marker,new LinearLayout.LayoutParams(dp(4),dp(26)));
+  TextView t=txt(s,21,WHITE,true);t.setTypeface(Typeface.create("sans-serif-black",Typeface.BOLD));
+  t.setPadding(dp(12),0,0,0);section.addView(t);add(body,section);
+ }
  private LinearLayout card(String label,String description){
   LinearLayout c=col();c.setPadding(dp(17),dp(17),dp(17),dp(17));c.setBackground(gradient(0xff1D3452,0xff101C31,24,0xff396184));
-  add(c,txt(label,17,WHITE,true));if(description!=null){gap(c,5);add(c,txt(description,12,MUTED,false));}gap(c,10);
+  TextView heading=txt(label,19,WHITE,true);heading.setTypeface(Typeface.create("sans-serif-black",Typeface.BOLD));add(c,heading);if(description!=null){gap(c,5);add(c,txt(description,12,MUTED,false));}gap(c,10);
   add(body,c);gap(body,13);return c;
  }
  private int featureColor(String name){
@@ -74,7 +80,7 @@ public class MainActivity extends Activity {
   LinearLayout root=col();root.setBackgroundColor(BG);root.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);setContentView(root);
   LinearLayout header=row();header.setPadding(dp(18),dp(17),dp(18),dp(17));header.setBackground(gradient(0xff153C62,0xff091428,0,0));
   ImageView logo=new ImageView(this);logo.setImageResource(R.drawable.titan_logo);header.addView(logo,new LinearLayout.LayoutParams(dp(53),dp(53)));
-  LinearLayout heading=col();heading.setPadding(dp(12),0,0,0);add(heading,txt("TITAN CORE X",23,WHITE,true));gap(heading,4);
+  LinearLayout heading=col();heading.setPadding(dp(12),0,0,0);TextView brand=txt("TITAN CORE X",25,WHITE,true);brand.setTypeface(Typeface.create("sans-serif-black",Typeface.BOLD));add(heading,brand);gap(heading,4);
   topSubtitle=txt("SECURITY • PERFORMANCE • INTELLIGENCE",10,CYAN,true);add(heading,topSubtitle);header.addView(heading,new LinearLayout.LayoutParams(0,-2,1));
   TextView refresh=txt("⟳",27,CYAN,true);refresh.setPadding(dp(10),dp(5),dp(10),dp(5));header.addView(refresh);refresh.setOnClickListener(v->show(page));add(root,header);
   ScrollView sc=new ScrollView(this);sc.setFillViewport(false);sc.setVerticalScrollBarEnabled(false);
@@ -100,9 +106,9 @@ public class MainActivity extends Activity {
  private void hero(){
   LinearLayout h=col();h.setPadding(dp(22),dp(23),dp(22),dp(23));h.setBackground(gradient(0xff0C6F95,0xff152047,28,0xff39D8FF));
   add(h,txt("LIVE DEVICE STATUS",11,CYAN,true));gap(h,9);
-  add(h,txt(score()+" / 100",46,WHITE,true));gap(h,4);add(h,txt("مؤشر تقديري للموارد، وليس نتيجة فحص فيروسات",12,0xffD0E2EF,false));gap(h,18);
+  TextView scoreText=txt(score()+" / 100",54,WHITE,true);scoreText.setTypeface(Typeface.create("sans-serif-black",Typeface.BOLD));add(h,scoreText);gap(h,4);add(h,txt("مؤشر تقديري للموارد، وليس نتيجة فحص فيروسات",12,0xffD0E2EF,false));gap(h,18);
   ProgressBar p=new ProgressBar(this,null,android.R.attr.progressBarStyleHorizontal);p.setMax(100);p.setProgress(score());p.setProgressTintList(ColorStateList.valueOf(CYAN));add(h,p);gap(h,19);
-  Button scan=new Button(this);scan.setText("⬡  بدء الفحص الأمني");scan.setAllCaps(false);scan.setTextColor(BG);scan.setBackground(gradient(0xff26C9FF,0xff82F2FF,17,0));add(h,scan);scan.setOnClickListener(v->launch(SmartScanActivity.class));
+  Button scan=new Button(this);scan.setText("⬡   ابدأ الفحص الأمني الآن");scan.setTextSize(17);scan.setTypeface(Typeface.create("sans-serif-black",Typeface.BOLD));scan.setAllCaps(false);scan.setTextColor(BG);scan.setBackground(gradient(0xff26C9FF,0xff82F2FF,17,0));add(h,scan);scan.setOnClickListener(v->launch(SmartScanActivity.class));
   add(body,h);gap(body,17);
  }
  private void home(){
