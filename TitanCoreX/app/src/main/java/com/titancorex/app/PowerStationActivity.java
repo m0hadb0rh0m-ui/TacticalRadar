@@ -17,8 +17,13 @@ public class PowerStationActivity extends Activity {
  private long startTime=0;private int startPct=-1;private float maxTemp=-1;
  private int dp(int x){return (int)(x*getResources().getDisplayMetrics().density+.5f);}
  private TextView txt(String s,int size,int color){TextView v=new TextView(this);v.setText(s);v.setTextSize(size);v.setTextColor(color);v.setPadding(dp(8),dp(7),dp(8),dp(7));return v;}
- private GradientDrawable cardBg(){GradientDrawable d=new GradientDrawable(GradientDrawable.Orientation.TL_BR,new int[]{0xff44331C,0xff191E2B});d.setCornerRadius(dp(19));d.setStroke(dp(1),0xff88652A);return d;}
+ private GradientDrawable cardBg(){GradientDrawable d=new GradientDrawable(GradientDrawable.Orientation.TL_BR,new int[]{0xffffffff,0xffFFF0D4});d.setCornerRadius(dp(19));d.setStroke(dp(1),0xffEFD4A5);return d;}
  private LinearLayout card(String title){LinearLayout c=new LinearLayout(this);c.setOrientation(1);c.setPadding(dp(13),dp(13),dp(13),dp(13));c.setBackground(cardBg());c.addView(txt(title,18,CYAN));root.addView(c);View gap=new View(this);root.addView(gap,new LinearLayout.LayoutParams(1,dp(14)));return c;}
+ private void styleButton(Button v,int start,int end){
+  v.setAllCaps(false);v.setTextSize(15);v.setTextColor(0xffffffff);
+  GradientDrawable d=new GradientDrawable(GradientDrawable.Orientation.TL_BR,new int[]{start,end});
+  d.setCornerRadius(dp(17));v.setBackground(d);v.setMinHeight(dp(52));
+ }
  private Intent battery(){return registerReceiver(null,new IntentFilter(Intent.ACTION_BATTERY_CHANGED));}
  private int pct(Intent i){if(i==null)return -1;int n=i.getIntExtra(BatteryManager.EXTRA_LEVEL,-1),s=i.getIntExtra(BatteryManager.EXTRA_SCALE,-1);return n<0||s<=0?-1:n*100/s;}
  private float temp(Intent i){if(i==null)return -1;int n=i.getIntExtra(BatteryManager.EXTRA_TEMPERATURE,-1);return n<0?-1:n/10f;}
@@ -26,15 +31,16 @@ public class PowerStationActivity extends Activity {
  private String state(int n){if(n==BatteryManager.BATTERY_STATUS_CHARGING)return "يشحن";if(n==BatteryManager.BATTERY_STATUS_FULL)return "ممتلئ";if(n==BatteryManager.BATTERY_STATUS_DISCHARGING)return "يفرغ";return "غير معروف";}
  @Override public void onCreate(Bundle b){
   super.onCreate(b);getWindow().setStatusBarColor(BG);getWindow().setNavigationBarColor(BG);
+  getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR|View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
   ScrollView sc=new ScrollView(this);root=new LinearLayout(this);root.setOrientation(1);root.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);root.setPadding(dp(18),dp(22),dp(18),dp(24));root.setBackgroundColor(BG);sc.addView(root);setContentView(sc);
   root.addView(new TitanCyberSceneView(this,CYAN),new LinearLayout.LayoutParams(-1,dp(168)));
   TextView title=txt("⚡  TITAN POWER STATION",25,CYAN);title.setTypeface(android.graphics.Typeface.create("sans-serif-black",1));root.addView(title);root.addView(txt("مختبر الشحن والطاقة الاحترافي",16,WHITE));
   root.addView(txt("القراءات من واجهات Android المتاحة؛ التيار والقدرة قد لا يتوفران أو قد يعكسان استهلاك البطارية الصافي، لا قدرة الشاحن الفعلية.",12,MUTED));
   live=card("القياسات المباشرة");
   LinearLayout session=card("جلسة مراقبة الشحن");
-  Button start=new Button(this);start.setText("بدء تسجيل جلسة");session.addView(start);
+  Button start=new Button(this);start.setText("بدء تسجيل جلسة");styleButton(start,0xffF5A23B,0xffE36D30);session.addView(start);
   start.setOnClickListener(v->{Intent i=battery();startTime=System.currentTimeMillis();startPct=pct(i);maxTemp=temp(i);update();Toast.makeText(this,"بدأت جلسة القياس",Toast.LENGTH_SHORT).show();});
-  Button stop=new Button(this);stop.setText("إنهاء الجلسة وحفظ تقريرها");session.addView(stop);
+  Button stop=new Button(this);stop.setText("إنهاء الجلسة وحفظ تقريرها");styleButton(stop,0xffE85987,0xffA85FD8);session.addView(stop);
   stop.setOnClickListener(v->{if(startTime==0){Toast.makeText(this,"ابدأ جلسة أولًا",Toast.LENGTH_SHORT).show();return;}
    long mins=Math.max(0,(System.currentTimeMillis()-startTime)/60000);int end=pct(battery());
    String row=System.currentTimeMillis()+"|"+mins+"|"+startPct+"|"+end+"|"+fmt(maxTemp);
@@ -44,9 +50,9 @@ public class PowerStationActivity extends Activity {
    p.edit().putString("rows",out.toString()).apply();startTime=0;showHistory();update();
   });
   history=card("سجل جلسات الشحن");
-  Button share=new Button(this);share.setText("مشاركة سجل الجلسات");root.addView(share);
+  Button share=new Button(this);share.setText("مشاركة سجل الجلسات");styleButton(share,0xff078CBA,0xff3269D9);root.addView(share);
   share.setOnClickListener(v->{Intent send=new Intent(Intent.ACTION_SEND);send.setType("text/plain");send.putExtra(Intent.EXTRA_TEXT,"TITAN POWER STATION\n"+getSharedPreferences("power_sessions",0).getString("rows",""));startActivity(Intent.createChooser(send,"مشاركة سجل الطاقة"));});
-  Button clear=new Button(this);clear.setText("مسح سجل الجلسات");root.addView(clear);
+  Button clear=new Button(this);clear.setText("مسح سجل الجلسات");styleButton(clear,0xff7B899E,0xff516785);root.addView(clear);
   clear.setOnClickListener(v->new AlertDialog.Builder(this).setMessage("حذف سجل جلسات الشحن المحلي؟").setNegativeButton("إلغاء",null).setPositiveButton("حذف",(d,w)->{getSharedPreferences("power_sessions",0).edit().remove("rows").apply();showHistory();}).show());
   showHistory();update();
  }
