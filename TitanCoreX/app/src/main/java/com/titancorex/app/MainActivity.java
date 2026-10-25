@@ -112,6 +112,7 @@ public class MainActivity extends Activity {
  private void security(){
   title("SECURITY COMMAND");
   LinearLayout s=card("مركز الحماية الشامل","تدقيق شفاف دون ادعاء وجود محرك فيروسات");
+  link(s,"فحص ملفات APK الحقيقي","بصمة SHA-256 والأذونات وبنية الحزمة",()->launch(ApkInspectorActivity.class));
   link(s,"⬡  Smart Security Scan","قفل الجهاز، تصحيح USB، التحديثات والحرارة",()->launch(SmartScanActivity.class));
   link(s,"Security Health Center","مؤشرات إعدادات الحماية",()->launch(SecurityCenterActivity.class));
   link(s,"Scam Shield","تحليل محلي لمؤشرات روابط التصيّد",()->launch(IntelligenceHubActivity.class));
@@ -150,6 +151,7 @@ public class MainActivity extends Activity {
   title("TITAN TOOLKIT");
   LinearLayout c=card("جميع الأنظمة","انتقل إلى الوظيفة المطلوبة");
   link(c,"✦  Intelligence X","مركز الأنظمة العشرة",()->launch(IntelligenceHubActivity.class));
+  link(c,"فحص APK","تحليل ملف تثبيت تختاره من هاتفك",()->launch(ApkInspectorActivity.class));
   link(c,"⬡  Security Scan","تدقيق أمان الجهاز",()->launch(SmartScanActivity.class));
   link(c,"⚡  Power Station","مختبر الشحن والبطارية",()->launch(PowerStationActivity.class));
   link(c,"◈  Time Capsule","تتبّع التغيرات الأمنية",()->launch(TimeCapsuleActivity.class));
