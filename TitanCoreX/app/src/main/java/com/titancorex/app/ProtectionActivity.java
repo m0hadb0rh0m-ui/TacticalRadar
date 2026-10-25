@@ -35,6 +35,7 @@ public class ProtectionActivity extends Activity {
   button("إيقاف تنبيهات التثبيت",()->{getSharedPreferences("titan_monitor",MODE_PRIVATE).edit().putBoolean("instant_alerts",false).apply();refresh();});
   button("تفعيل مراقبة التطبيقات الدورية",()->{SecurityMonitorJob.schedule(this);refresh();});
   button("إيقاف المراقبة",()->{SecurityMonitorJob.stop(this);refresh();});
+  button("تحليل مؤشرات مخاطر التطبيقات",()->startActivity(new Intent(this,AppBehaviorActivity.class)));
   button("فحص ملف APK",()->startActivity(new Intent(this,ApkInspectorActivity.class)));
   button("فحص إعدادات الحماية",()->startActivity(new Intent(this,SmartScanActivity.class)));
   button("تحديث الحالة",this::refresh);
