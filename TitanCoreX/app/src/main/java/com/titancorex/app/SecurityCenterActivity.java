@@ -10,11 +10,11 @@ import android.view.*;
 import android.widget.*;
 
 public class SecurityCenterActivity extends Activity {
- private final int BG=0xff070B14, PANEL=0xff142139, CYAN=0xff48E9F5, WHITE=0xffF2F7FF, MUTED=0xffA9BED5, GOLD=0xffFFCB78, GREEN=0xff52E8A8;
+ private final int BG=0xff050915, PANEL=0xff1D2944, CYAN=0xffFF506E, WHITE=0xffF2F7FF, MUTED=0xffA9BED5, GOLD=0xffFFCB78, GREEN=0xff52E8A8;
  private LinearLayout root;
  private int dp(int n){return (int)(n*getResources().getDisplayMetrics().density+.5f);}
  private TextView txt(String s,int z,int color){TextView v=new TextView(this);v.setText(s);v.setTextSize(z);v.setTextColor(color);v.setPadding(dp(9),dp(8),dp(9),dp(8));return v;}
- private GradientDrawable shape(){GradientDrawable d=new GradientDrawable(GradientDrawable.Orientation.TL_BR,new int[]{0xff192B45,0xff101B30});d.setCornerRadius(dp(20));d.setStroke(dp(1),0xff31576D);return d;}
+ private GradientDrawable shape(){GradientDrawable d=new GradientDrawable(GradientDrawable.Orientation.TL_BR,new int[]{0xff192B45,0xff101B30});d.setCornerRadius(dp(24));d.setStroke(dp(1),0xff93415B);return d;}
  private LinearLayout card(String title){
    LinearLayout c=new LinearLayout(this);c.setOrientation(1);c.setPadding(dp(14),dp(13),dp(14),dp(13));c.setBackground(shape());
    c.addView(txt(title,19,CYAN));root.addView(c);View gap=new View(this);root.addView(gap,new LinearLayout.LayoutParams(1,dp(13)));return c;
@@ -31,7 +31,8 @@ public class SecurityCenterActivity extends Activity {
    super.onCreate(b);getWindow().setStatusBarColor(BG);getWindow().setNavigationBarColor(BG);
    ScrollView scroll=new ScrollView(this);root=new LinearLayout(this);root.setOrientation(1);root.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
    root.setPadding(dp(18),dp(24),dp(18),dp(24));root.setBackgroundColor(BG);scroll.addView(root);setContentView(scroll);
-   root.addView(txt("⬡  TITAN SECURITY COMMAND",24,CYAN));
+   root.addView(new TitanCyberSceneView(this,CYAN),new LinearLayout.LayoutParams(-1,dp(175)));
+   TextView heading=txt("⬡  TITAN SECURITY COMMAND",25,CYAN);heading.setTypeface(Typeface.create("sans-serif-black",Typeface.BOLD));root.addView(heading);
    root.addView(txt("مركز تقييم إعدادات حماية الهاتف",16,WHITE));
    root.addView(txt("فحوصات حقيقية متاحة لتطبيق عادي دون Root. لا ندعي اكتشاف الفيروسات أو ضمان خلو الجهاز من البرمجيات الضارة.",12,MUTED));
    android.app.KeyguardManager km=(android.app.KeyguardManager)getSystemService(KEYGUARD_SERVICE);
