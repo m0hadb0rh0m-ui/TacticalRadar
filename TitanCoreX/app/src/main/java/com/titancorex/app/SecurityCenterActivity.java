@@ -10,11 +10,11 @@ import android.view.*;
 import android.widget.*;
 
 public class SecurityCenterActivity extends Activity {
- private final int BG=0xff050915, PANEL=0xff1D2944, CYAN=0xffFF506E, WHITE=0xffF2F7FF, MUTED=0xffA9BED5, GOLD=0xffFFCB78, GREEN=0xff52E8A8;
+ private final int BG=0xffFFF4F6, PANEL=0xffFFFFFF, CYAN=0xffD83D62, WHITE=0xff193152, MUTED=0xff536B86, GOLD=0xffA76A00, GREEN=0xff087F58;
  private LinearLayout root;
  private int dp(int n){return (int)(n*getResources().getDisplayMetrics().density+.5f);}
  private TextView txt(String s,int z,int color){TextView v=new TextView(this);v.setText(s);v.setTextSize(z);v.setTextColor(color);v.setPadding(dp(9),dp(8),dp(9),dp(8));return v;}
- private GradientDrawable shape(){GradientDrawable d=new GradientDrawable(GradientDrawable.Orientation.TL_BR,new int[]{0xff192B45,0xff101B30});d.setCornerRadius(dp(24));d.setStroke(dp(1),0xff93415B);return d;}
+ private GradientDrawable shape(){GradientDrawable d=new GradientDrawable(GradientDrawable.Orientation.TL_BR,new int[]{0xffFFFFFF,0xffFFEAF0});d.setCornerRadius(dp(24));d.setStroke(dp(1),0xffF1B8C7);return d;}
  private LinearLayout card(String title){
    LinearLayout c=new LinearLayout(this);c.setOrientation(1);c.setPadding(dp(14),dp(13),dp(14),dp(13));c.setBackground(shape());
    c.addView(txt(title,19,CYAN));root.addView(c);View gap=new View(this);root.addView(gap,new LinearLayout.LayoutParams(1,dp(13)));return c;
