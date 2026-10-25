@@ -225,6 +225,7 @@ public class MainActivity extends Activity {
   stat(c,"نوع الاتصال",type,CYAN);
   stat(c,"تحقق Android من الإنترنت",caps!=null&&caps.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)?"متصل":"غير مؤكد",GREEN);
   LinearLayout tests=card("اختبارات الشبكة","نتائج فعلية تعتمد على الاتصال الحالي");
+  link(tests,"المراقب الحي للشبكة V3","مخطط تنزيل ورفع من عدّادات Android",()->launch(V3NetworkMonitorActivity.class));
   link(tests,"اختبار سرعة الإنترنت","قياس التنزيل والرفع وسجل الاختبارات",()->launch(NetworkSpeedActivity.class));
   link(tests,"V3  |  تحليلات الشبكة","اختبار HTTPS والتذبذب ومراقبة البيانات",()->launch(NetworkInsightActivity.class));
   link(tests,"تدقيق Wi-Fi","التشفير والإشارة ومعلومات الشبكة",()->launch(WifiAuditActivity.class));
