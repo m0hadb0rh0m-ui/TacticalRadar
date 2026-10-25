@@ -23,6 +23,7 @@ public class ProtectionActivity extends Activity {
    "\nتطبيقات ظهرت حديثًا: "+p.getString("new_apps","لا توجد بيانات")+
    "\nتنبيهات تثبيت التطبيقات: "+(p.getBoolean("instant_alerts",false)?"مفعلة":"متوقفة")+
    "\nآخر تطبيق تم تثبيته: "+p.getString("last_installed","لا يوجد سجل")+
+   "\nمراجعة أذونات آخر تثبيت: "+(p.getString("last_install_attention","").isEmpty()?"لا يظهر تنبيه ضمن القواعد المحدودة":p.getString("last_install_attention",""))+
    "\nتحديثات قاعدة التهديدات: "+(ThreatFeedUpdater.configured()?(ThreatFeedUpdater.scheduled(this)?"مجدولة":"غير مجدولة"):"بانتظار مصدر موثوق ومفتاح توقيع")+
    "\nقاعدة البصمات: "+ThreatEngine.feedStatus(this)+
    "\n\nهذا رصد لتغيّر قائمة التطبيقات التي يسمح Android برؤيتها، وليس كشفًا لحظيًا للفيروسات. قد يؤخر النظام الفحص لتوفير الطاقة.");
