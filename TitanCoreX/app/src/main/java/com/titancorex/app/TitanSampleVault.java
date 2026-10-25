@@ -76,6 +76,11 @@ public final class TitanSampleVault {
   if(target.exists()&&!target.delete())return false;
   context.getSharedPreferences("titan_v3_vault",0).edit().remove(id).apply();return true;
  }
+ public static int clearAll(Context context){
+  Set<String> ids=new HashSet<>(context.getSharedPreferences("titan_v3_vault",0).getAll().keySet());
+  int removed=0;for(String id:ids)if(remove(context,id))removed++;
+  return removed;
+ }
  public static int count(Context context){
   return context.getSharedPreferences("titan_v3_vault",0).getAll().size();
  }
