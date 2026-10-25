@@ -1,6 +1,8 @@
 package com.titancorex.app;
 
 import android.app.*;
+import android.content.*;
+import java.text.*;
 import android.os.*;
 import android.view.*;
 import android.graphics.*;
@@ -14,7 +16,7 @@ import java.util.*;
 public class NetworkSpeedActivity extends Activity {
  private TextView result;private volatile boolean cancelled=false;
  private volatile boolean running=false;
- private SpeedVisual visual;private TextView visualLabel;
+ private SpeedVisual visual;private TextView visualLabel,history;private String lastReport="";
  private static final String BASE="https://speed.cloudflare.com";
  @Override public void onCreate(Bundle state){super.onCreate(state);
   ScrollView scroll=new ScrollView(this);LinearLayout root=new LinearLayout(this);root.setOrientation(1);root.setPadding(24,24,24,24);root.setBackgroundColor(0xffF1F8FF);scroll.addView(root);setContentView(scroll);
@@ -24,7 +26,25 @@ public class NetworkSpeedActivity extends Activity {
   result=new TextView(this);result.setTextColor(0xff183453);result.setTextSize(16);root.addView(result);
   Button start=new Button(this);start.setText("ϟ  بدء قياس سرعة التنزيل والرفع");start.setAllCaps(false);start.setTextColor(0xffffffff);start.setBackground(buttonBackground(0xff078DFF,0xff535FF0));root.addView(start);start.setOnClickListener(v->runTest());
   Button stop=new Button(this);stop.setText("■  إيقاف القياس");stop.setAllCaps(false);stop.setTextColor(0xffffffff);stop.setBackground(buttonBackground(0xffFF9860,0xffE45480));root.addView(stop);stop.setOnClickListener(v->{cancelled=true;result.setText("تم طلب إيقاف الاختبار");visual.stop();});
+  Button share=new Button(this);share.setText("مشاركة آخر تقرير");share.setAllCaps(false);share.setTextColor(0xffffffff);share.setBackground(buttonBackground(0xff0BAA9B,0xff0576BA));root.addView(share);share.setOnClickListener(v->shareReport());
+  TextView historyTitle=new TextView(this);historyTitle.setText("سجل آخر الاختبارات");historyTitle.setTextColor(0xff173B67);historyTitle.setTextSize(19);historyTitle.setPadding(0,24,0,8);root.addView(historyTitle);
+  history=new TextView(this);history.setTextColor(0xff385C80);history.setTextSize(14);history.setPadding(16,16,16,16);history.setBackground(buttonBackground(0xffffffff,0xffE3F2FF));root.addView(history);refreshHistory();
   result.setText("اختبار نقل بيانات فعلي إلى Cloudflare. يستهلك قرابة 6 MB في كل تشغيل وقد يستهلك بيانات الهاتف. لا يختبر فقدان حزم ICMP.");
+ }
+ private void saveReport(double down,double up){
+  String stamp=new SimpleDateFormat("yyyy-MM-dd HH:mm",Locale.getDefault()).format(new Date());
+  lastReport=String.format(Locale.US,"%s | Download %.2f Mbps | Upload %.2f Mbps",stamp,down,up);
+  android.content.SharedPreferences prefs=getSharedPreferences("titan_speed_history",MODE_PRIVATE);
+  String old=prefs.getString("entries","");String[] rows=old.split("\\n");StringBuilder sb=new StringBuilder(lastReport);
+  for(int i=0;i<Math.min(9,rows.length);i++)if(!rows[i].isEmpty())sb.append("\\n").append(rows[i]);
+  prefs.edit().putString("entries",sb.toString()).apply();runOnUiThread(this::refreshHistory);
+ }
+ private void refreshHistory(){if(history!=null){String saved=getSharedPreferences("titan_speed_history",MODE_PRIVATE).getString("entries","");history.setText(saved.isEmpty()?"لا توجد اختبارات محفوظة بعد":saved);}}
+ private void shareReport(){
+  String text=lastReport.isEmpty()?getSharedPreferences("titan_speed_history",MODE_PRIVATE).getString("entries","").split("\\n")[0]:lastReport;
+  if(text.isEmpty()){Toast.makeText(this,"أجرِ اختبارًا أولًا",Toast.LENGTH_SHORT).show();return;}
+  Intent send=new Intent(Intent.ACTION_SEND);send.setType("text/plain");send.putExtra(Intent.EXTRA_TEXT,"TITAN CORE X — Network speed\\n"+text);
+  startActivity(Intent.createChooser(send,"مشاركة تقرير السرعة"));
  }
  private GradientDrawable buttonBackground(int a,int b){GradientDrawable d=new GradientDrawable(GradientDrawable.Orientation.TL_BR,new int[]{a,b});d.setCornerRadius(22);return d;}
  private void display(String message){runOnUiThread(()->{result.setText(message);if(visualLabel!=null)visualLabel.setText(message.split("\\n")[0]);});}
@@ -53,7 +73,7 @@ public class NetworkSpeedActivity extends Activity {
   new Thread(()->{try{
    double down=download(4*1024*1024);if(cancelled)return;display(String.format(Locale.US,"تنزيل: %.2f Mbps\nجارٍ اختبار الرفع...",down));
    double up=upload(2*1024*1024);if(cancelled)return;
-   display(String.format(Locale.US,"تنزيل: %.2f Mbps\nرفع: %.2f Mbps\n\nالنتائج مرتبطة بخادم Cloudflare وحالة الشبكة وقت الاختبار، ولا تمثل السرعة القصوى المضمونة.",down,up));
+   saveReport(down,up);display(String.format(Locale.US,"تنزيل: %.2f Mbps\nرفع: %.2f Mbps\n\nالنتائج مرتبطة بخادم Cloudflare وحالة الشبكة وقت الاختبار، ولا تمثل السرعة القصوى المضمونة.",down,up));
   }catch(Exception e){display("فشل القياس أو الخادم غير متاح: "+e.getMessage());}finally{runOnUiThread(()->{visual.stop();running=false;});}}).start();
  }
  private final class SpeedVisual extends View {
