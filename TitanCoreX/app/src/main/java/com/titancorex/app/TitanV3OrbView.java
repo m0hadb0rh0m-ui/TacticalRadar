@@ -34,7 +34,7 @@ public final class TitanV3OrbView extends View {
   animating=true;started=SystemClock.uptimeMillis();removeCallbacks(tick);post(tick);
  }
  private void stopMotion(){animating=false;removeCallbacks(tick);}
- @Override protected void onAttachedToWindow(){super.onAttachedToWindow();beginMotion();}
+ @Override protected void onAttachedToWindow(){super.onAttachedToWindow();post(this::beginMotion);}
  @Override protected void onDetachedFromWindow(){stopMotion();super.onDetachedFromWindow();}
  @Override protected void onVisibilityChanged(View changed,int visibility){
   super.onVisibilityChanged(changed,visibility);
