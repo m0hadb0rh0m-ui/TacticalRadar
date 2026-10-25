@@ -13,7 +13,7 @@ import android.widget.*;
 import java.util.*;
 
 public class MainActivity extends Activity {
- private static final int BG=0xffF1F7FF,SURFACE=0xffFFFFFF,PANEL=0xffDCEBFF,CYAN=0xff087BEA,WHITE=0xff142C50,MUTED=0xff506987,GREEN=0xff087F58,AMBER=0xffA96C00,RED=0xffD83D62;
+ private static final int BG=0xff0B0F19,SURFACE=0xff151D2B,PANEL=0xff1C293A,CYAN=0xff06B6D4,WHITE=0xffEDF9FF,MUTED=0xff96AFC1,GREEN=0xff10B981,AMBER=0xffF59E0B,RED=0xffFB7185;
  private LinearLayout body,nav;private TextView topSubtitle,liveBattery,liveTemp,liveRam,liveDisk;private TitanVitalsView vitals;private int page=0;
  private final Handler liveHandler=new Handler(Looper.getMainLooper());
  private final Runnable liveRefresh=new Runnable(){@Override public void run(){refreshVitals();liveHandler.postDelayed(this,5000);}};
@@ -77,7 +77,7 @@ public class MainActivity extends Activity {
   float t=temperature();if(t>=43)result-=25;else if(t>=39)result-=12;
   return Math.max(0,result);
  }
- @Override public void onCreate(Bundle b){super.onCreate(b);getWindow().setStatusBarColor(BG);getWindow().setNavigationBarColor(BG);getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR|View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);shell();show(0);}
+ @Override public void onCreate(Bundle b){super.onCreate(b);getWindow().setStatusBarColor(BG);getWindow().setNavigationBarColor(BG);getWindow().getDecorView().setSystemUiVisibility(0);shell();show(0);}
  private void shell(){
   LinearLayout root=col();root.setBackgroundColor(BG);root.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);setContentView(root);
   LinearLayout header=row();header.setPadding(dp(18),dp(17),dp(18),dp(17));header.setBackground(gradient(0xffFFFFFF,0xffE3F0FF,0,0));
