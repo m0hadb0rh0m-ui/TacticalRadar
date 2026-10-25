@@ -29,6 +29,7 @@ public class NetworkDefenseActivity extends Activity {
   action("كشف تغيّر DNS والبوابة",()->output.setText(baseline(false)));
   action("قياس زمن استجابة HTTPS (5 محاولات)",()->run(this::latency));
   action("مراجعة إعدادات حماية DNS",()->{try{startActivity(new Intent("android.settings.PRIVATE_DNS_SETTINGS"));}catch(Exception e){startActivity(new Intent(android.provider.Settings.ACTION_WIRELESS_SETTINGS));}});
+  action("اكتشاف الأجهزة ومراقبة هوية الشبكة",()->startActivity(new Intent(this,NetworkDiscoveryActivity.class)));
   action("فتح فحص Wi-Fi التفصيلي",()->startActivity(new Intent(this,WifiAuditActivity.class)));
   output=new TextView(this);output.setTextColor(0xffF0F6FF);output.setTextSize(15);output.setPadding(0,dp(15),0,dp(20));root.addView(output);
   output.setText("فحوصات تشخيصية عند الطلب. لا يتم اعتراض اتصالات التطبيقات أو منع المواقع أو مسح أجهزة الشبكة.");
