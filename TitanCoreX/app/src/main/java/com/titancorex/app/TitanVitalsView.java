@@ -7,7 +7,7 @@ import java.util.*;
 
 /** V3 mini-dashboard chart using only actual foreground Android telemetry samples. */
 public final class TitanVitalsView extends View {
- private static final int BLUE=0xff087BEA,TEAL=0xff009F9A,ORANGE=0xffE49A32,INK=0xff1A3B60;
+ private static final int BLUE=0xff06B6D4,TEAL=0xff10B981,ORANGE=0xffF59E0B,INK=0xffE7F8FF;
  private static final int LIMIT=48;
  private final ArrayList<Float> temps=new ArrayList<>();
  private final ArrayList<Float> available=new ArrayList<>();
@@ -43,15 +43,15 @@ public final class TitanVitalsView extends View {
  }
  @Override protected void onDraw(Canvas c){
   super.onDraw(c);float w=getWidth(),h=getHeight(),pad=14*density;
-  p.setStyle(Paint.Style.FILL);p.setColor(0xffffffff);
+  p.setStyle(Paint.Style.FILL);p.setColor(0xff121F30);
   c.drawRoundRect(0,0,w,h,20*density,20*density,p);
   p.setColor(INK);p.setTypeface(Typeface.create("sans-serif",Typeface.BOLD));
   p.setTextSize(13*density);p.setTextAlign(Paint.Align.LEFT);
   c.drawText("LIVE DEVICE TRENDS",pad,27*density,p);
-  p.setTextSize(10*density);p.setTypeface(Typeface.DEFAULT);p.setColor(0xff65809D);
+  p.setTextSize(10*density);p.setTypeface(Typeface.DEFAULT);p.setColor(0xff91AABF);
   c.drawText("عينات حقيقية أثناء فتح التطبيق",pad,46*density,p);
   float chartTop=62*density,chartBottom=h-32*density;
-  p.setStyle(Paint.Style.STROKE);p.setStrokeWidth(density);p.setColor(0xffDCE9F7);
+  p.setStyle(Paint.Style.STROKE);p.setStrokeWidth(density);p.setColor(0xff2D4054);
   for(int i=0;i<4;i++){float y=chartTop+(chartBottom-chartTop)*i/3;c.drawLine(pad,y,w-pad,y,p);}
   if(temps.size()>0){
    trace(c,temps,pad,w-pad,chartTop,chartBottom,20,50,ORANGE);
