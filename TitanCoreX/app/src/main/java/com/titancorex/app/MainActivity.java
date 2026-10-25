@@ -89,7 +89,7 @@ public class MainActivity extends Activity {
  }
  private void navigation(){
   nav.removeAllViews();String[] names={"الرئيسية","الحماية","الأداء","الخصوصية","المزيد"},icons={"⌂","⬡","⚡","◈","☷"};
-  for(int i=0;i<5;i++){final int index=i;LinearLayout item=col();item.setGravity(Gravity.CENTER);item.setPadding(0,dp(8),0,dp(8));if(i==page)item.setBackground(gradient(0xff244A6E,0xff142944,13,0xff4B779B));
+  for(int i=0;i<5;i++){final int index=i;LinearLayout item=col();item.setGravity(Gravity.CENTER);item.setPadding(0,dp(8),0,dp(8));if(i==page)item.setBackground(gradient(0xffDBEFFF,0xffC4E0FF,13,0xffA0C9F5));
    TextView icon=txt(icons[i],25,i==page?new int[]{CYAN,RED,AMBER,0xffBA75FF,GREEN}[i]:MUTED,true);icon.setGravity(Gravity.CENTER);add(item,icon);gap(item,4);
    TextView label=txt(names[i],11,i==page?WHITE:MUTED,i==page);label.setGravity(Gravity.CENTER);add(item,label);
    nav.addView(item,new LinearLayout.LayoutParams(0,-2,1));item.setContentDescription("فتح قسم "+names[i]);item.setOnClickListener(v->show(index));
@@ -212,7 +212,7 @@ public class MainActivity extends Activity {
   link(n,"TITAN NETWORK DEFENSE X","مختبر أمان HTTPS وDNS وجودة الاتصال",()->launch(NetworkDefenseActivity.class));
   link(n,"تشخيص الشبكة التفصيلي","عرض DNS ومعلومات الاتصال",()->launch(IntelligenceHubActivity.class));
  }
- private void note(String s){LinearLayout c=col();c.setPadding(dp(14),dp(14),dp(14),dp(14));c.setBackground(gradient(0xff302B28,0xff201E26,16,0xff66533C));add(c,txt("ⓘ  "+s,12,AMBER,false));add(body,c);gap(body,15);}
+ private void note(String s){LinearLayout c=col();c.setPadding(dp(14),dp(14),dp(14),dp(14));c.setBackground(gradient(0xffFFF8E8,0xffFFEFD1,16,0xffE5C784));add(c,txt("ⓘ  "+s,12,AMBER,false));add(body,c);gap(body,15);}
  private void share(){
   String report="TITAN CORE X — Device Report\nDevice: "+Build.MANUFACTURER+" "+Build.MODEL+"\nAndroid: "+Build.VERSION.RELEASE+"\nEstimated resource score: "+score()+"/100\nBattery: "+batteryPct()+"%\nBattery temperature: "+temperature()+" C\nAvailable RAM: "+gb(ram().availMem)+"\nFree storage: "+gb(disk().getAvailableBytes())+"\nNo malware scan was performed.";
   Intent i=new Intent(Intent.ACTION_SEND);i.setType("text/plain");i.putExtra(Intent.EXTRA_TEXT,report);startActivity(Intent.createChooser(i,"مشاركة تقرير TITAN"));
