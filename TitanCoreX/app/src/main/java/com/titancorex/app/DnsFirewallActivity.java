@@ -25,6 +25,13 @@ public class DnsFirewallActivity extends Activity {
    }
    getSharedPreferences("titan_dns_vpn",MODE_PRIVATE).edit().putString("domains",valid.toString()).apply();Toast.makeText(this,"تم حفظ قائمة الحجب",Toast.LENGTH_SHORT).show();refresh();
   });
+  Button update=new Button(this);update.setText("تحديث قاعدة النطاقات الآن");root.addView(update);
+  update.setOnClickListener(v->{status.setText("جارٍ تنزيل قاعدة الحجب...");new Thread(()->{
+   String result;try{result=DomainFeedJob.update(this);DomainFeedJob.schedule(this);}catch(Exception e){result="تعذر التحديث: "+e.getMessage();}
+   final String message=result;runOnUiThread(()->{refresh();status.append("\\n"+message);});
+  }).start();});
+  Button automatic=new Button(this);automatic.setText("جدولة التحديث اليومي عبر Wi-Fi");root.addView(automatic);
+  automatic.setOnClickListener(v->{DomainFeedJob.schedule(this);Toast.makeText(this,"تمت جدولة التحديث",Toast.LENGTH_SHORT).show();});
   Button start=new Button(this);start.setText("تشغيل حماية DNS — طلب إذن VPN");root.addView(start);start.setOnClickListener(v->{
    Intent approval=VpnService.prepare(this);
    if(approval!=null)startActivityForResult(approval,VPN_REQUEST);else startShield();
@@ -34,6 +41,6 @@ public class DnsFirewallActivity extends Activity {
  }
  private void startShield(){Intent i=new Intent(this,TitanDnsVpnService.class);if(Build.VERSION.SDK_INT>=26)startForegroundService(i);else startService(i);refresh();}
  @Override protected void onActivityResult(int request,int result,Intent data){super.onActivityResult(request,result,data);if(request==VPN_REQUEST&&result==RESULT_OK)startShield();}
- private void refresh(){android.content.SharedPreferences p=getSharedPreferences("titan_dns_vpn",MODE_PRIVATE);status.setText("حالة الخدمة المسجلة: "+(p.getBoolean("active",false)?"نشطة":"متوقفة")+"\nآخر خطأ: "+p.getString("error","لا يوجد")+"\nتنبيه: قد لا تستخدم بعض التطبيقات DNS النظام، وقد لا تعمل هذه النسخة على جميع الأجهزة.");}
+ private void refresh(){android.content.SharedPreferences p=getSharedPreferences("titan_dns_vpn",MODE_PRIVATE);android.content.SharedPreferences feed=getSharedPreferences("titan_dns_feed",MODE_PRIVATE);status.setText("قاعدة النطاقات: "+feed.getInt("count",0)+" نطاق | آخر تحديث: "+new java.util.Date(feed.getLong("updated",0))+"\\nحالة الخدمة المسجلة: "+(p.getBoolean("active",false)?"نشطة":"متوقفة")+"\nآخر خطأ: "+p.getString("error","لا يوجد")+"\nتنبيه: قد لا تستخدم بعض التطبيقات DNS النظام، وقد لا تعمل هذه النسخة على جميع الأجهزة.");}
  @Override protected void onResume(){super.onResume();if(status!=null)refresh();}
 }
