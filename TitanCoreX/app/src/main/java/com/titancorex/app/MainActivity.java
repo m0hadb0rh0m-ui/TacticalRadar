@@ -122,6 +122,7 @@ public class MainActivity extends Activity {
     metric(c,"التخزين المتاح",format(disk().getAvailableBytes()),GOLD);
     block(c);
     LinearLayout actions=card("الوصول السريع","تشخيص الجهاز وأدوات النظام الآمنة");
+    action(actions,"⚡  TITAN POWER STATION","تحليل تيار البطارية والجهد وتسجيل جلسات الشحن",()->startActivity(new Intent(this,PowerStationActivity.class)));
     action(actions,"◈  TITAN TIME CAPSULE","اكشف تغيّر إعدادات الحماية منذ آخر لقطة محفوظة",()->startActivity(new Intent(this,TimeCapsuleActivity.class)));
     action(actions,"⬡  مركز القيادة الأمنية","فحص قفل الشاشة وتصحيح USB وإعدادات الحماية",()->startActivity(new Intent(this,SecurityCenterActivity.class)));
     action(actions,"✦  TITAN CORE X PRO","استكشف خطة المزايا المتقدمة بسعر مستهدف 5 دولارات",()->startActivity(new Intent(this,PremiumActivity.class)));
@@ -228,6 +229,7 @@ public class MainActivity extends Activity {
     block(s);
     section("أدوات النظام");
     LinearLayout u=card("لوحة الأدوات","أدوات نظام الهاتف");
+    action(u,"⚡  مختبر الشحن والطاقة","تسجيل جلسات الشحن ومراقبة القدرة التقديرية",()->startActivity(new Intent(this,PowerStationActivity.class)));
     action(u,"◈  كبسولة الزمن الأمنية","مقارنة إعدادات الهاتف مع لقطة سابقة",()->startActivity(new Intent(this,TimeCapsuleActivity.class)));
     action(u,"✦  باقة TITAN PRO","الميزات المستقبلية وخطة الدفع",()->startActivity(new Intent(this,PremiumActivity.class)));
     action(u,"📈  سجل أداء الهاتف","متابعة تاريخ البطارية والذاكرة",()->startActivity(new Intent(this,TrendsActivity.class)));
