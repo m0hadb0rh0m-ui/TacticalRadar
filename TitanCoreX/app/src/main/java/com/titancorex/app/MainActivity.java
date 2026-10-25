@@ -183,8 +183,24 @@ public class MainActivity extends Activity {
   second.addView(tile("ϟ","أداء الهاتف","بطارية وحرارة وموارد",AMBER,()->show(3)),fourth);
   add(body,second);gap(body,12);
  }
+ private void autopilot(){
+  LinearLayout c=card("SMART SECURITY AUTOPILOT","توصيات محلية تستند إلى حالة Android؛ لا تُفعّل VPN أو تغيّر إعداداتك دون إذنك");
+  KeyguardManager km=(KeyguardManager)getSystemService(KEYGUARD_SERVICE);
+  boolean lock=km!=null&&km.isDeviceSecure();
+  boolean adb=Settings.Global.getInt(getContentResolver(),Settings.Global.ADB_ENABLED,0)!=0;
+  ConnectivityManager cm=(ConnectivityManager)getSystemService(CONNECTIVITY_SERVICE);
+  Network net=cm==null?null:cm.getActiveNetwork();
+  NetworkCapabilities caps=net==null?null:cm.getNetworkCapabilities(net);
+  boolean wifi=caps!=null&&caps.hasTransport(NetworkCapabilities.TRANSPORT_WIFI);
+  boolean validated=caps!=null&&caps.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED);
+  if(!lock)stat(c,"قفل الشاشة","راجع إعدادات الحماية",AMBER);
+  if(adb)stat(c,"تصحيح USB","مفعّل — راجع ضرورته",AMBER);
+  if(wifi&&!validated)stat(c,"شبكة Wi-Fi","الوصول للإنترنت غير مؤكد",AMBER);
+  if(lock&&!adb&&(!wifi||validated))stat(c,"الفحوصات السريعة","لا تظهر تنبيهات في هذه القواعد",GREEN);
+  link(c,"فتح التدقيق الأمني التفصيلي","ست فحوصات محلية ومراجعة الأذونات",()->launch(V3SecurityScanActivity.class));
+ }
  private void home(){
-  hero();bento();
+  hero();bento();autopilot();
   title("القياسات المباشرة");
   LinearLayout state=card("نظرة على الجهاز","تتجدد القراءات كل 5 ثوانٍ أثناء عرض التطبيق");
   int charge=batteryPct();float t=temperature();ActivityManager.MemoryInfo mem=ram();
