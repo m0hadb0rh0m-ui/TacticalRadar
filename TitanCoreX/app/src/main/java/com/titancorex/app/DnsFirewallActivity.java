@@ -25,6 +25,25 @@ public class DnsFirewallActivity extends Activity {
    }
    getSharedPreferences("titan_dns_vpn",MODE_PRIVATE).edit().putString("domains",valid.toString()).apply();Toast.makeText(this,"تم حفظ قائمة الحجب",Toast.LENGTH_SHORT).show();refresh();
   });
+  TextView appInfo=new TextView(this);appInfo.setTextColor(-1);
+  appInfo.setText("استثناء تطبيقات من DNS VPN (اسم حزمة واحد في كل سطر). التطبيقات المستثناة تتجاوز الحماية بالكامل. أوقف VPN ثم أعد تشغيله لتطبيق التغيير.");
+  root.addView(appInfo);
+  EditText excluded=new EditText(this);excluded.setTextColor(-1);excluded.setHint("com.example.app");
+  excluded.setMinLines(3);excluded.setText(getSharedPreferences("titan_dns_vpn",MODE_PRIVATE).getString("excluded_apps",""));
+  root.addView(excluded);
+  Button saveExcluded=new Button(this);saveExcluded.setText("حفظ استثناءات التطبيقات");root.addView(saveExcluded);
+  saveExcluded.setOnClickListener(v->{
+   StringBuilder checked=new StringBuilder();
+   for(String item:excluded.getText().toString().split("\\n")){
+    String pkg=item.trim();if(pkg.isEmpty())continue;
+    if(!pkg.matches("[A-Za-z_][A-Za-z0-9_]*(\\.[A-Za-z_][A-Za-z0-9_]*)+")){
+     Toast.makeText(this,"اسم حزمة غير صالح: "+pkg,Toast.LENGTH_LONG).show();return;
+    }
+    checked.append(pkg).append("\\n");
+   }
+   getSharedPreferences("titan_dns_vpn",MODE_PRIVATE).edit().putString("excluded_apps",checked.toString()).apply();
+   Toast.makeText(this,"تم الحفظ. أعد تشغيل VPN",Toast.LENGTH_LONG).show();
+  });
   Button update=new Button(this);update.setText("تحديث قاعدة النطاقات الآن");root.addView(update);
   update.setOnClickListener(v->{status.setText("جارٍ تنزيل قاعدة الحجب...");new Thread(()->{
    String result;try{result=DomainFeedJob.update(this);DomainFeedJob.schedule(this);}catch(Exception e){result="تعذر التحديث: "+e.getMessage();}
