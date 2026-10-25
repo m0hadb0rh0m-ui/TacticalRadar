@@ -129,16 +129,62 @@ public class MainActivity extends Activity {
   View rule=new View(this);rule.setBackgroundColor(0xff2B3F50);c.addView(rule,new LinearLayout.LayoutParams(-1,dp(1)));
  }
  private void hero(){
-  LinearLayout h=col();h.setPadding(dp(22),dp(23),dp(22),dp(23));h.setBackground(gradient(0xff153141,0xff0F1D2C,28,0xff205F70));
-  add(h,txt("TITAN CORE X  /  VERSION 3",11,CYAN,true));gap(h,9);
-  TitanCyberSceneView visual=new TitanCyberSceneView(this,CYAN);h.addView(visual,new LinearLayout.LayoutParams(-1,dp(145)));gap(h,5);
-  TextView scoreText=txt(score()+" / 100",54,WHITE,true);scoreText.setTypeface(Typeface.create("sans-serif-black",Typeface.BOLD));add(h,scoreText);gap(h,4);add(h,txt("مؤشر تقديري للموارد، وليس نتيجة فحص فيروسات",12,MUTED,false));gap(h,18);
-  ProgressBar p=new ProgressBar(this,null,android.R.attr.progressBarStyleHorizontal);p.setMax(100);p.setProgress(score());p.setProgressTintList(ColorStateList.valueOf(CYAN));add(h,p);gap(h,19);
-  Button scan=new Button(this);scan.setText("⬡   ابدأ الفحص الأمني الآن");scan.setTextSize(17);scan.setTypeface(Typeface.create("sans-serif-black",Typeface.BOLD));scan.setAllCaps(false);scan.setTextColor(WHITE);scan.setBackground(gradient(0xff40D4FF,0xff71F2FF,17,0));add(h,scan);scan.setOnClickListener(v->launch(SmartScanActivity.class));
-  add(body,h);gap(body,17);
+  LinearLayout h=col();h.setPadding(dp(20),dp(18),dp(20),dp(22));
+  h.setBackground(gradient(0xff172C3A,0xff101B2B,28,0xff255D64));
+  add(h,txt("TITAN CORE X   •   CYBER DEFENSE V3",12,CYAN,true));
+  gap(h,5);add(h,txt("مركز التحكم الأمني",24,WHITE,true));
+  gap(h,8);
+  ConnectivityManager cm=(ConnectivityManager)getSystemService(CONNECTIVITY_SERVICE);
+  Network n=cm==null?null:cm.getActiveNetwork();
+  NetworkCapabilities caps=n==null?null:cm.getNetworkCapabilities(n);
+  boolean connected=caps!=null&&caps.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED);
+  LinearLayout ribbon=row();ribbon.setPadding(dp(10),dp(10),dp(10),dp(10));
+  ribbon.setBackground(gradient(0xff203348,0xff16283B,15,0xff315363));
+  TextView net=txt(connected?"● الإنترنت متصل":"● الاتصال غير مؤكد",13,connected?GREEN:AMBER,true);
+  ribbon.addView(net,new LinearLayout.LayoutParams(0,-2,1));
+  TextView protection=txt("DNS: إعدادات قابلة للتحكم",11,CYAN,true);ribbon.addView(protection);
+  add(h,ribbon);
+  TitanV3OrbView orb=new TitanV3OrbView(this);
+  h.addView(orb,new LinearLayout.LayoutParams(-1,dp(265)));
+  orb.setOnClickListener(v->launch(V3SecurityScanActivity.class));
+  TextView state=txt("اضغط على الرادار لبدء تدقيق الحماية",15,WHITE,true);
+  state.setGravity(Gravity.CENTER);add(h,state);gap(h,3);
+  TextView accuracy=txt("المؤشر يمثل تقدم الفحص الفعلي، وليس نسبة حماية مزعومة",12,MUTED,false);
+  accuracy.setGravity(Gravity.CENTER);add(h,accuracy);gap(h,13);
+  Button scan=new Button(this);scan.setText("⬡  ابدأ الفحص الأمني V3");
+  scan.setTextSize(17);scan.setAllCaps(false);scan.setTextColor(BG);
+  scan.setBackground(gradient(GREEN,0xff06B6D4,17,0));add(h,scan);
+  scan.setOnClickListener(v->launch(V3SecurityScanActivity.class));
+  add(body,h);gap(body,16);
+ }
+ private LinearLayout tile(String symbol,String name,String detail,int tint,Runnable action){
+  LinearLayout t=col();t.setPadding(dp(14),dp(17),dp(14),dp(15));
+  t.setBackground(gradient(0xff192A3B,0xff111E2C,22,tint));
+  TextView art=txt(symbol,27,tint,true);add(t,art);gap(t,9);
+  add(t,txt(name,16,WHITE,true));gap(t,5);add(t,txt(detail,12,MUTED,false));
+  t.setMinimumHeight(dp(145));t.setContentDescription(name+"؛ "+detail);
+  t.setOnClickListener(v->action.run());return t;
+ }
+ private void bento(){
+  title("المهام الأساسية");
+  LinearLayout first=row(),second=row();
+  LinearLayout.LayoutParams left=new LinearLayout.LayoutParams(0,-2,1);
+  left.setMargins(dp(4),0,dp(4),0);
+  first.addView(tile("⬡","فحص الأمان","تدقيق إعدادات Android",GREEN,()->launch(V3SecurityScanActivity.class)),left);
+  LinearLayout.LayoutParams right=new LinearLayout.LayoutParams(0,-2,1);
+  right.setMargins(dp(4),0,dp(4),0);
+  first.addView(tile("◎","درع الشبكة","DNS وWi-Fi والاتصال",CYAN,()->show(2)),right);
+  add(body,first);gap(body,9);
+  LinearLayout.LayoutParams third=new LinearLayout.LayoutParams(0,-2,1);
+  third.setMargins(dp(4),0,dp(4),0);
+  second.addView(tile("◈","الخصوصية","مراجعة أذونات التطبيقات",0xffC084FC,()->launch(PrivacyAuditActivity.class)),third);
+  LinearLayout.LayoutParams fourth=new LinearLayout.LayoutParams(0,-2,1);
+  fourth.setMargins(dp(4),0,dp(4),0);
+  second.addView(tile("ϟ","أداء الهاتف","بطارية وحرارة وموارد",AMBER,()->show(3)),fourth);
+  add(body,second);gap(body,12);
  }
  private void home(){
-  hero();
+  hero();bento();
   title("القياسات المباشرة");
   LinearLayout state=card("نظرة على الجهاز","تتجدد القراءات كل 5 ثوانٍ أثناء عرض التطبيق");
   int charge=batteryPct();float t=temperature();ActivityManager.MemoryInfo mem=ram();
@@ -149,12 +195,6 @@ public class MainActivity extends Activity {
   vitals=new TitanVitalsView(this);
   state.addView(vitals,new LinearLayout.LayoutParams(-1,dp(207)));
   gap(state,4);add(state,txt("الرسم مبني على عينات هذا العرض فقط، وليس تسجيلًا دائمًا.",11,MUTED,false));
-  title("ابدأ بالوظيفة التي تحتاجها");
-  LinearLayout quick=card("الإجراءات الأساسية","اختبارات فعلية دون ادعاءات تسريع وهمية");
-  link(quick,"الفحص الأمني","مراجعة إعدادات الحماية والأذونات",()->launch(SmartScanActivity.class));
-  link(quick,"اختبار سرعة الإنترنت","تنزيل ورفع حقيقيان مع سجل نتائج",()->launch(NetworkSpeedActivity.class));
-  link(quick,"تحليل استجابة الشبكة","زمن HTTPS وعدادات البيانات والرسم البياني",()->launch(NetworkInsightActivity.class));
-  link(quick,"مراقبة البطارية","التيار والجهد والحرارة وجلسات الشحن",()->launch(PowerStationActivity.class));
   title("التحليلات والخصوصية");
   LinearLayout records=card("سجل الهاتف","تحكم أنت في التسجيل والمشاركة");
   link(records,"سجل الأداء والحرارة","احفظ قراءات Android وقارنها",()->launch(TrendsActivity.class));
@@ -167,7 +207,7 @@ public class MainActivity extends Activity {
   LinearLayout s=card("مركز الحماية الشامل","تدقيق شفاف دون ادعاء وجود محرك فيروسات");
   link(s,"المراقبة الدورية","تنبيهات التغييرات وإعدادات الحماية",()->launch(ProtectionActivity.class));
   link(s,"فحص ملفات APK الحقيقي","بصمة SHA-256 والأذونات وبنية الحزمة",()->launch(ApkInspectorActivity.class));
-  link(s,"⬡  Smart Security Scan","قفل الجهاز، تصحيح USB، التحديثات والحرارة",()->launch(SmartScanActivity.class));
+  link(s,"⬡  Smart Security Scan","قفل الجهاز، تصحيح USB، التحديثات والحرارة",()->launch(V3SecurityScanActivity.class));
   link(s,"تقرير الحالة الأمنية","مؤشرات إعدادات الحماية",()->launch(SecurityCenterActivity.class));
   link(s,"فحص أذونات التطبيقات","مراجعة الأذونات الحساسة",()->launch(PrivacyAuditActivity.class));
   LinearLayout system=card("حماية Android الرسمية","اختصارات إلى إعدادات النظام");
@@ -223,7 +263,7 @@ public class MainActivity extends Activity {
   link(c,"✦  Intelligence X","مركز الأنظمة العشرة",()->launch(IntelligenceHubActivity.class));
   link(c,"مركز الحماية الدورية","مراقبة التطبيقات والتنبيهات وقاعدة التهديدات",()->launch(ProtectionActivity.class));
   link(c,"فحص APK","تحليل ملف تثبيت تختاره من هاتفك",()->launch(ApkInspectorActivity.class));
-  link(c,"⬡  Security Scan","تدقيق أمان الجهاز",()->launch(SmartScanActivity.class));
+  link(c,"⬡  Security Scan","تدقيق أمان الجهاز",()->launch(V3SecurityScanActivity.class));
   link(c,"⚡  Power Station","مختبر الشحن والبطارية",()->launch(PowerStationActivity.class));
   link(c,"◈  Time Capsule","تتبّع التغيرات الأمنية",()->launch(TimeCapsuleActivity.class));
   link(c,"فحص التخزين","اكتشاف الملفات المكررة",()->launch(StorageAuditActivity.class));
