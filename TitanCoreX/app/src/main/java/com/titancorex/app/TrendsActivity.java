@@ -10,7 +10,7 @@ import android.widget.*;
 import java.util.*;
 
 public class TrendsActivity extends Activity {
-  private final int BG=0xff080C16,FG=0xffEAF5FF,CYAN=0xff42E8F5,MUTED=0xffAFC3D7;
+  private final int BG=0xffF1F8FF,FG=0xff173557,CYAN=0xff087BEA,MUTED=0xff526B88;
   private LinearLayout root;
   private int dp(int x){return (int)(x*getResources().getDisplayMetrics().density+.5f);}
   private TextView t(String s,int size,int color){TextView v=new TextView(this);v.setText(s);v.setTextSize(size);v.setTextColor(color);v.setPadding(dp(5),dp(8),dp(5),dp(8));return v;}
