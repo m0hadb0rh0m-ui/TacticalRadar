@@ -99,7 +99,7 @@ public class MainActivity extends Activity {
  }
  private void show(int index){page=index;vitals=null;liveBattery=null;liveTemp=null;liveRam=null;liveDisk=null;body.removeAllViews();navigation();topSubtitle.setText(new String[]{"DEVICE COMMAND CENTER","SECURITY CONTROL","NETWORK LAB","PERFORMANCE LAB","PRIVACY INTELLIGENCE"}[index]);
   if(index!=0)sectionHero(index);
-  if(index==0)home();else if(index==1)security();else if(index==2)network();else if(index==3)performance();else privacy();
+  if(index==0){home();refreshVitals();}else if(index==1)security();else if(index==2)network();else if(index==3)performance();else privacy();
  }
  @Override protected void onResume(){super.onResume();if(body!=null)show(page);liveHandler.removeCallbacks(liveRefresh);liveHandler.post(liveRefresh);}
  @Override protected void onPause(){liveHandler.removeCallbacks(liveRefresh);super.onPause();}
@@ -138,26 +138,29 @@ public class MainActivity extends Activity {
   add(body,h);gap(body,17);
  }
  private void home(){
-  hero();title("نظرة مباشرة على الهاتف");
-  LinearLayout c=card("حالة الجهاز","بيانات من نظام Android دون قياسات وهمية");
-  int battery=batteryPct();float t=temperature();
-  stat(c,"مستوى البطارية",battery<0?"غير متاح":battery+"%",GREEN);
-  stat(c,"حرارة البطارية",t<0?"غير متاحة":String.format(Locale.US,"%.1f°C",t),t>=42?AMBER:CYAN);
-  stat(c,"الذاكرة المتاحة",gb(ram().availMem),WHITE);
-  stat(c,"التخزين المتاح",gb(disk().getAvailableBytes()),WHITE);
-  title("المراكز الذكية");
-  LinearLayout guides=card("دليل الأنظمة","شرح تفصيلي لكل خيار قبل استخدامه");
-  link(guides,"الحماية والأذونات","تفاصيل الفحص والخصوصية",()->guide("security"));
-  link(guides,"البطارية والألعاب","شرح القياسات وحدود التحسين",()->guide("battery"));
-  link(guides,"الروابط والشبكات","الاحتيال وDNS والاتصال",()->guide("scam"));
-  LinearLayout quick=card("TITAN INTELLIGENCE X","الأنظمة العشرة في مركز واحد");
-  link(quick,"✦  افتح مركز الذكاء والتحليل","روابط، أمان، بطارية، شبكة، ألعاب وتقارير",()->launch(IntelligenceHubActivity.class));
-  link(quick,"⬡  Security Smart Scan","فحص إعدادات الأمان والموارد",()->launch(SmartScanActivity.class));
-  link(quick,"⚡  Power Station","مراقبة الشحن وحفظ الجلسات",()->launch(PowerStationActivity.class));
-  title("تقارير وتحليلات");
-  LinearLayout r=card("المتابعة الذكية","معلومات قابلة للتحقق من الجهاز");
-  link(r,"سجل الأداء والحرارة","رسم بياني وقياسات تاريخية",()->launch(TrendsActivity.class));
-  link(r,"مشاركة تقرير الهاتف","تقرير القياسات الحالية",this::share);
+  hero();
+  title("القياسات المباشرة");
+  LinearLayout state=card("نظرة على الجهاز","تتجدد القراءات كل 5 ثوانٍ أثناء عرض التطبيق");
+  int charge=batteryPct();float t=temperature();ActivityManager.MemoryInfo mem=ram();
+  stat(state,"مستوى البطارية",charge<0?"غير متاح":charge+"%",GREEN);
+  stat(state,"حرارة البطارية",t<0?"غير متاحة":String.format(Locale.US,"%.1f °C",t),t>=42?RED:CYAN);
+  stat(state,"الذاكرة المتاحة",gb(mem.availMem),WHITE);
+  stat(state,"التخزين المتاح",gb(disk().getAvailableBytes()),WHITE);
+  vitals=new TitanVitalsView(this);
+  state.addView(vitals,new LinearLayout.LayoutParams(-1,dp(207)));
+  gap(state,4);add(state,txt("الرسم مبني على عينات هذا العرض فقط، وليس تسجيلًا دائمًا.",11,MUTED,false));
+  title("ابدأ بالوظيفة التي تحتاجها");
+  LinearLayout quick=card("الإجراءات الأساسية","اختبارات فعلية دون ادعاءات تسريع وهمية");
+  link(quick,"الفحص الأمني","مراجعة إعدادات الحماية والأذونات",()->launch(SmartScanActivity.class));
+  link(quick,"اختبار سرعة الإنترنت","تنزيل ورفع حقيقيان مع سجل نتائج",()->launch(NetworkSpeedActivity.class));
+  link(quick,"تحليل استجابة الشبكة","زمن HTTPS وعدادات البيانات والرسم البياني",()->launch(NetworkInsightActivity.class));
+  link(quick,"مراقبة البطارية","التيار والجهد والحرارة وجلسات الشحن",()->launch(PowerStationActivity.class));
+  title("التحليلات والخصوصية");
+  LinearLayout records=card("سجل الهاتف","تحكم أنت في التسجيل والمشاركة");
+  link(records,"سجل الأداء والحرارة","احفظ قراءات Android وقارنها",()->launch(TrendsActivity.class));
+  link(records,"كبسولة الزمن","مقارنة التغيرات الأمنية بين لقطات",()->launch(TimeCapsuleActivity.class));
+  link(records,"مشاركة ملخص الجهاز","تقرير عن موارد الهاتف المتاحة",this::share);
+  note("V3 تجريبي: مؤشر الموارد ليس فحصًا مضادًا للفيروسات، والمخططات لا تتنبأ بأداء الألعاب.");
  }
  private void security(){
   title("SECURITY COMMAND");
