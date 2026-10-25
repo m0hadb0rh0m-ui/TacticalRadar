@@ -97,7 +97,7 @@ public class MainActivity extends Activity {
    nav.addView(item,new LinearLayout.LayoutParams(0,-2,1));item.setContentDescription("فتح قسم "+names[i]);item.setOnClickListener(v->show(index));
   }
  }
- private void show(int index){page=index;liveDashboard=index==0;refreshHandler.removeCallbacks(refreshTask);if(liveDashboard)refreshHandler.postDelayed(refreshTask,15000);vitals=null;liveBattery=null;liveTemp=null;liveRam=null;liveDisk=null;body.removeAllViews();navigation();topSubtitle.setText(new String[]{"DEVICE COMMAND CENTER","SECURITY CONTROL","NETWORK LAB","PERFORMANCE LAB","PRIVACY INTELLIGENCE"}[index]);
+ private void show(int index){page=index;vitals=null;liveBattery=null;liveTemp=null;liveRam=null;liveDisk=null;body.removeAllViews();navigation();topSubtitle.setText(new String[]{"DEVICE COMMAND CENTER","SECURITY CONTROL","NETWORK LAB","PERFORMANCE LAB","PRIVACY INTELLIGENCE"}[index]);
   if(index!=0)sectionHero(index);
   if(index==0){home();refreshVitals();}else if(index==1)security();else if(index==2)network();else if(index==3)performance();else privacy();
  }
