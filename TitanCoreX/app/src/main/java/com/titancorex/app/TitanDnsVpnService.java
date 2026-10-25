@@ -17,6 +17,8 @@ public class TitanDnsVpnService extends VpnService implements Runnable {
  public static final String STOP="com.titancorex.app.STOP_DNS";
  private static final String DNS_IP="10.77.0.1";
  private volatile boolean running;
+ private volatile Set<String> feedDomains=Collections.emptySet();
+ private long feedUpdated=-1;
  private ParcelFileDescriptor tun;private Thread worker;
  private static int u16(byte[] b,int i){return ((b[i]&255)<<8)|(b[i+1]&255);}
  private static void put16(byte[] b,int i,int x){b[i]=(byte)(x>>>8);b[i+1]=(byte)x;}
@@ -80,6 +82,12 @@ public class TitanDnsVpnService extends VpnService implements Runnable {
   return null;
  }
  private boolean blocked(String domain){
+  android.content.SharedPreferences feed=getSharedPreferences("titan_dns_feed",MODE_PRIVATE);
+  long updated=feed.getLong("updated",0);
+  if(updated!=feedUpdated){HashSet<String> loaded=new HashSet<>();for(String item:feed.getString("domains","").split("\\n"))if(!item.isEmpty())loaded.add(item);feedDomains=loaded;feedUpdated=updated;}
+  String candidate=domain;
+  while(true){if(feedDomains.contains(candidate))return true;int dot=candidate.indexOf('.');if(dot<0)break;candidate=candidate.substring(dot+1);}
+
   String raw=getSharedPreferences("titan_dns_vpn",MODE_PRIVATE).getString("domains","");
   for(String line:raw.split("\\n")){
    String d=line.trim().toLowerCase(Locale.US);
