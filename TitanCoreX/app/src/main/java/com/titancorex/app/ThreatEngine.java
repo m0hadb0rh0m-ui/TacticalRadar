@@ -13,7 +13,7 @@ import org.json.*;
 /** Local, signed intelligence feed. A non-match is never a clean verdict. */
 public final class ThreatEngine {
  private static final String PREF="titan_threat_feed";
- private static final String PUBLIC_KEY_B64=""; // Set an audited Ed25519 public key before enabling remote feeds.
+ private static final String PUBLIC_KEY_B64="MCowBQYDK2VwAyEA8NVhpy5wGC403mzMDXwDSNvtlagxsxDLu9Y15M2e9pY="; // Set an audited Ed25519 public key before enabling remote feeds.
  public static boolean isSignatureConfigured(){return !PUBLIC_KEY_B64.isEmpty();}
  private ThreatEngine(){}
  public static final class Verdict {
