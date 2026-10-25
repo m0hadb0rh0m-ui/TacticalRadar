@@ -101,10 +101,10 @@ public class MainActivity extends Activity {
  }
  @Override protected void onResume(){super.onResume();if(body!=null)show(page);}
  private void sectionHero(int index){
-  String[] titles={"","TITAN SECURITY SHIELD","TITAN POWER ENGINE","TITAN PRIVACY VAULT","TITAN INTELLIGENCE"};
-  String[] descriptions={"","الحماية والتهديدات والفحوصات الأمنية في مركز واحد","مراقبة الموارد والحرارة والبطارية","خصوصيتك وأذونات التطبيقات تحت سيطرتك","جميع أدوات التشخيص والتحليل المتقدمة"};
-  String[] symbols={"","⬡","ϟ","◈","✦"};
-  int[] accents={CYAN,RED,AMBER,0xffBA75FF,GREEN};
+  String[] titles={"","TITAN SECURITY SHIELD","TITAN NETWORK LAB","TITAN POWER ENGINE","TITAN PRIVACY VAULT"};
+  String[] descriptions={"","فحوصات إعدادات الأمان في مركز واحد","اختبارات الاتصال وDNS وWi-Fi وسرعة الإنترنت","مراقبة الموارد والحرارة والبطارية","أذونات التطبيقات وبياناتك تحت سيطرتك"};
+  String[] symbols={"","⬡","◎","ϟ","◈"};
+  int[] accents={CYAN,RED,CYAN,AMBER,0xff8051D1};
   LinearLayout hero=col();hero.setPadding(dp(22),dp(24),dp(22),dp(23));
   hero.setBackground(gradient(0xffFFFFFF,0xffE2F1FF,26,accents[index]));
   TitanCyberSceneView scene=new TitanCyberSceneView(this,accents[index]);hero.addView(scene,new LinearLayout.LayoutParams(-1,dp(168)));
