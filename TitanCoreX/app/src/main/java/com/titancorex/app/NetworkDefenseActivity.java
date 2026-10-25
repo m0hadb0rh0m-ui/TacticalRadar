@@ -29,6 +29,8 @@ public class NetworkDefenseActivity extends Activity {
   action("كشف تغيّر DNS والبوابة",()->output.setText(baseline(false)));
   action("قياس زمن استجابة HTTPS (5 محاولات)",()->run(this::latency));
   action("مراجعة إعدادات حماية DNS",()->{try{startActivity(new Intent("android.settings.PRIVATE_DNS_SETTINGS"));}catch(Exception e){startActivity(new Intent(android.provider.Settings.ACTION_WIRELESS_SETTINGS));}});
+  action("اختبار سرعة تنزيل ورفع حقيقي",()->startActivity(new Intent(this,NetworkSpeedActivity.class)));
+  action("فحص خصوصية DNS ومحلل HTTPS",()->startActivity(new Intent(this,DnsDiagnosticsActivity.class)));
   action("TITAN DNS FIREWALL — حجب النطاقات عبر VPN",()->startActivity(new Intent(this,DnsFirewallActivity.class)));
   action("تفعيل مراقبة الشبكة الدورية",()->{NetworkWatchJob.schedule(this);output.setText("تمت جدولة المراقبة، وقد يؤخرها Android لتوفير الطاقة.");});
   action("إيقاف مراقبة الشبكة",()->{NetworkWatchJob.stop(this);output.setText("تم إيقاف المراقبة.");});
