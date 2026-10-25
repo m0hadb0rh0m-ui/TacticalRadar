@@ -23,12 +23,12 @@ public class StorageAuditActivity extends Activity {
     private static class Item {Uri uri;String name;long size;String hash;Item(Uri u,String n,long s){uri=u;name=n;size=s;}}
     private int dp(int n){return (int)(n*getResources().getDisplayMetrics().density+.5f);}
     private TextView text(String value,int size,int color){TextView t=new TextView(this);t.setText(value);t.setTextSize(size);t.setTextColor(color);t.setPadding(dp(4),dp(10),dp(4),dp(10));return t;}
-    private void line(String s){results.addView(text(s,14,0xffC3D6E8));}
+    private void line(String s){results.addView(text(s,14,0xff395676));}
     @Override public void onCreate(Bundle b){
         super.onCreate(b);
-        getWindow().setStatusBarColor(0xff080C16);
+        getWindow().setStatusBarColor(0xffF1F8FF);
         ScrollView scroll=new ScrollView(this);
-        root=new LinearLayout(this);root.setOrientation(1);root.setPadding(dp(20),dp(22),dp(20),dp(20));root.setBackgroundColor(0xff080C16);
+        root=new LinearLayout(this);root.setOrientation(1);root.setPadding(dp(20),dp(22),dp(20),dp(20));root.setBackgroundColor(0xffF1F8FF);
         scroll.addView(root);setContentView(scroll);
         root.addView(text("TITAN STORAGE LAB",25,0xff42E8F5));
         root.addView(text("فحص الملفات المكررة — بإذن المستخدم فقط",16,Color.WHITE));
