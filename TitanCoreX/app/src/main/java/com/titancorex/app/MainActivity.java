@@ -116,6 +116,7 @@ public class MainActivity extends Activity {
   link(s,"فحص ملفات APK الحقيقي","بصمة SHA-256 والأذونات وبنية الحزمة",()->launch(ApkInspectorActivity.class));
   link(s,"⬡  Smart Security Scan","قفل الجهاز، تصحيح USB، التحديثات والحرارة",()->launch(SmartScanActivity.class));
   link(s,"Security Health Center","مؤشرات إعدادات الحماية",()->launch(SecurityCenterActivity.class));
+  link(s,"TITAN Wi-Fi Security Lab","تشفير الشبكة وDNS والبوابة وقوة الإشارة",()->launch(WifiAuditActivity.class));
   link(s,"Scam Shield","تحليل محلي لمؤشرات روابط التصيّد",()->launch(IntelligenceHubActivity.class));
   link(s,"فحص أذونات التطبيقات","مراجعة الأذونات الحساسة",()->launch(PrivacyAuditActivity.class));
   LinearLayout system=card("حماية Android الرسمية","اختصارات إلى إعدادات النظام");
