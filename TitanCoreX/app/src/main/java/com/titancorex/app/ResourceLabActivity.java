@@ -13,7 +13,7 @@ import java.io.File;
 import java.util.*;
 
 public class ResourceLabActivity extends Activity {
-  private static final int BG=0xff080C16,CARD=0xff142136,CYAN=0xff42E8F5,WHITE=0xffF4F8FF,MUTED=0xffA9BBD1,GREEN=0xff52F3B0,GOLD=0xffFFD07C,RED=0xffFF788C;
+  private static final int BG=0xffFFF9EE,CARD=0xffFFFFFF,CYAN=0xffBA7900,WHITE=0xff253650,MUTED=0xff5C6E86,GREEN=0xff087C58,GOLD=0xffA66D00,RED=0xffCB3656;
   private LinearLayout root,readouts;
   private TextView status;
   private Handler handler=new Handler(Looper.getMainLooper());
