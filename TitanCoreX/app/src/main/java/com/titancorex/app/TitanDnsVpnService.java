@@ -10,8 +10,8 @@ import java.util.*;
 
 /**
  * Opt-in DNS-only VPN. Routes ONLY the virtual resolver /32, never a default route.
- * DNS queries not matching the blocklist are forwarded over protected UDP sockets.
- * Does not inspect HTTPS, IPv6 DNS, DoH, or arbitrary app traffic.
+ * DNS queries not matching the blocklist are forwarded using HTTPS with platform TLS validation.
+ * Does not intercept app-owned DoH, IPv6 DNS, or arbitrary app traffic.
  */
 public class TitanDnsVpnService extends VpnService implements Runnable {
  public static final String STOP="com.titancorex.app.STOP_DNS";
@@ -99,17 +99,27 @@ public class TitanDnsVpnService extends VpnService implements Runnable {
   byte[] a=Arrays.copyOf(q,q.length);a[2]=(byte)0x81;a[3]=(byte)0x83;
   for(int i=6;i<12;i++)a[i]=0;return a;
  }
+ /** RFC 8484 DNS-over-HTTPS with platform TLS certificate validation. */
  private byte[] forward(byte[] q){
-  DatagramSocket socket=null;
+  javax.net.ssl.HttpsURLConnection conn=null;
   try{
-   socket=new DatagramSocket();if(!protect(socket))return null;
-   socket.setSoTimeout(2500);
-   InetAddress upstream=InetAddress.getByName("1.1.1.1");
-   socket.send(new DatagramPacket(q,q.length,upstream,53));
-   byte[] response=new byte[1500];DatagramPacket p=new DatagramPacket(response,response.length);socket.receive(p);
-   if(p.getLength()<12||response[0]!=q[0]||response[1]!=q[1])return null;
-   return Arrays.copyOf(response,p.getLength());
-  }catch(Exception ignored){return null;}finally{if(socket!=null)socket.close();}
+   URL url=new URL("https://cloudflare-dns.com/dns-query");
+   conn=(javax.net.ssl.HttpsURLConnection)url.openConnection();
+   conn.setRequestMethod("POST");conn.setDoOutput(true);conn.setUseCaches(false);
+   conn.setConnectTimeout(5000);conn.setReadTimeout(5000);
+   conn.setRequestProperty("Accept","application/dns-message");
+   conn.setRequestProperty("Content-Type","application/dns-message");
+   conn.setFixedLengthStreamingMode(q.length);
+   try(OutputStream out=conn.getOutputStream()){out.write(q);}
+   if(conn.getResponseCode()!=200)return null;
+   int size=conn.getContentLength();if(size>4096)return null;
+   try(InputStream in=conn.getInputStream();ByteArrayOutputStream result=new ByteArrayOutputStream()){
+    byte[] buf=new byte[1024];int n;while((n=in.read(buf))!=-1){if(result.size()+n>4096)return null;result.write(buf,0,n);}
+    byte[] response=result.toByteArray();
+    if(response.length<12||response[0]!=q[0]||response[1]!=q[1])return null;
+    return response;
+   }
+  }catch(Exception e){return null;}finally{if(conn!=null)conn.disconnect();}
  }
  private byte[] packet(byte[] req,int ihl,int port,byte[] dns){
   int udpLen=8+dns.length;byte[] out=new byte[ihl+udpLen];
