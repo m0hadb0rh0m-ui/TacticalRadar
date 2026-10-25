@@ -38,8 +38,18 @@ public class TitanDnsVpnService extends VpnService implements Runnable {
    Notification.Builder notification=Build.VERSION.SDK_INT>=26?new Notification.Builder(this,"titan_dns_shield"):new Notification.Builder(this);
    notification.setSmallIcon(android.R.drawable.ic_lock_lock).setContentTitle("TITAN DNS Shield").setContentText("حماية DNS قيد التشغيل").setOngoing(true);
    startForeground(771210,notification.build());
-   tun=new Builder().setSession("TITAN DNS Shield").addAddress("10.77.0.2",32)
-    .addDnsServer(DNS_IP).addRoute(DNS_IP,32).setMtu(1500).establish();
+   Builder builder=new Builder().setSession("TITAN DNS Shield").addAddress("10.77.0.2",32)
+    .addDnsServer(DNS_IP).addRoute(DNS_IP,32).setMtu(1500);
+   String excluded=getSharedPreferences("titan_dns_vpn",MODE_PRIVATE).getString("excluded_apps","");
+   for(String pkg:excluded.split("\\n")){
+    pkg=pkg.trim();
+    if(pkg.isEmpty())continue;
+    try{builder.addDisallowedApplication(pkg);}
+    catch(android.content.pm.PackageManager.NameNotFoundException missing){
+     throw new IOException("Excluded app is not installed: "+pkg,missing);
+    }
+   }
+   tun=builder.establish();
    if(tun==null)throw new IOException("VPN permission or TUN unavailable");
    running=true;worker=new Thread(this,"TitanDnsTunnel");worker.start();
    getSharedPreferences("titan_dns_vpn",MODE_PRIVATE).edit().putBoolean("active",true).apply();
