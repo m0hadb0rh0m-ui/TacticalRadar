@@ -1,278 +1,166 @@
 package com.titancorex.app;
 
 import android.app.*;
-import android.os.*;
 import android.content.*;
-import android.content.pm.*;
-import android.graphics.*;
-import android.graphics.drawable.*;
+import android.content.res.ColorStateList;
+import android.graphics.Typeface;
+import android.graphics.drawable.GradientDrawable;
 import android.net.*;
+import android.os.*;
 import android.provider.Settings;
 import android.view.*;
 import android.widget.*;
 import java.util.*;
 
 public class MainActivity extends Activity {
-  private final int BG=0xff070B14, CARD=0xff121F33, PANEL=0xff192A43, CYAN=0xff42E8F5, WHITE=0xffF4F8FF, MUTED=0xff9CAFC7, GREEN=0xff4EF0A3, GOLD=0xffFFCE77, RED=0xffFF7288;
-  private LinearLayout content, navigation;
-  private TextView subtitle;
-  private int page=0;
-  private BatteryManager battery;
-  private android.app.ActivityManager memory;
-  private final String[] sectionKeys={"home","device","security","games","tools"};
-  @Override public void onCreate(Bundle b) {
-    super.onCreate(b);
-    getWindow().setStatusBarColor(BG);getWindow().setNavigationBarColor(BG);
-    battery=(BatteryManager)getSystemService(BATTERY_SERVICE);
-    memory=(android.app.ActivityManager)getSystemService(ACTIVITY_SERVICE);
-    buildShell();show(0);
+ private static final int BG=0xff070A12,SURFACE=0xff111A2A,PANEL=0xff19283E,CYAN=0xff57E5EF,WHITE=0xffF4F8FF,MUTED=0xff9CAFC7,GREEN=0xff4BE0A3,AMBER=0xffFFCE7B,RED=0xffFF788B;
+ private LinearLayout body,nav;private TextView topSubtitle;private int page=0;
+ private int dp(float x){return (int)(x*getResources().getDisplayMetrics().density+.5f);}
+ private GradientDrawable gradient(int a,int b,int r,int stroke){GradientDrawable d=new GradientDrawable(GradientDrawable.Orientation.TL_BR,new int[]{a,b});d.setCornerRadius(dp(r));if(stroke!=0)d.setStroke(dp(1),stroke);return d;}
+ private TextView txt(String s,int size,int color,boolean bold){TextView t=new TextView(this);t.setText(s);t.setTextSize(size);t.setTextColor(color);if(bold)t.setTypeface(Typeface.DEFAULT,Typeface.BOLD);return t;}
+ private LinearLayout col(){LinearLayout l=new LinearLayout(this);l.setOrientation(1);return l;}
+ private LinearLayout row(){LinearLayout l=new LinearLayout(this);l.setOrientation(0);l.setGravity(Gravity.CENTER_VERTICAL);return l;}
+ private void gap(LinearLayout p,int h){View v=new View(this);p.addView(v,new LinearLayout.LayoutParams(1,dp(h)));}
+ private void add(LinearLayout p,View v){p.addView(v,new LinearLayout.LayoutParams(-1,-2));}
+ private void title(String s){TextView t=txt(s,19,WHITE,true);t.setPadding(dp(2),dp(14),0,dp(13));add(body,t);}
+ private LinearLayout card(String label,String description){
+  LinearLayout c=col();c.setPadding(dp(17),dp(17),dp(17),dp(17));c.setBackground(gradient(0xff19273B,0xff101A2A,22,0xff2B4059));
+  add(c,txt(label,17,WHITE,true));if(description!=null){gap(c,5);add(c,txt(description,12,MUTED,false));}gap(c,10);
+  add(body,c);gap(body,13);return c;
+ }
+ private void link(LinearLayout c,String name,String detail,Runnable action){
+  LinearLayout line=row();line.setPadding(dp(12),dp(13),dp(12),dp(13));line.setBackground(gradient(0xff20344C,0xff16273C,14,0xff314B63));
+  LinearLayout labels=col();add(labels,txt(name,14,WHITE,true));if(detail!=null){gap(labels,4);add(labels,txt(detail,11,MUTED,false));}
+  line.addView(labels,new LinearLayout.LayoutParams(0,-2,1));line.addView(txt("‹",27,CYAN,true));line.setOnClickListener(v->action.run());add(c,line);gap(c,9);
+ }
+ private void launch(Class<?> activity){startActivity(new Intent(this,activity));}
+ private void settings(String action){try{startActivity(new Intent(action));}catch(Exception e){Toast.makeText(this,"هذا الإعداد غير متاح على الجهاز",Toast.LENGTH_SHORT).show();}}
+ private Intent battery(){return registerReceiver(null,new IntentFilter(Intent.ACTION_BATTERY_CHANGED));}
+ private int batteryPct(){Intent i=battery();if(i==null)return -1;int n=i.getIntExtra(BatteryManager.EXTRA_LEVEL,-1),scale=i.getIntExtra(BatteryManager.EXTRA_SCALE,-1);return n<0||scale<=0?-1:n*100/scale;}
+ private float temperature(){Intent i=battery();int n=i==null?-1:i.getIntExtra(BatteryManager.EXTRA_TEMPERATURE,-1);return n<0?-1:n/10f;}
+ private android.app.ActivityManager.MemoryInfo ram(){android.app.ActivityManager.MemoryInfo m=new android.app.ActivityManager.MemoryInfo();((android.app.ActivityManager)getSystemService(ACTIVITY_SERVICE)).getMemoryInfo(m);return m;}
+ private StatFs disk(){return new StatFs(Environment.getDataDirectory().getAbsolutePath());}
+ private String gb(long n){return String.format(Locale.US,"%.1f GB",n/1073741824.0);}
+ private int score(){
+  android.app.ActivityManager.MemoryInfo m=ram();StatFs s=disk();int result=100;
+  if(m.totalMem>0){double free=(double)m.availMem/m.totalMem;if(free<.13)result-=16;else if(free<.25)result-=8;}
+  if(s.getTotalBytes()>0){double free=(double)s.getAvailableBytes()/s.getTotalBytes();if(free<.1)result-=22;else if(free<.2)result-=10;}
+  float t=temperature();if(t>=43)result-=25;else if(t>=39)result-=12;
+  return Math.max(0,result);
+ }
+ @Override public void onCreate(Bundle b){super.onCreate(b);getWindow().setStatusBarColor(BG);getWindow().setNavigationBarColor(BG);shell();show(0);}
+ private void shell(){
+  LinearLayout root=col();root.setBackgroundColor(BG);root.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);setContentView(root);
+  LinearLayout header=row();header.setPadding(dp(18),dp(17),dp(18),dp(17));header.setBackground(gradient(0xff152B42,0xff0A1423,0,0));
+  ImageView logo=new ImageView(this);logo.setImageResource(R.drawable.titan_logo);header.addView(logo,new LinearLayout.LayoutParams(dp(53),dp(53)));
+  LinearLayout heading=col();heading.setPadding(dp(12),0,0,0);add(heading,txt("TITAN CORE X",23,WHITE,true));gap(heading,4);
+  topSubtitle=txt("SECURITY • PERFORMANCE • INTELLIGENCE",10,CYAN,true);add(heading,topSubtitle);header.addView(heading,new LinearLayout.LayoutParams(0,-2,1));
+  TextView refresh=txt("⟳",27,CYAN,true);refresh.setPadding(dp(10),dp(5),dp(10),dp(5));header.addView(refresh);refresh.setOnClickListener(v->show(page));add(root,header);
+  ScrollView sc=new ScrollView(this);sc.setFillViewport(false);sc.setVerticalScrollBarEnabled(false);
+  body=col();body.setPadding(dp(16),dp(19),dp(16),dp(22));sc.addView(body);root.addView(sc,new LinearLayout.LayoutParams(-1,0,1));
+  nav=row();nav.setPadding(dp(7),dp(9),dp(7),dp(10));nav.setBackgroundColor(0xff0F1828);add(root,nav);
+ }
+ private void navigation(){
+  nav.removeAllViews();String[] names={"الرئيسية","الحماية","الأداء","الخصوصية","المزيد"},icons={"⌂","⬡","⚡","◈","☷"};
+  for(int i=0;i<5;i++){final int index=i;LinearLayout item=col();item.setGravity(Gravity.CENTER);item.setPadding(0,dp(8),0,dp(8));if(i==page)item.setBackground(gradient(0xff1D3D52,0xff15273C,13,0));
+   TextView icon=txt(icons[i],23,i==page?CYAN:MUTED,true);icon.setGravity(Gravity.CENTER);add(item,icon);gap(item,4);
+   TextView label=txt(names[i],10,i==page?WHITE:MUTED,i==page);label.setGravity(Gravity.CENTER);add(item,label);
+   nav.addView(item,new LinearLayout.LayoutParams(0,-2,1));item.setOnClickListener(v->show(index));
   }
-  private int dp(float v){return (int)(v*getResources().getDisplayMetrics().density+0.5f);}
-  private GradientDrawable shape(int color,int radius){GradientDrawable d=new GradientDrawable();d.setColor(color);d.setCornerRadius(dp(radius));return d;}
-  private GradientDrawable border(int color,int stroke,int radius){GradientDrawable d=shape(color,radius);d.setStroke(dp(1),stroke);return d;}
-  private TextView label(String s,int size,int color,boolean bold){TextView t=new TextView(this);t.setText(s);t.setTextColor(color);t.setTextSize(size);t.setGravity(Gravity.CENTER_VERTICAL);if(bold)t.setTypeface(android.graphics.Typeface.DEFAULT,1);return t;}
-  private LinearLayout vertical(){LinearLayout l=new LinearLayout(this);l.setOrientation(1);return l;}
-  private LinearLayout horizontal(){LinearLayout l=new LinearLayout(this);l.setOrientation(0);l.setGravity(Gravity.CENTER_VERTICAL);return l;}
-  private void pad(View v,int a,int b,int c,int d){v.setPadding(dp(a),dp(b),dp(c),dp(d));}
-  private void space(LinearLayout p,int height){View v=new View(this);p.addView(v,new LinearLayout.LayoutParams(1,dp(height)));}
-  private void add(LinearLayout p,View v){p.addView(v,new LinearLayout.LayoutParams(-1,-2));}
-  private void buildShell(){
-    LinearLayout root=vertical();root.setBackgroundColor(BG);root.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);setContentView(root);
-    LinearLayout top=vertical();pad(top,22,20,22,18);top.setBackground(new GradientDrawable(GradientDrawable.Orientation.TL_BR,new int[]{0xff112B42,0xff090F1C}));
-    LinearLayout brandRow=horizontal();android.widget.ImageView emblem=new android.widget.ImageView(this);emblem.setImageResource(R.drawable.titan_logo);brandRow.addView(emblem,new LinearLayout.LayoutParams(dp(54),dp(54)));TextView brand=label("TITAN CORE X",24,WHITE,true);brandRow.addView(brand,new LinearLayout.LayoutParams(0,-2,1));add(top,brandRow);
-    TextView strap=label("SYSTEM INTELLIGENCE  /  ANDROID",10,CYAN,true);strap.setLetterSpacing(.17f);add(top,strap);
-    subtitle=label("COMMAND CENTER",11,MUTED,true);pad(subtitle,0,10,0,0);add(top,subtitle);
-    add(root,top);
-    ScrollView scroll=new ScrollView(this);scroll.setFillViewport(false);scroll.setVerticalScrollBarEnabled(false);
-    content=vertical();pad(content,18,12,18,18);scroll.addView(content);
-    root.addView(scroll,new LinearLayout.LayoutParams(-1,0,1));
-    navigation=horizontal();pad(navigation,7,8,7,10);navigation.setBackgroundColor(0xff101929);
-    add(root,navigation);
-  }
-  private LinearLayout card(String title,String desc){
-    LinearLayout c=vertical();pad(c,18,17,18,18);GradientDrawable premium=new GradientDrawable(GradientDrawable.Orientation.TL_BR,new int[]{0xff172A43,0xff101B2D});premium.setCornerRadius(dp(21));premium.setStroke(dp(1),0xff31536B);c.setBackground(premium);c.setElevation(dp(3));
-    TextView t=label(title,17,WHITE,true);add(c,t);
-    if(desc!=null){space(c,5);add(c,label(desc,12,MUTED,false));}
-    return c;
-  }
-  private void block(LinearLayout c){add(content,c);space(content,14);}
-  private void section(String title){TextView t=label(title,17,WHITE,true);pad(t,3,9,0,12);add(content,t);}
-  private void metric(LinearLayout p,String name,String value,int color){
-    LinearLayout line=horizontal();pad(line,0,9,0,9);
-    TextView n=label(name,13,MUTED,false);line.addView(n,new LinearLayout.LayoutParams(0,-2,1));
-    TextView v=label(value,14,color,true);line.addView(v);add(p,line);
-    View sep=new View(this);sep.setBackgroundColor(0xff223248);p.addView(sep,new LinearLayout.LayoutParams(-1,dp(1)));
-  }
-  private void action(LinearLayout p,String title,String info,Runnable run){
-    LinearLayout row=horizontal();pad(row,14,14,12,14);row.setBackground(border(PANEL,0xff2B4B65,15));row.setElevation(dp(1));
-    LinearLayout texts=vertical();texts.addView(label(title,14,WHITE,true));
-    if(info!=null){space(texts,4);texts.addView(label(info,11,MUTED,false));}
-    row.addView(texts,new LinearLayout.LayoutParams(0,-2,1));
-    row.addView(label("›",27,CYAN,true));
-    row.setOnClickListener(v->run.run());add(p,row);space(p,9);
-  }
-  private void nav(){
-    navigation.removeAllViews();
-    for(int i=0;i<sectionKeys.length;i++){
-      final int index=i;
-      LinearLayout cell=vertical();cell.setGravity(Gravity.CENTER);pad(cell,1,8,1,8);
-      if(i==page)cell.setBackground(shape(0xff173448,12));
-      String[] symbols={"◈","▣","⬡","⚡","☷"};
-      TextView ico=label(symbols[i],21,i==page?CYAN:MUTED,true);ico.setGravity(Gravity.CENTER);add(cell,ico);
-      TextView txt=label(LanguageActivity.tr(this,sectionKeys[i]),9,i==page?CYAN:MUTED,true);txt.setGravity(Gravity.CENTER);add(cell,txt);
-      navigation.addView(cell,new LinearLayout.LayoutParams(0,-2,1));
-      cell.setOnClickListener(v->show(index));
-    }
-  }
-  @Override protected void onResume(){super.onResume();if(content!=null)show(page);}
-  private void show(int index){
-    page=index;content.removeAllViews();nav();subtitle.setText(new String[]{"مركز التحكم","تشخيص الجهاز","تدقيق الأمان","أداء الألعاب","أدوات النظام"}[page]);
-    if(page==0)home();else if(page==1)device();else if(page==2)security();else if(page==3)boost();else tools();
-  }
-  private Intent batteryIntent(){return registerReceiver(null,new IntentFilter(Intent.ACTION_BATTERY_CHANGED));}
-  private int level(){Intent i=batteryIntent();if(i==null)return -1;int l=i.getIntExtra(BatteryManager.EXTRA_LEVEL,-1),s=i.getIntExtra(BatteryManager.EXTRA_SCALE,100);return l<0||s<=0?-1:l*100/s;}
-  private float temp(){Intent i=batteryIntent();return i==null?-1:i.getIntExtra(BatteryManager.EXTRA_TEMPERATURE,-1)/10f;}
-  private String format(long bytes){if(bytes<0)return "Unavailable";return String.format(Locale.US,"%.1f GB",bytes/1073741824.0);}
-  private android.app.ActivityManager.MemoryInfo ram(){android.app.ActivityManager.MemoryInfo m=new android.app.ActivityManager.MemoryInfo();memory.getMemoryInfo(m);return m;}
-  private android.os.StatFs disk(){return new android.os.StatFs(android.os.Environment.getDataDirectory().getPath());}
-  private int score(){
-    int result=100;
-    android.app.ActivityManager.MemoryInfo m=ram();
-    double used=1.0-(double)m.availMem/m.totalMem;
-    if(used>.85)result-=18;else if(used>.7)result-=8;
-    float t=temp();if(t>=43)result-=25;else if(t>=39)result-=12;
-    android.os.StatFs f=disk();double free=(double)f.getAvailableBytes()/f.getTotalBytes();
-    if(free<.1)result-=22;else if(free<.2)result-=10;
-    return Math.max(0,result);
-  }
-  private void home(){
-    LinearLayout hero=vertical();pad(hero,22,23,22,23);GradientDrawable heroBg=new GradientDrawable(GradientDrawable.Orientation.TL_BR,new int[]{0xff144A5D,0xff11243D,0xff12162B});heroBg.setCornerRadius(dp(26));heroBg.setStroke(dp(2),0xff39A5B5);hero.setBackground(heroBg);hero.setElevation(dp(6));
-    add(hero,label("صحة الجهاز المباشرة",12,CYAN,true));space(hero,10);
-    add(hero,label(score()+" / 100",47,WHITE,true));
-    add(hero,label("مؤشر تقديري يعتمد على الذاكرة وحرارة البطارية والتخزين",12,MUTED,false));
-    space(hero,14);
-    ProgressBar bar=new ProgressBar(this,null,android.R.attr.progressBarStyleHorizontal);bar.setMax(100);bar.setProgress(score());bar.setProgressTintList(android.content.res.ColorStateList.valueOf(CYAN));add(hero,bar);
-    block(hero);
-    section("القياسات المباشرة");
-    LinearLayout c=card("ملخص الجهاز","قياسات حقيقية من نظام Android");
-    metric(c,"مستوى البطارية",level()<0?"Unavailable":level()+"%",GREEN);
-    metric(c,"حرارة البطارية",temp()<0?"Unavailable":String.format(Locale.US,"%.1f °C",temp()),CYAN);
-    android.app.ActivityManager.MemoryInfo m=ram();
-    metric(c,"الذاكرة المتاحة",format(m.availMem)+" / "+format(m.totalMem),WHITE);
-    metric(c,"التخزين المتاح",format(disk().getAvailableBytes()),GOLD);
-    block(c);
-    LinearLayout actions=card("الوصول السريع","تشخيص الجهاز وأدوات النظام الآمنة");
-    action(actions,"⬡  TITAN SMART SCAN","فحص موحد لإعدادات الحماية والحرارة والتخزين",()->startActivity(new Intent(this,SmartScanActivity.class)));
-    action(actions,"TITAN INTELLIGENCE X","10 أنظمة للأمان والأداء والخصوصية",()->startActivity(new Intent(this,IntelligenceHubActivity.class)));
-    action(actions,"⚡  TITAN POWER STATION","تحليل تيار البطارية والجهد وتسجيل جلسات الشحن",()->startActivity(new Intent(this,PowerStationActivity.class)));
-    action(actions,"◈  TITAN TIME CAPSULE","اكشف تغيّر إعدادات الحماية منذ آخر لقطة محفوظة",()->startActivity(new Intent(this,TimeCapsuleActivity.class)));
-    action(actions,"⬡  مركز القيادة الأمنية","فحص قفل الشاشة وتصحيح USB وإعدادات الحماية",()->startActivity(new Intent(this,SecurityCenterActivity.class)));
-    action(actions,"✦  TITAN CORE X PRO","استكشف خطة المزايا المتقدمة بسعر مستهدف 5 دولارات",()->startActivity(new Intent(this,PremiumActivity.class)));
-    action(actions,"📈  سجل الأداء والحرارة","تسجيل قياسات ومخطط حرارة البطارية",()->startActivity(new Intent(this,TrendsActivity.class)));
-    action(actions,"🌐  "+LanguageActivity.tr(this,"language"),"اختيار لغة الواجهة من 20 لغة",()->startActivity(new Intent(this,LanguageActivity.class)));
-    action(actions,"مختبر التبريد والرام والتخزين","مراقبة الحرارة والذاكرة والتنظيف الآمن",()->startActivity(new Intent(this,ResourceLabActivity.class)));
-    action(actions,"فحص الهاتف","البطارية والذاكرة والتخزين والشبكة",()->show(1));
-    action(actions,"مراجعة الحماية","التطبيقات والأذونات",()->show(2));
-    action(actions,"مركز أداء الألعاب","تهيئة جلسة لعب",()->show(3));
-    action(actions,"مشاركة تقرير الفحص","تصدير قياسات الجهاز إلى نص",()->shareReport());
-    block(actions);
-    note("Privacy first: measurements stay on your device. No cloud upload or background scanning in this release.");
-  }
-  private void device(){
-    section("الأجهزة والنظام");
-    LinearLayout c=card("معلومات الهاتف","مواصفات النظام المباشرة");
-    metric(c,"الشركة المصنعة",android.os.Build.MANUFACTURER,WHITE);
-    metric(c,"الطراز",android.os.Build.MODEL,WHITE);
-    metric(c,"إصدار أندرويد",android.os.Build.VERSION.RELEASE,WHITE);
-    metric(c,"مستوى API",String.valueOf(android.os.Build.VERSION.SDK_INT),WHITE);
-    metric(c,"أنوية المعالج",String.valueOf(Runtime.getRuntime().availableProcessors()),CYAN);
-    metric(c,"الرام المتاحة",format(ram().availMem),GREEN);
-    metric(c,"إجمالي الرام",format(ram().totalMem),WHITE);
-    metric(c,"التخزين الحر",format(disk().getAvailableBytes()),GREEN);
-    metric(c,"إجمالي التخزين",format(disk().getTotalBytes()),WHITE);
-    block(c);
-    section("مختبر البطارية");
-    LinearLayout b=card("تحليل البطارية","تعتمد القياسات على دعم الشركة المصنعة");
-    Intent i=batteryIntent();
-    int status=i==null?-1:i.getIntExtra(BatteryManager.EXTRA_STATUS,-1);
-    metric(b,"حالة الشحن",status==BatteryManager.BATTERY_STATUS_CHARGING?"Yes":status==BatteryManager.BATTERY_STATUS_FULL?"Full":"No / unknown",GREEN);
-    metric(b,"درجة الحرارة",temp()<0?"Unavailable":String.format(Locale.US,"%.1f °C",temp()),CYAN);
-    int voltage=i==null?-1:i.getIntExtra(BatteryManager.EXTRA_VOLTAGE,-1);
-    metric(b,"الجهد",voltage<0?"Unavailable":voltage+" mV",WHITE);
-    long current=battery.getLongProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW);
-    metric(b,"التيار (حسب الجهاز)",current==Long.MIN_VALUE?"Unavailable":String.format(Locale.US,"%.0f mA",current/1000.0),WHITE);
-    block(b);
-    note("Battery temperature is not the CPU temperature. Battery health percentage is not estimated without reliable cycle/capacity data.");
-  }
-  private List<android.content.pm.ResolveInfo> launchers(){
-    Intent intent=new Intent(Intent.ACTION_MAIN);intent.addCategory(Intent.CATEGORY_LAUNCHER);
-    return getPackageManager().queryIntentActivities(intent,0);
-  }
-  private void security(){
-    section("مركز الحماية");
-    LinearLayout c=card("تدقيق التطبيقات","التطبيقات المرئية المسموح بفحصها");
-    List<android.content.pm.ResolveInfo> apps=launchers();
-    HashSet<String> names=new HashSet<>();for(android.content.pm.ResolveInfo r:apps)if(r.activityInfo!=null)names.add(r.activityInfo.packageName);
-    metric(c,"التطبيقات الظاهرة",String.valueOf(names.size()),CYAN);
-    metric(c,"محرك كشف البرمجيات الضارة","غير متوفر حاليًا",GOLD);
-    metric(c,"حالة مضاد الفيروسات","غير معتمد",GOLD);
-    block(c);
-    LinearLayout shield=card("⬡  TITAN SECURITY COMMAND","مراجعة مؤشرات الأمان الحقيقية");
-    action(shield,"بدء فحص إعدادات الحماية","قفل الشاشة وADB وخيارات المطور",()->startActivity(new Intent(this,SecurityCenterActivity.class)));
-    block(shield);
-    LinearLayout a=card("اختصارات الأمان","أدوات الحماية الرسمية في Android");
-    action(a,"مختبر الخصوصية المتقدم","فحص الأذونات الحساسة الممنوحة لكل تطبيق ظاهر",()->startActivity(new Intent(this,PrivacyAuditActivity.class)));
-    action(a,"أذونات التطبيقات","مراجعة الكاميرا والميكروفون والموقع",()->open(Settings.ACTION_APPLICATION_SETTINGS));
-    action(a,"إعدادات الأمان","خيارات حماية الهاتف",()->open(Settings.ACTION_SECURITY_SETTINGS));
-    action(a,"تثبيت التطبيقات غير المعروفة","مراجعة صلاحيات التثبيت الخارجية",()->open(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES));
-    action(a,"إعدادات الخصوصية","مراجعة إعدادات الخصوصية",()->open(Settings.ACTION_PRIVACY_SETTINGS));
-    block(a);
-    note("This is a security audit dashboard, NOT an antivirus scanner. A genuine malware detector requires an updated detection engine and permitted package visibility.");
-  }
-  private void boost(){
-    section("أداء الألعاب");
-    LinearLayout c=card("جاهزية اللعب","قياسات فعلية دون ادعاءات تسريع وهمية");
-    metric(c,"الرام الحرة",format(ram().availMem),CYAN);
-    metric(c,"حرارة البطارية",temp()<0?"Unavailable":String.format(Locale.US,"%.1f °C",temp()),GREEN);
-    metric(c,"البطارية",level()<0?"Unavailable":level()+"%",WHITE);
-    block(c);
-    LinearLayout a=card("استعد للعب","إعدادات تحسين يدعمها Android");
-    action(a,"إدارة التطبيقات الخلفية","مراجعة التطبيقات من إعدادات النظام",()->open(Settings.ACTION_APPLICATION_SETTINGS));
-    action(a,"إعدادات عدم الإزعاج","تقليل الإشعارات أثناء اللعب",()->open(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS));
-    action(a,"إعدادات تحسين البطارية","مراجعة قيود البطارية",()->open(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS));
-    action(a,"إعدادات الشبكة","فحص الاتصال قبل اللعب الجماعي",()->open(Settings.ACTION_WIRELESS_SETTINGS));
-    action(a,"بدء جلسة لعب","تسجيل وقت البداية وقياسات الجهاز",()->startGameSession());
-    action(a,"إنهاء جلسة لعب","حفظ المدة وحرارة البطارية",()->endGameSession());
-    String last=getPreferences(MODE_PRIVATE).getString("last_game","لا توجد جلسة محفوظة");
-    a.addView(label("آخر جلسة: "+last,12,MUTED,false));
-    block(a);
-    note("Android prevents ordinary apps from force-closing all other apps or guaranteeing higher FPS. This release provides diagnostics and safe shortcuts.");
-  }
-  private void tools(){
-    section("مختبر الشبكة");
-    LinearLayout n=card("تشخيص الاتصال","حالة الاتصال الفعلية");
-    ConnectivityManager cm=(ConnectivityManager)getSystemService(CONNECTIVITY_SERVICE);
-    Network network=cm.getActiveNetwork();
-    NetworkCapabilities cap=network==null?null:cm.getNetworkCapabilities(network);
-    String type=cap==null?"Disconnected":cap.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)?"Wi-Fi":cap.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)?"Cellular":cap.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)?"Ethernet":"Other";
-    metric(n,"نوع الاتصال",type,CYAN);
-    metric(n,"إمكانية الاتصال بالإنترنت",cap!=null&&cap.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)?"Advertised":"Unavailable",WHITE);
-    metric(n,"اتصال مؤكد من Android",cap!=null&&cap.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)?"Yes":"No / unknown",GREEN);
-    block(n);
-    section("إدارة التخزين");
-    LinearLayout s=card("فحص التخزين","تنظيف آمن بأدوات Android");
-    metric(s,"إجمالي التخزين الداخلي",format(disk().getTotalBytes()),WHITE);
-    metric(s,"التخزين الداخلي المتاح",format(disk().getAvailableBytes()),GREEN);
-    action(s,"فتح إدارة التخزين","مراجعة الملفات وحذفها من النظام",()->open(Settings.ACTION_INTERNAL_STORAGE_SETTINGS));
-    action(s,"فتح مستعرض الملفات","استعراض الملفات دون حذف تلقائي",()->{
-      try{Intent i=new Intent(Intent.ACTION_OPEN_DOCUMENT);i.setType("*/*");i.addCategory(Intent.CATEGORY_OPENABLE);startActivityForResult(i,4);}catch(Exception e){toast("No file picker available");}
-    });
-    action(s,"فحص الملفات المكررة بدقة","مقارنة SHA-256 داخل مجلد تختاره",()->startActivity(new Intent(this,StorageAuditActivity.class)));
-    block(s);
-    section("أدوات النظام");
-    LinearLayout u=card("لوحة الأدوات","أدوات نظام الهاتف");
-    action(u,"⚡  مختبر الشحن والطاقة","تسجيل جلسات الشحن ومراقبة القدرة التقديرية",()->startActivity(new Intent(this,PowerStationActivity.class)));
-    action(u,"◈  كبسولة الزمن الأمنية","مقارنة إعدادات الهاتف مع لقطة سابقة",()->startActivity(new Intent(this,TimeCapsuleActivity.class)));
-    action(u,"✦  باقة TITAN PRO","الميزات المستقبلية وخطة الدفع",()->startActivity(new Intent(this,PremiumActivity.class)));
-    action(u,"📈  سجل أداء الهاتف","متابعة تاريخ البطارية والذاكرة",()->startActivity(new Intent(this,TrendsActivity.class)));
-    action(u,"🌐  "+LanguageActivity.tr(this,"language"),"20 لغة للاختيار — ترجمة الأقسام الأساسية حاليًا",()->startActivity(new Intent(this,LanguageActivity.class)));
-    action(u,"إعدادات الشبكة","إعدادات Wi-Fi وبيانات الهاتف",()->open(Settings.ACTION_WIRELESS_SETTINGS));
-    action(u,"إعدادات البطارية","استهلاك البطارية وخيارات الشحن",()->open(Settings.ACTION_BATTERY_SAVER_SETTINGS));
-    action(u,"مركز استعادة الموارد","الحرارة والرام والتخزين في لوحة واحدة",()->startActivity(new Intent(this,ResourceLabActivity.class)));
-    action(u,"تحديث القياسات","إعادة قراءة بيانات الهاتف",()->show(page));
-    block(u);
-    note("Deep app caches and protected system files cannot be erased silently on modern Android. Cleanup always requires user-approved access.");
-  }
-  private void note(String s){LinearLayout c=vertical();pad(c,14,14,14,14);c.setBackground(border(0xff18212B,0xff37475A,12));add(c,label("ⓘ  "+s,12,GOLD,false));block(c);}
-  private void startGameSession(){
-    getPreferences(MODE_PRIVATE).edit().putLong("game_start",System.currentTimeMillis()).putFloat("game_temp",temp()).apply();
-    toast("بدأ تسجيل جلسة اللعب");show(3);
-  }
-  private void endGameSession(){
-    android.content.SharedPreferences p=getPreferences(MODE_PRIVATE);
-    long start=p.getLong("game_start",0);
-    if(start==0){toast("ابدأ جلسة أولًا");return;}
-    long mins=Math.max(0,(System.currentTimeMillis()-start)/60000);
-    float startTemp=p.getFloat("game_temp",-1);
-    String report=mins+" دقيقة | حرارة البداية "+startTemp+"° | النهاية "+temp()+"°";
-    p.edit().remove("game_start").putString("last_game",report).apply();
-    toast("تم حفظ الجلسة");show(3);
-  }
-  private void shareReport(){
-    android.app.ActivityManager.MemoryInfo m=ram();
-    String report="TITAN CORE X - Device Report\\n"
-      +"Model: "+android.os.Build.MANUFACTURER+" "+android.os.Build.MODEL+"\\n"
-      +"Android: "+android.os.Build.VERSION.RELEASE+"\\n"
-      +"Health estimate: "+score()+"/100\\n"
-      +"Battery: "+level()+"%\\n"
-      +"Battery temperature: "+temp()+" C\\n"
-      +"RAM free: "+format(m.availMem)+"\\n"
-      +"Storage free: "+format(disk().getAvailableBytes())+"\\n"
-      +"Generated on device. No malware scan was performed.";
-    Intent send=new Intent(Intent.ACTION_SEND);
-    send.setType("text/plain");send.putExtra(Intent.EXTRA_TEXT,report);
-    startActivity(Intent.createChooser(send,"مشاركة تقرير TITAN CORE X"));
-  }
-  private void open(String action){try{startActivity(new Intent(action));}catch(Exception e){toast("This settings page is unavailable on your device");}}
-  private void toast(String msg){Toast.makeText(this,msg,Toast.LENGTH_SHORT).show();}
+ }
+ private void show(int index){page=index;body.removeAllViews();navigation();topSubtitle.setText(new String[]{"DEVICE COMMAND CENTER","SECURITY CONTROL","PERFORMANCE LAB","PRIVACY INTELLIGENCE","TITAN TOOLKIT"}[index]);
+  if(index==0)home();else if(index==1)security();else if(index==2)performance();else if(index==3)privacy();else tools();
+ }
+ @Override protected void onResume(){super.onResume();if(body!=null)show(page);}
+ private void stat(LinearLayout c,String name,String value,int color){
+  LinearLayout l=row();l.setPadding(0,dp(9),0,dp(9));TextView n=txt(name,13,MUTED,false);l.addView(n,new LinearLayout.LayoutParams(0,-2,1));l.addView(txt(value,14,color,true));add(c,l);
+  View rule=new View(this);rule.setBackgroundColor(0xff263B52);c.addView(rule,new LinearLayout.LayoutParams(-1,dp(1)));
+ }
+ private void hero(){
+  LinearLayout h=col();h.setPadding(dp(22),dp(23),dp(22),dp(23));h.setBackground(gradient(0xff145366,0xff162943,26,0xff3D9FAE));
+  add(h,txt("LIVE DEVICE STATUS",11,CYAN,true));gap(h,9);
+  add(h,txt(score()+" / 100",46,WHITE,true));gap(h,4);add(h,txt("مؤشر تقديري للموارد، وليس نتيجة فحص فيروسات",12,0xffD0E2EF,false));gap(h,18);
+  ProgressBar p=new ProgressBar(this,null,android.R.attr.progressBarStyleHorizontal);p.setMax(100);p.setProgress(score());p.setProgressTintList(ColorStateList.valueOf(CYAN));add(h,p);gap(h,19);
+  Button scan=new Button(this);scan.setText("⬡  بدء الفحص الأمني");scan.setAllCaps(false);scan.setTextColor(BG);scan.setBackground(gradient(0xff62E9EF,0xff9FF6F5,15,0));add(h,scan);scan.setOnClickListener(v->launch(SmartScanActivity.class));
+  add(body,h);gap(body,17);
+ }
+ private void home(){
+  hero();title("نظرة مباشرة على الهاتف");
+  LinearLayout c=card("حالة الجهاز","بيانات من نظام Android دون قياسات وهمية");
+  int battery=batteryPct();float t=temperature();
+  stat(c,"مستوى البطارية",battery<0?"غير متاح":battery+"%",GREEN);
+  stat(c,"حرارة البطارية",t<0?"غير متاحة":String.format(Locale.US,"%.1f°C",t),t>=42?AMBER:CYAN);
+  stat(c,"الذاكرة المتاحة",gb(ram().availMem),WHITE);
+  stat(c,"التخزين المتاح",gb(disk().getAvailableBytes()),WHITE);
+  title("المراكز الذكية");
+  LinearLayout quick=card("TITAN INTELLIGENCE X","الأنظمة العشرة في مركز واحد");
+  link(quick,"✦  افتح مركز الذكاء والتحليل","روابط، أمان، بطارية، شبكة، ألعاب وتقارير",()->launch(IntelligenceHubActivity.class));
+  link(quick,"⬡  Security Smart Scan","فحص إعدادات الأمان والموارد",()->launch(SmartScanActivity.class));
+  link(quick,"⚡  Power Station","مراقبة الشحن وحفظ الجلسات",()->launch(PowerStationActivity.class));
+  link(quick,"◈  Time Capsule","تغيّرات الجهاز منذ آخر لقطة",()->launch(TimeCapsuleActivity.class));
+  title("تقارير وتحليلات");
+  LinearLayout r=card("المتابعة الذكية","معلومات قابلة للتحقق من الجهاز");
+  link(r,"سجل الأداء والحرارة","رسم بياني وقياسات تاريخية",()->launch(TrendsActivity.class));
+  link(r,"مشاركة تقرير الهاتف","تقرير القياسات الحالية",this::share);
+ }
+ private void security(){
+  title("SECURITY COMMAND");
+  LinearLayout s=card("مركز الحماية الشامل","تدقيق شفاف دون ادعاء وجود محرك فيروسات");
+  link(s,"⬡  Smart Security Scan","قفل الجهاز، تصحيح USB، التحديثات والحرارة",()->launch(SmartScanActivity.class));
+  link(s,"Security Health Center","مؤشرات إعدادات الحماية",()->launch(SecurityCenterActivity.class));
+  link(s,"Scam Shield","تحليل محلي لمؤشرات روابط التصيّد",()->launch(IntelligenceHubActivity.class));
+  link(s,"فحص أذونات التطبيقات","مراجعة الأذونات الحساسة",()->launch(PrivacyAuditActivity.class));
+  LinearLayout system=card("حماية Android الرسمية","اختصارات إلى إعدادات النظام");
+  link(system,"إعدادات الأمان","قفل الشاشة وحماية الجهاز",()->settings(Settings.ACTION_SECURITY_SETTINGS));
+  link(system,"تحديثات النظام","مراجعة التحديثات المتاحة",()->settings(Settings.ACTION_SYSTEM_UPDATE_SETTINGS));
+  link(system,"تثبيت التطبيقات الخارجية","مراجعة مصادر التثبيت",()->settings(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES));
+  note("لا يوجد في هذا الإصدار محرك مضاد فيروسات، ولا يمكن إعلان الهاتف خاليًا من البرمجيات الضارة.");
+ }
+ private void performance(){
+  title("PERFORMANCE LAB");
+  LinearLayout c=card("مراقبة الموارد","حالة فعلية لحرارة البطارية والذاكرة والتخزين");
+  float t=temperature();stat(c,"حرارة البطارية",t<0?"غير متاحة":String.format(Locale.US,"%.1f°C",t),t>=42?AMBER:CYAN);
+  stat(c,"الرام المتاحة",gb(ram().availMem),GREEN);stat(c,"مساحة التخزين",gb(disk().getAvailableBytes()),WHITE);
+  LinearLayout tools=card("مختبرات TITAN","تحليل الأداء بدل وعود التسريع الوهمية");
+  link(tools,"⚡  Power Station","التيار والجهد وجلسات الشحن",()->launch(PowerStationActivity.class));
+  link(tools,"مراقب الحرارة والذاكرة","ضغط الموارد والتوصيات",()->launch(ResourceLabActivity.class));
+  link(tools,"مخططات الأداء","تاريخ القياسات المحلية",()->launch(TrendsActivity.class));
+  link(tools,"تحليل بيئة الألعاب","إعدادات اللعب ومؤشرات الموارد",()->launch(IntelligenceHubActivity.class));
+  link(tools,"إعدادات البطارية","خيارات النظام الرسمية",()->settings(Settings.ACTION_BATTERY_SAVER_SETTINGS));
+  note("لا يستطيع تطبيق عادي رفع تردد المعالج أو تبريد الجهاز فعليًا أو ضمان زيادة FPS.");
+ }
+ private void privacy(){
+  title("PRIVACY INTELLIGENCE");
+  LinearLayout c=card("الخصوصية تحت سيطرتك","فحص محلي، دون رفع قائمة تطبيقاتك إلى خادم");
+  link(c,"تدقيق أذونات التطبيقات","فحص الأذونات التي يمكن للتطبيق رؤيتها",()->launch(PrivacyAuditActivity.class));
+  link(c,"كبسولة الزمن الأمنية","مقارنة إعدادات الجهاز بلقطة سابقة",()->launch(TimeCapsuleActivity.class));
+  link(c,"إعدادات الخصوصية","مراجعة أذونات الكاميرا والميكروفون والموقع",()->settings("android.settings.PRIVACY_SETTINGS"));
+  LinearLayout files=card("STORAGE RECOVERY","إدارة الملفات بموافقتك");
+  link(files,"فحص الملفات المكررة","مقارنة SHA-256 في مجلد تختاره",()->launch(StorageAuditActivity.class));
+  link(files,"إدارة التخزين","مراجعة ملفات الجهاز",()->settings(Settings.ACTION_INTERNAL_STORAGE_SETTINGS));
+  note("لا يتم حذف الملفات دون اختيار المستخدم، ولا تُقرأ الملفات الخاصة بالتطبيقات الأخرى دون إذن.");
+ }
+ private void tools(){
+  title("TITAN TOOLKIT");
+  LinearLayout c=card("جميع الأنظمة","انتقل إلى الوظيفة المطلوبة");
+  link(c,"✦  Intelligence X","مركز الأنظمة العشرة",()->launch(IntelligenceHubActivity.class));
+  link(c,"⬡  Security Scan","تدقيق أمان الجهاز",()->launch(SmartScanActivity.class));
+  link(c,"⚡  Power Station","مختبر الشحن والبطارية",()->launch(PowerStationActivity.class));
+  link(c,"◈  Time Capsule","تتبّع التغيرات الأمنية",()->launch(TimeCapsuleActivity.class));
+  link(c,"فحص التخزين","اكتشاف الملفات المكررة",()->launch(StorageAuditActivity.class));
+  link(c,"تقرير الأداء","سجل القياسات",()->launch(TrendsActivity.class));
+  link(c,"اللغات","إعدادات لغة الواجهة",()->launch(LanguageActivity.class));
+  link(c,"TITAN CORE X PRO","الميزات المخططة وخيارات الترقية",()->launch(PremiumActivity.class));
+  LinearLayout n=card("NETWORK LAB","حالة الاتصال المتاحة عبر Android");
+  ConnectivityManager cm=(ConnectivityManager)getSystemService(CONNECTIVITY_SERVICE);Network net=cm.getActiveNetwork();NetworkCapabilities caps=net==null?null:cm.getNetworkCapabilities(net);
+  String type=caps==null?"غير متصل":caps.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)?"Wi-Fi":caps.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)?"شبكة خلوية":"اتصال آخر";
+  stat(n,"نوع الاتصال",type,CYAN);
+  stat(n,"اتصال تحقق منه Android",caps!=null&&caps.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)?"نعم":"غير مؤكد",WHITE);
+  link(n,"تشخيص الشبكة التفصيلي","عرض DNS ومعلومات الاتصال",()->launch(IntelligenceHubActivity.class));
+ }
+ private void note(String s){LinearLayout c=col();c.setPadding(dp(14),dp(14),dp(14),dp(14));c.setBackground(gradient(0xff302B28,0xff201E26,16,0xff66533C));add(c,txt("ⓘ  "+s,12,AMBER,false));add(body,c);gap(body,15);}
+ private void share(){
+  String report="TITAN CORE X — Device Report\nDevice: "+Build.MANUFACTURER+" "+Build.MODEL+"\nAndroid: "+Build.VERSION.RELEASE+"\nEstimated resource score: "+score()+"/100\nBattery: "+batteryPct()+"%\nBattery temperature: "+temperature()+" C\nAvailable RAM: "+gb(ram().availMem)+"\nFree storage: "+gb(disk().getAvailableBytes())+"\nNo malware scan was performed.";
+  Intent i=new Intent(Intent.ACTION_SEND);i.setType("text/plain");i.putExtra(Intent.EXTRA_TEXT,report);startActivity(Intent.createChooser(i,"مشاركة تقرير TITAN"));
+ }
 }
