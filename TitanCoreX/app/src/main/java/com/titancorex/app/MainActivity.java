@@ -32,7 +32,7 @@ public class MainActivity extends Activity {
   t.setPadding(dp(12),0,0,0);section.addView(t);add(body,section);
  }
  private LinearLayout card(String label,String description){
-  LinearLayout c=col();c.setPadding(dp(17),dp(17),dp(17),dp(17));c.setBackground(gradient(0xffFFFFFF,0xffE8F2FF,24,0xffC3DDF8));
+  LinearLayout c=col();c.setPadding(dp(17),dp(17),dp(17),dp(17));c.setBackground(gradient(0xff172333,0xff111C29,24,0xff294357));
   TextView heading=txt(label,19,WHITE,true);heading.setTypeface(Typeface.create("sans-serif-black",Typeface.BOLD));add(c,heading);if(description!=null){gap(c,5);add(c,txt(description,12,MUTED,false));}gap(c,10);
   add(body,c);gap(body,13);return c;
  }
@@ -53,10 +53,10 @@ public class MainActivity extends Activity {
   return "✦";
  }
  private void link(LinearLayout c,String name,String detail,Runnable action){
-  LinearLayout line=row();line.setPadding(dp(12),dp(13),dp(12),dp(13));line.setBackground(gradient(0xffEAF5FF,0xffD9EAFD,17,0xffB9D8F6));
+  LinearLayout line=row();line.setPadding(dp(12),dp(13),dp(12),dp(13));line.setBackground(gradient(0xff1C2B3D,0xff172337,17,0xff315068));
   int accent=featureColor(name);
   TextView art=txt(featureIcon(name),26,accent,true);art.setGravity(Gravity.CENTER);
-  art.setBackground(gradient(0xffFFFFFF,0xffE2F0FF,13,accent));
+  art.setBackground(gradient(0xff142536,0xff1B3543,13,accent));
   LinearLayout.LayoutParams artParams=new LinearLayout.LayoutParams(dp(50),dp(50));artParams.setMargins(0,0,dp(12),0);line.addView(art,artParams);
   LinearLayout labels=col();add(labels,txt(name,15,WHITE,true));if(detail!=null){gap(labels,4);add(labels,txt(detail,11,MUTED,false));}
   line.addView(labels,new LinearLayout.LayoutParams(0,-2,1));line.addView(txt("‹",27,accent,true));line.setContentDescription(name+" - "+(detail==null?"":detail));line.setOnClickListener(v->action.run());add(c,line);gap(c,9);
@@ -80,18 +80,18 @@ public class MainActivity extends Activity {
  @Override public void onCreate(Bundle b){super.onCreate(b);getWindow().setStatusBarColor(BG);getWindow().setNavigationBarColor(BG);getWindow().getDecorView().setSystemUiVisibility(0);shell();show(0);}
  private void shell(){
   LinearLayout root=col();root.setBackgroundColor(BG);root.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);setContentView(root);
-  LinearLayout header=row();header.setPadding(dp(18),dp(17),dp(18),dp(17));header.setBackground(gradient(0xffFFFFFF,0xffE3F0FF,0,0));
+  LinearLayout header=row();header.setPadding(dp(18),dp(17),dp(18),dp(17));header.setBackground(gradient(0xff162132,0xff111A29,0,0));
   ImageView logo=new ImageView(this);logo.setImageResource(R.drawable.titan_logo);header.addView(logo,new LinearLayout.LayoutParams(dp(53),dp(53)));
   LinearLayout heading=col();heading.setPadding(dp(12),0,0,0);TextView brand=txt("TITAN CORE X",25,WHITE,true);brand.setTypeface(Typeface.create("sans-serif-black",Typeface.BOLD));add(heading,brand);gap(heading,4);
   topSubtitle=txt("SECURITY • PERFORMANCE • INTELLIGENCE",10,CYAN,true);add(heading,topSubtitle);header.addView(heading,new LinearLayout.LayoutParams(0,-2,1));
   TextView refresh=txt("⟳",27,CYAN,true);refresh.setPadding(dp(10),dp(5),dp(10),dp(5));header.addView(refresh);refresh.setOnClickListener(v->show(page));add(root,header);
   ScrollView sc=new ScrollView(this);sc.setFillViewport(false);sc.setVerticalScrollBarEnabled(false);
   body=col();body.setPadding(dp(16),dp(19),dp(16),dp(22));sc.addView(body);root.addView(sc,new LinearLayout.LayoutParams(-1,0,1));
-  nav=row();nav.setPadding(dp(7),dp(9),dp(7),dp(10));nav.setBackground(gradient(0xffFFFFFF,0xffE5F1FF,0,0));add(root,nav);
+  nav=row();nav.setPadding(dp(7),dp(9),dp(7),dp(10));nav.setBackground(gradient(0xff121E2F,0xff0E1727,0,0));add(root,nav);
  }
  private void navigation(){
   nav.removeAllViews();String[] names={"الرئيسية","الحماية","الشبكة","الأداء","الخصوصية"},icons={"⌂","⬡","◎","⚡","◈"};
-  for(int i=0;i<5;i++){final int index=i;LinearLayout item=col();item.setGravity(Gravity.CENTER);item.setPadding(0,dp(8),0,dp(8));if(i==page)item.setBackground(gradient(0xffDBEFFF,0xffC4E0FF,13,0xffA0C9F5));
+  for(int i=0;i<5;i++){final int index=i;LinearLayout item=col();item.setGravity(Gravity.CENTER);item.setPadding(0,dp(8),0,dp(8));if(i==page)item.setBackground(gradient(0xff164B4B,0xff123C51,13,0xff237C7C));
    TextView icon=txt(icons[i],25,i==page?new int[]{CYAN,RED,CYAN,AMBER,0xff8051D1}[i]:MUTED,true);icon.setGravity(Gravity.CENTER);add(item,icon);gap(item,4);
    TextView label=txt(names[i],11,i==page?WHITE:MUTED,i==page);label.setGravity(Gravity.CENTER);add(item,label);
    nav.addView(item,new LinearLayout.LayoutParams(0,-2,1));item.setContentDescription("فتح قسم "+names[i]);item.setOnClickListener(v->show(index));
@@ -117,7 +117,7 @@ public class MainActivity extends Activity {
   String[] symbols={"","⬡","◎","ϟ","◈"};
   int[] accents={CYAN,RED,CYAN,AMBER,0xff8051D1};
   LinearLayout hero=col();hero.setPadding(dp(22),dp(24),dp(22),dp(23));
-  hero.setBackground(gradient(0xffFFFFFF,0xffE2F1FF,26,accents[index]));
+  hero.setBackground(gradient(0xff1C2B3D,0xff101B29,26,accents[index]));
   TitanCyberSceneView scene=new TitanCyberSceneView(this,accents[index]);hero.addView(scene,new LinearLayout.LayoutParams(-1,dp(168)));
   gap(hero,7);TextView heading=txt(titles[index],21,WHITE,true);
   heading.setTypeface(Typeface.create("sans-serif-black",Typeface.BOLD));heading.setGravity(Gravity.CENTER);add(hero,heading);
@@ -126,10 +126,10 @@ public class MainActivity extends Activity {
  }
  private void stat(LinearLayout c,String name,String value,int color){
   LinearLayout l=row();l.setPadding(0,dp(9),0,dp(9));TextView n=txt(name,13,MUTED,false);l.addView(n,new LinearLayout.LayoutParams(0,-2,1));TextView val=txt(value,14,color,true);l.addView(val);if(page==0){if(name.equals("مستوى البطارية"))liveBattery=val;else if(name.equals("حرارة البطارية"))liveTemp=val;else if(name.equals("الذاكرة المتاحة"))liveRam=val;else if(name.equals("التخزين المتاح"))liveDisk=val;}add(c,l);
-  View rule=new View(this);rule.setBackgroundColor(0xffD7E5F5);c.addView(rule,new LinearLayout.LayoutParams(-1,dp(1)));
+  View rule=new View(this);rule.setBackgroundColor(0xff2B3F50);c.addView(rule,new LinearLayout.LayoutParams(-1,dp(1)));
  }
  private void hero(){
-  LinearLayout h=col();h.setPadding(dp(22),dp(23),dp(22),dp(23));h.setBackground(gradient(0xffDFF5FF,0xffBCDFFF,28,0xff60B5FF));
+  LinearLayout h=col();h.setPadding(dp(22),dp(23),dp(22),dp(23));h.setBackground(gradient(0xff153141,0xff0F1D2C,28,0xff205F70));
   add(h,txt("TITAN CORE X  /  VERSION 3",11,CYAN,true));gap(h,9);
   TitanCyberSceneView visual=new TitanCyberSceneView(this,CYAN);h.addView(visual,new LinearLayout.LayoutParams(-1,dp(145)));gap(h,5);
   TextView scoreText=txt(score()+" / 100",54,WHITE,true);scoreText.setTypeface(Typeface.create("sans-serif-black",Typeface.BOLD));add(h,scoreText);gap(h,4);add(h,txt("مؤشر تقديري للموارد، وليس نتيجة فحص فيروسات",12,MUTED,false));gap(h,18);
@@ -238,7 +238,7 @@ public class MainActivity extends Activity {
   link(n,"TITAN NETWORK DEFENSE X","مختبر أمان HTTPS وDNS وجودة الاتصال",()->launch(NetworkDefenseActivity.class));
   link(n,"تشخيص الشبكة التفصيلي","عرض DNS ومعلومات الاتصال",()->launch(IntelligenceHubActivity.class));
  }
- private void note(String s){LinearLayout c=col();c.setPadding(dp(14),dp(14),dp(14),dp(14));c.setBackground(gradient(0xffFFF8E8,0xffFFEFD1,16,0xffE5C784));add(c,txt("ⓘ  "+s,12,AMBER,false));add(body,c);gap(body,15);}
+ private void note(String s){LinearLayout c=col();c.setPadding(dp(14),dp(14),dp(14),dp(14));c.setBackground(gradient(0xff2A261B,0xff1C201E,16,0xff7A5B2D));add(c,txt("ⓘ  "+s,12,AMBER,false));add(body,c);gap(body,15);}
  private void share(){
   String report="TITAN CORE X — Device Report\nDevice: "+Build.MANUFACTURER+" "+Build.MODEL+"\nAndroid: "+Build.VERSION.RELEASE+"\nEstimated resource score: "+score()+"/100\nBattery: "+batteryPct()+"%\nBattery temperature: "+temperature()+" C\nAvailable RAM: "+gb(ram().availMem)+"\nFree storage: "+gb(disk().getAvailableBytes())+"\nNo malware scan was performed.";
   Intent i=new Intent(Intent.ACTION_SEND);i.setType("text/plain");i.putExtra(Intent.EXTRA_TEXT,report);startActivity(Intent.createChooser(i,"مشاركة تقرير TITAN"));
