@@ -29,6 +29,13 @@ public class TitanDnsVpnService extends VpnService implements Runnable {
   if(running)return START_STICKY;
   if(VpnService.prepare(this)!=null){stopSelf();return START_NOT_STICKY;}
   try{
+   if(Build.VERSION.SDK_INT>=26){
+    NotificationChannel channel=new NotificationChannel("titan_dns_shield","TITAN DNS Shield",NotificationManager.IMPORTANCE_LOW);
+    ((NotificationManager)getSystemService(NOTIFICATION_SERVICE)).createNotificationChannel(channel);
+   }
+   Notification.Builder notification=Build.VERSION.SDK_INT>=26?new Notification.Builder(this,"titan_dns_shield"):new Notification.Builder(this);
+   notification.setSmallIcon(android.R.drawable.ic_lock_lock).setContentTitle("TITAN DNS Shield").setContentText("حماية DNS قيد التشغيل").setOngoing(true);
+   startForeground(771210,notification.build());
    tun=new Builder().setSession("TITAN DNS Shield").addAddress("10.77.0.2",32)
     .addDnsServer(DNS_IP).addRoute(DNS_IP,32).setMtu(1500).establish();
    if(tun==null)throw new IOException("VPN permission or TUN unavailable");
