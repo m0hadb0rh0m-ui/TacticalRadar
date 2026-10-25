@@ -14,7 +14,9 @@ import java.util.*;
 
 public class MainActivity extends Activity {
  private static final int BG=0xffF1F7FF,SURFACE=0xffFFFFFF,PANEL=0xffDCEBFF,CYAN=0xff087BEA,WHITE=0xff142C50,MUTED=0xff506987,GREEN=0xff087F58,AMBER=0xffA96C00,RED=0xffD83D62;
- private LinearLayout body,nav;private TextView topSubtitle;private int page=0;
+ private LinearLayout body,nav;private TextView topSubtitle,liveBattery,liveTemp,liveRam,liveDisk;private TitanVitalsView vitals;private int page=0;
+ private final Handler liveHandler=new Handler(Looper.getMainLooper());
+ private final Runnable liveRefresh=new Runnable(){@Override public void run(){refreshVitals();liveHandler.postDelayed(this,5000);}};
  private int dp(float x){return (int)(x*getResources().getDisplayMetrics().density+.5f);}
  private GradientDrawable gradient(int a,int b,int r,int stroke){GradientDrawable d=new GradientDrawable(GradientDrawable.Orientation.TL_BR,new int[]{a,b});d.setCornerRadius(dp(r));if(stroke!=0)d.setStroke(dp(1),stroke);return d;}
  private TextView txt(String s,int size,int color,boolean bold){TextView t=new TextView(this);t.setText(s);t.setTextSize(size);t.setTextColor(color);if(bold)t.setTypeface(Typeface.DEFAULT,Typeface.BOLD);return t;}
@@ -95,11 +97,20 @@ public class MainActivity extends Activity {
    nav.addView(item,new LinearLayout.LayoutParams(0,-2,1));item.setContentDescription("فتح قسم "+names[i]);item.setOnClickListener(v->show(index));
   }
  }
- private void show(int index){page=index;body.removeAllViews();navigation();topSubtitle.setText(new String[]{"DEVICE COMMAND CENTER","SECURITY CONTROL","NETWORK LAB","PERFORMANCE LAB","PRIVACY INTELLIGENCE"}[index]);
+ private void show(int index){page=index;vitals=null;liveBattery=null;liveTemp=null;liveRam=null;liveDisk=null;body.removeAllViews();navigation();topSubtitle.setText(new String[]{"DEVICE COMMAND CENTER","SECURITY CONTROL","NETWORK LAB","PERFORMANCE LAB","PRIVACY INTELLIGENCE"}[index]);
   if(index!=0)sectionHero(index);
   if(index==0)home();else if(index==1)security();else if(index==2)network();else if(index==3)performance();else privacy();
  }
- @Override protected void onResume(){super.onResume();if(body!=null)show(page);}
+ @Override protected void onResume(){super.onResume();if(body!=null)show(page);liveHandler.removeCallbacks(liveRefresh);liveHandler.post(liveRefresh);}
+ @Override protected void onPause(){liveHandler.removeCallbacks(liveRefresh);super.onPause();}
+ private void refreshVitals(){if(page!=0||vitals==null)return;int battery=batteryPct();float temp=temperature();
+  ActivityManager.MemoryInfo mem=ram();StatFs storage=disk();
+  if(liveBattery!=null)liveBattery.setText(battery<0?"غير متاح":battery+"%");
+  if(liveTemp!=null)liveTemp.setText(temp<0?"غير متاحة":String.format(Locale.US,"%.1f °C",temp));
+  if(liveRam!=null)liveRam.setText(gb(mem.availMem));
+  if(liveDisk!=null)liveDisk.setText(gb(storage.getAvailableBytes()));
+  vitals.addSample(battery,temp,mem.availMem,mem.totalMem);
+ }
  private void sectionHero(int index){
   String[] titles={"","TITAN SECURITY SHIELD","TITAN NETWORK LAB","TITAN POWER ENGINE","TITAN PRIVACY VAULT"};
   String[] descriptions={"","فحوصات إعدادات الأمان في مركز واحد","اختبارات الاتصال وDNS وWi-Fi وسرعة الإنترنت","مراقبة الموارد والحرارة والبطارية","أذونات التطبيقات وبياناتك تحت سيطرتك"};
