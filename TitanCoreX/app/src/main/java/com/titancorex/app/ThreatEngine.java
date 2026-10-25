@@ -14,6 +14,7 @@ import org.json.*;
 public final class ThreatEngine {
  private static final String PREF="titan_threat_feed";
  private static final String PUBLIC_KEY_B64=""; // Set an audited Ed25519 public key before enabling remote feeds.
+ public static boolean isSignatureConfigured(){return !PUBLIC_KEY_B64.isEmpty();}
  private ThreatEngine(){}
  public static final class Verdict {
   public final String status,reason,sha256;
