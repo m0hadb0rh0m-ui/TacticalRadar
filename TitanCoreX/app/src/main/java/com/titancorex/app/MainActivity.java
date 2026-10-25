@@ -37,11 +37,11 @@ public class MainActivity extends Activity {
   add(body,c);gap(body,13);return c;
  }
  private int featureColor(String name){
-  if(name.contains("شبك")||name.contains("NETWORK")||name.contains("Wi-Fi")||name.contains("DNS"))return 0xff00D9FF;
-  if(name.contains("حما")||name.contains("Security")||name.contains("Scan")||name.contains("أمان"))return 0xffff506e;
-  if(name.contains("Power")||name.contains("أداء")||name.contains("شحن")||name.contains("بطار"))return 0xffffc83d;
-  if(name.contains("خصوص")||name.contains("أذون"))return 0xffba75ff;
-  if(name.contains("APK")||name.contains("تطبيق"))return 0xff35ee9c;
+  if(name.contains("شبك")||name.contains("NETWORK")||name.contains("Wi-Fi")||name.contains("DNS"))return 0xff06B6D4;
+  if(name.contains("حما")||name.contains("Security")||name.contains("Scan")||name.contains("أمان"))return 0xff10B981;
+  if(name.contains("Power")||name.contains("أداء")||name.contains("شحن")||name.contains("بطار"))return 0xffF59E0B;
+  if(name.contains("خصوص")||name.contains("أذون"))return 0xffC084FC;
+  if(name.contains("APK")||name.contains("تطبيق"))return 0xff10B981;
   return 0xff5ebaff;
  }
  private String featureIcon(String name){
@@ -92,7 +92,7 @@ public class MainActivity extends Activity {
  private void navigation(){
   nav.removeAllViews();String[] names={"الرئيسية","الحماية","الشبكة","الأداء","الخصوصية"},icons={"⌂","⬡","◎","⚡","◈"};
   for(int i=0;i<5;i++){final int index=i;LinearLayout item=col();item.setGravity(Gravity.CENTER);item.setPadding(0,dp(8),0,dp(8));if(i==page)item.setBackground(gradient(0xff164B4B,0xff123C51,13,0xff237C7C));
-   TextView icon=txt(icons[i],25,i==page?new int[]{CYAN,RED,CYAN,AMBER,0xff8051D1}[i]:MUTED,true);icon.setGravity(Gravity.CENTER);add(item,icon);gap(item,4);
+   TextView icon=txt(icons[i],25,i==page?new int[]{CYAN,GREEN,CYAN,AMBER,0xffC084FC}[i]:MUTED,true);icon.setGravity(Gravity.CENTER);add(item,icon);gap(item,4);
    TextView label=txt(names[i],11,i==page?WHITE:MUTED,i==page);label.setGravity(Gravity.CENTER);add(item,label);
    nav.addView(item,new LinearLayout.LayoutParams(0,-2,1));item.setContentDescription("فتح قسم "+names[i]);item.setOnClickListener(v->show(index));
   }
@@ -115,7 +115,7 @@ public class MainActivity extends Activity {
   String[] titles={"","TITAN SECURITY SHIELD","TITAN NETWORK LAB","TITAN POWER ENGINE","TITAN PRIVACY VAULT"};
   String[] descriptions={"","فحوصات إعدادات الأمان في مركز واحد","اختبارات الاتصال وDNS وWi-Fi وسرعة الإنترنت","مراقبة الموارد والحرارة والبطارية","أذونات التطبيقات وبياناتك تحت سيطرتك"};
   String[] symbols={"","⬡","◎","ϟ","◈"};
-  int[] accents={CYAN,RED,CYAN,AMBER,0xff8051D1};
+  int[] accents={CYAN,GREEN,CYAN,AMBER,0xffC084FC};
   LinearLayout hero=col();hero.setPadding(dp(22),dp(24),dp(22),dp(23));
   hero.setBackground(gradient(0xff1C2B3D,0xff101B29,26,accents[index]));
   TitanCyberSceneView scene=new TitanCyberSceneView(this,accents[index]);hero.addView(scene,new LinearLayout.LayoutParams(-1,dp(168)));
