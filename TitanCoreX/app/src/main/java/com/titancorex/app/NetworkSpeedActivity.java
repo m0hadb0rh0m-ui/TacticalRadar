@@ -21,18 +21,18 @@ public class NetworkSpeedActivity extends Activity {
  private static final String BASE="https://speed.cloudflare.com";
  private int dp(int x){return (int)(x*getResources().getDisplayMetrics().density+.5f);}
  @Override public void onCreate(Bundle state){super.onCreate(state);
-  getWindow().setStatusBarColor(0xffF1F8FF);getWindow().setNavigationBarColor(0xffF1F8FF);
-  getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR|View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
-  ScrollView scroll=new ScrollView(this);LinearLayout root=new LinearLayout(this);root.setOrientation(1);root.setPadding(dp(18),dp(24),dp(18),dp(28));root.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);root.setBackgroundColor(0xffF1F8FF);scroll.addView(root);setContentView(scroll);
-  TextView title=new TextView(this);title.setText("TITAN SPEED & RELIABILITY LAB");title.setTextColor(0xff087BEA);title.setTextSize(23);root.addView(title);
+  getWindow().setStatusBarColor(0xff0B0F19);getWindow().setNavigationBarColor(0xff0B0F19);
+  getWindow().getDecorView().setSystemUiVisibility(0);
+  ScrollView scroll=new ScrollView(this);LinearLayout root=new LinearLayout(this);root.setOrientation(1);root.setPadding(dp(18),dp(24),dp(18),dp(28));root.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);root.setBackgroundColor(0xff0B0F19);scroll.addView(root);setContentView(scroll);
+  TextView title=new TextView(this);title.setText("TITAN SPEED & RELIABILITY LAB");title.setTextColor(0xff06B6D4);title.setTextSize(23);root.addView(title);
   visual=new SpeedVisual();root.addView(visual,new LinearLayout.LayoutParams(-1,dp(260)));
   visualLabel=new TextView(this);visualLabel.setText("جاهز للفحص");visualLabel.setTextColor(0xff087BEA);visualLabel.setTextSize(18);visualLabel.setGravity(Gravity.CENTER);root.addView(visualLabel);
-  result=new TextView(this);result.setTextColor(0xff183453);result.setTextSize(16);root.addView(result);
+  result=new TextView(this);result.setTextColor(0xffEDF9FF);result.setTextSize(16);root.addView(result);
   Button start=new Button(this);start.setText("ϟ  بدء قياس سرعة التنزيل والرفع");start.setAllCaps(false);start.setTextSize(16);start.setMinHeight(dp(58));start.setTextColor(0xffffffff);start.setBackground(buttonBackground(0xff078DFF,0xff535FF0));root.addView(start);startButton=start;start.setOnClickListener(v->runTest());
   Button stop=new Button(this);stop.setText("■  إيقاف القياس");stop.setAllCaps(false);stop.setTextSize(16);stop.setMinHeight(dp(58));stop.setTextColor(0xffffffff);stop.setBackground(buttonBackground(0xffFF9860,0xffE45480));root.addView(stop);stopButton=stop;stop.setEnabled(false);stop.setOnClickListener(v->{cancelled=true;HttpURLConnection connection=activeConnection;if(connection!=null)connection.disconnect();result.setText("تم طلب إيقاف الاختبار");visual.stop();});
   Button share=new Button(this);share.setText("مشاركة آخر تقرير");share.setAllCaps(false);share.setTextSize(16);share.setMinHeight(dp(56));share.setTextColor(0xffffffff);share.setBackground(buttonBackground(0xff0BAA9B,0xff0576BA));root.addView(share);share.setOnClickListener(v->shareReport());
-  TextView historyTitle=new TextView(this);historyTitle.setText("سجل آخر الاختبارات");historyTitle.setTextColor(0xff173B67);historyTitle.setTextSize(19);historyTitle.setPadding(0,24,0,8);root.addView(historyTitle);
-  history=new TextView(this);history.setTextColor(0xff385C80);history.setTextSize(14);history.setPadding(dp(14),dp(14),dp(14),dp(14));history.setBackground(buttonBackground(0xffffffff,0xffE3F2FF));root.addView(history);refreshHistory();
+  TextView historyTitle=new TextView(this);historyTitle.setText("سجل آخر الاختبارات");historyTitle.setTextColor(0xffEDF9FF);historyTitle.setTextSize(19);historyTitle.setPadding(0,24,0,8);root.addView(historyTitle);
+  history=new TextView(this);history.setTextColor(0xff9BB5C8);history.setTextSize(14);history.setPadding(dp(14),dp(14),dp(14),dp(14));history.setBackground(buttonBackground(0xff1C3043,0xff101F30));root.addView(history);refreshHistory();
   result.setText("اختبار نقل بيانات فعلي إلى Cloudflare. يستهلك قرابة 6 MB في كل تشغيل وقد يستهلك بيانات الهاتف. لا يختبر فقدان حزم ICMP.");
  }
  private void saveReport(double down,double up){
@@ -90,13 +90,13 @@ public class NetworkSpeedActivity extends Activity {
   @Override protected void onDraw(Canvas canvas){
    super.onDraw(canvas);float cx=getWidth()/2f,cy=getHeight()/2f;
    float radius=Math.min(getWidth(),getHeight())*.36f;
-   paint.setStyle(Paint.Style.FILL);paint.setColor(0xffE0F3FF);canvas.drawCircle(cx,cy,radius*1.17f,paint);
+   paint.setStyle(Paint.Style.FILL);paint.setColor(0xff142A3C);canvas.drawCircle(cx,cy,radius*1.17f,paint);
    paint.setStyle(Paint.Style.STROKE);paint.setStrokeWidth(dp(15));paint.setStrokeCap(Paint.Cap.ROUND);
-   paint.setColor(0xffC4DCF7);canvas.drawArc(cx-radius,cy-radius,cx+radius,cy+radius,135,270,false,paint);
-   paint.setColor(0xff138BF4);canvas.drawArc(cx-radius,cy-radius,cx+radius,cy+radius,135,active?angle*.75f:175,false,paint);
-   paint.setStrokeWidth(dp(5));paint.setColor(0xff02BBD4);
+   paint.setColor(0xff254859);canvas.drawArc(cx-radius,cy-radius,cx+radius,cy+radius,135,270,false,paint);
+   paint.setColor(0xff10B981);canvas.drawArc(cx-radius,cy-radius,cx+radius,cy+radius,135,active?angle*.75f:175,false,paint);
+   paint.setStrokeWidth(dp(5));paint.setColor(0xff06B6D4);
    canvas.drawArc(cx-radius*.73f,cy-radius*.73f,cx+radius*.73f,cy+radius*.73f,active?angle:30,65,false,paint);
-   paint.setStyle(Paint.Style.FILL);paint.setColor(0xff193B66);
+   paint.setStyle(Paint.Style.FILL);paint.setColor(0xffEDF9FF);
    paint.setTypeface(Typeface.create("sans-serif-black",Typeface.BOLD));paint.setTextSize(dp(43));
    paint.setTextAlign(Paint.Align.CENTER);canvas.drawText("ϟ",cx,cy+10,paint);
    paint.setTextSize(dp(15));canvas.drawText("TITAN SPEED",cx,cy+38,paint);
