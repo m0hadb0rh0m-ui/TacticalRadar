@@ -139,12 +139,10 @@ public class MainActivity extends Activity {
   link(guides,"الحماية والأذونات","تفاصيل الفحص والخصوصية",()->guide("security"));
   link(guides,"البطارية والألعاب","شرح القياسات وحدود التحسين",()->guide("battery"));
   link(guides,"الروابط والشبكات","الاحتيال وDNS والاتصال",()->guide("scam"));
-  link(guides,"التخزين والتقارير","الملفات المكررة والرسوم",()->guide("storage"));
   LinearLayout quick=card("TITAN INTELLIGENCE X","الأنظمة العشرة في مركز واحد");
   link(quick,"✦  افتح مركز الذكاء والتحليل","روابط، أمان، بطارية، شبكة، ألعاب وتقارير",()->launch(IntelligenceHubActivity.class));
   link(quick,"⬡  Security Smart Scan","فحص إعدادات الأمان والموارد",()->launch(SmartScanActivity.class));
   link(quick,"⚡  Power Station","مراقبة الشحن وحفظ الجلسات",()->launch(PowerStationActivity.class));
-  link(quick,"◈  Time Capsule","تغيّرات الجهاز منذ آخر لقطة",()->launch(TimeCapsuleActivity.class));
   title("تقارير وتحليلات");
   LinearLayout r=card("المتابعة الذكية","معلومات قابلة للتحقق من الجهاز");
   link(r,"سجل الأداء والحرارة","رسم بياني وقياسات تاريخية",()->launch(TrendsActivity.class));
@@ -153,13 +151,10 @@ public class MainActivity extends Activity {
  private void security(){
   title("SECURITY COMMAND");
   LinearLayout s=card("مركز الحماية الشامل","تدقيق شفاف دون ادعاء وجود محرك فيروسات");
-  link(s,"مركز الحماية الدورية","مراقبة التغييرات وإدارة الحماية",()->launch(ProtectionActivity.class));
+  link(s,"المراقبة الدورية","تنبيهات التغييرات وإعدادات الحماية",()->launch(ProtectionActivity.class));
   link(s,"فحص ملفات APK الحقيقي","بصمة SHA-256 والأذونات وبنية الحزمة",()->launch(ApkInspectorActivity.class));
   link(s,"⬡  Smart Security Scan","قفل الجهاز، تصحيح USB، التحديثات والحرارة",()->launch(SmartScanActivity.class));
-  link(s,"Security Health Center","مؤشرات إعدادات الحماية",()->launch(SecurityCenterActivity.class));
-  link(s,"TITAN NETWORK DEFENSE X","HTTPS والشهادات ومراقبة تغيّر DNS والكمون",()->launch(NetworkDefenseActivity.class));
-  link(s,"TITAN Wi-Fi Security Lab","تشفير الشبكة وDNS والبوابة وقوة الإشارة",()->launch(WifiAuditActivity.class));
-  link(s,"Scam Shield","تحليل محلي لمؤشرات روابط التصيّد",()->launch(IntelligenceHubActivity.class));
+  link(s,"تقرير الحالة الأمنية","مؤشرات إعدادات الحماية",()->launch(SecurityCenterActivity.class));
   link(s,"فحص أذونات التطبيقات","مراجعة الأذونات الحساسة",()->launch(PrivacyAuditActivity.class));
   LinearLayout system=card("حماية Android الرسمية","اختصارات إلى إعدادات النظام");
   link(system,"إعدادات الأمان","قفل الشاشة وحماية الجهاز",()->settings(Settings.ACTION_SECURITY_SETTINGS));
