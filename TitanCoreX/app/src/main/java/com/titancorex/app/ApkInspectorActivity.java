@@ -37,6 +37,8 @@ public class ApkInspectorActivity extends Activity {
    int entries=0,dex=0,nativeFiles=0,duplicates=0;Set<String> names=new HashSet<>();boolean manifest=false,signature=false;
    try(ZipFile zip=new ZipFile(temp)){Enumeration<? extends ZipEntry> e=zip.entries();while(e.hasMoreElements()){ZipEntry z=e.nextElement();entries++;if(entries>40000)throw new IOException("عدد مكونات الأرشيف كبير جدًا");String name=z.getName();if(!names.add(name))duplicates++;if(name.matches("classes[0-9]*\\.dex"))dex++;if(name.startsWith("lib/")&&name.endsWith(".so"))nativeFiles++;if(name.equals("AndroidManifest.xml"))manifest=true;if(name.startsWith("META-INF/")&&(name.endsWith(".RSA")||name.endsWith(".DSA")||name.endsWith(".EC")))signature=true;}}
    PackageInfo pkg=getPackageManager().getPackageArchiveInfo(temp.getAbsolutePath(),PackageManager.GET_PERMISSIONS);
+   ThreatEngine.Verdict verdict;
+   try(InputStream check=new FileInputStream(temp)){verdict=ThreatEngine.scan(this,check);}
    StringBuilder report=new StringBuilder();
    report.append("SHA-256: ").append(hex).append("\n");
    report.append("الحجم: ").append(String.format(Locale.US,"%.2f MB",bytes/1048576.0)).append("\n");
