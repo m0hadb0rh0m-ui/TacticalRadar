@@ -14,7 +14,7 @@ public class PrivacyAuditActivity extends Activity {
     private LinearLayout results;
     private EditText search;
     private final ArrayList<AppEntry> entries=new ArrayList<>();
-    private final int BG=0xff050915, CARD=0xff23183D, CYAN=0xffB77BFF, WHITE=0xffF4F8FF, MUTED=0xffA9BCD1, GOLD=0xffFFCE77;
+    private final int BG=0xffF8F4FF, CARD=0xffFFFFFF, CYAN=0xff8048D5, WHITE=0xff243250, MUTED=0xff5E6B86, GOLD=0xffA66B00;
     private static class AppEntry {String name, pkg;ArrayList<String> permissions=new ArrayList<>();int risk;boolean system;}
     private int dp(int n){return (int)(n*getResources().getDisplayMetrics().density+.5f);}
     private TextView text(String s,int size,int color){TextView v=new TextView(this);v.setText(s);v.setTextSize(size);v.setTextColor(color);v.setPadding(dp(3),dp(6),dp(3),dp(6));return v;}
