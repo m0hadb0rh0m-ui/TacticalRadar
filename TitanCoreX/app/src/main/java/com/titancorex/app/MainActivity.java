@@ -13,7 +13,7 @@ import android.widget.*;
 import java.util.*;
 
 public class MainActivity extends Activity {
- private static final int BG=0xff050915,SURFACE=0xff111D32,PANEL=0xff1A304D,CYAN=0xff00D9FF,WHITE=0xffF8FBFF,MUTED=0xffA6BED9,GREEN=0xff35F0A4,AMBER=0xffFFD044,RED=0xffFF4D6D;
+ private static final int BG=0xffF1F7FF,SURFACE=0xffFFFFFF,PANEL=0xffDCEBFF,CYAN=0xff087BEA,WHITE=0xff142C50,MUTED=0xff506987,GREEN=0xff087F58,AMBER=0xffA96C00,RED=0xffD83D62;
  private LinearLayout body,nav;private TextView topSubtitle;private int page=0;
  private int dp(float x){return (int)(x*getResources().getDisplayMetrics().density+.5f);}
  private GradientDrawable gradient(int a,int b,int r,int stroke){GradientDrawable d=new GradientDrawable(GradientDrawable.Orientation.TL_BR,new int[]{a,b});d.setCornerRadius(dp(r));if(stroke!=0)d.setStroke(dp(1),stroke);return d;}
@@ -30,7 +30,7 @@ public class MainActivity extends Activity {
   t.setPadding(dp(12),0,0,0);section.addView(t);add(body,section);
  }
  private LinearLayout card(String label,String description){
-  LinearLayout c=col();c.setPadding(dp(17),dp(17),dp(17),dp(17));c.setBackground(gradient(0xff1D3452,0xff101C31,24,0xff396184));
+  LinearLayout c=col();c.setPadding(dp(17),dp(17),dp(17),dp(17));c.setBackground(gradient(0xffFFFFFF,0xffE8F2FF,24,0xffC3DDF8));
   TextView heading=txt(label,19,WHITE,true);heading.setTypeface(Typeface.create("sans-serif-black",Typeface.BOLD));add(c,heading);if(description!=null){gap(c,5);add(c,txt(description,12,MUTED,false));}gap(c,10);
   add(body,c);gap(body,13);return c;
  }
@@ -51,7 +51,7 @@ public class MainActivity extends Activity {
   return "✦";
  }
  private void link(LinearLayout c,String name,String detail,Runnable action){
-  LinearLayout line=row();line.setPadding(dp(12),dp(13),dp(12),dp(13));line.setBackground(gradient(0xff234365,0xff12273F,17,0xff427397));
+  LinearLayout line=row();line.setPadding(dp(12),dp(13),dp(12),dp(13));line.setBackground(gradient(0xffEAF5FF,0xffD9EAFD,17,0xffB9D8F6));
   int accent=featureColor(name);
   TextView art=txt(featureIcon(name),26,accent,true);art.setGravity(Gravity.CENTER);
   art.setBackground(gradient(0xff1A3550,0xff0F253D,13,accent));
@@ -75,17 +75,17 @@ public class MainActivity extends Activity {
   float t=temperature();if(t>=43)result-=25;else if(t>=39)result-=12;
   return Math.max(0,result);
  }
- @Override public void onCreate(Bundle b){super.onCreate(b);getWindow().setStatusBarColor(BG);getWindow().setNavigationBarColor(BG);shell();show(0);}
+ @Override public void onCreate(Bundle b){super.onCreate(b);getWindow().setStatusBarColor(BG);getWindow().setNavigationBarColor(BG);getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR|View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);shell();show(0);}
  private void shell(){
   LinearLayout root=col();root.setBackgroundColor(BG);root.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);setContentView(root);
-  LinearLayout header=row();header.setPadding(dp(18),dp(17),dp(18),dp(17));header.setBackground(gradient(0xff153C62,0xff091428,0,0));
+  LinearLayout header=row();header.setPadding(dp(18),dp(17),dp(18),dp(17));header.setBackground(gradient(0xffFFFFFF,0xffE3F0FF,0,0));
   ImageView logo=new ImageView(this);logo.setImageResource(R.drawable.titan_logo);header.addView(logo,new LinearLayout.LayoutParams(dp(53),dp(53)));
   LinearLayout heading=col();heading.setPadding(dp(12),0,0,0);TextView brand=txt("TITAN CORE X",25,WHITE,true);brand.setTypeface(Typeface.create("sans-serif-black",Typeface.BOLD));add(heading,brand);gap(heading,4);
   topSubtitle=txt("SECURITY • PERFORMANCE • INTELLIGENCE",10,CYAN,true);add(heading,topSubtitle);header.addView(heading,new LinearLayout.LayoutParams(0,-2,1));
   TextView refresh=txt("⟳",27,CYAN,true);refresh.setPadding(dp(10),dp(5),dp(10),dp(5));header.addView(refresh);refresh.setOnClickListener(v->show(page));add(root,header);
   ScrollView sc=new ScrollView(this);sc.setFillViewport(false);sc.setVerticalScrollBarEnabled(false);
   body=col();body.setPadding(dp(16),dp(19),dp(16),dp(22));sc.addView(body);root.addView(sc,new LinearLayout.LayoutParams(-1,0,1));
-  nav=row();nav.setPadding(dp(7),dp(9),dp(7),dp(10));nav.setBackground(gradient(0xff142944,0xff091326,0,0));add(root,nav);
+  nav=row();nav.setPadding(dp(7),dp(9),dp(7),dp(10));nav.setBackground(gradient(0xffFFFFFF,0xffE5F1FF,0,0));add(root,nav);
  }
  private void navigation(){
   nav.removeAllViews();String[] names={"الرئيسية","الحماية","الأداء","الخصوصية","المزيد"},icons={"⌂","⬡","⚡","◈","☷"};
@@ -106,7 +106,7 @@ public class MainActivity extends Activity {
   String[] symbols={"","⬡","ϟ","◈","✦"};
   int[] accents={CYAN,RED,AMBER,0xffBA75FF,GREEN};
   LinearLayout hero=col();hero.setPadding(dp(22),dp(24),dp(22),dp(23));
-  hero.setBackground(gradient(0xff243D60,0xff111D33,26,accents[index]));
+  hero.setBackground(gradient(0xffFFFFFF,0xffE2F1FF,26,accents[index]));
   TitanCyberSceneView scene=new TitanCyberSceneView(this,accents[index]);hero.addView(scene,new LinearLayout.LayoutParams(-1,dp(168)));
   gap(hero,7);TextView heading=txt(titles[index],21,WHITE,true);
   heading.setTypeface(Typeface.create("sans-serif-black",Typeface.BOLD));heading.setGravity(Gravity.CENTER);add(hero,heading);
@@ -118,12 +118,12 @@ public class MainActivity extends Activity {
   View rule=new View(this);rule.setBackgroundColor(0xff263B52);c.addView(rule,new LinearLayout.LayoutParams(-1,dp(1)));
  }
  private void hero(){
-  LinearLayout h=col();h.setPadding(dp(22),dp(23),dp(22),dp(23));h.setBackground(gradient(0xff0C6F95,0xff152047,28,0xff39D8FF));
+  LinearLayout h=col();h.setPadding(dp(22),dp(23),dp(22),dp(23));h.setBackground(gradient(0xffDFF5FF,0xffBCDFFF,28,0xff60B5FF));
   add(h,txt("LIVE DEVICE STATUS",11,CYAN,true));gap(h,9);
   TitanCyberSceneView visual=new TitanCyberSceneView(this,CYAN);h.addView(visual,new LinearLayout.LayoutParams(-1,dp(145)));gap(h,5);
   TextView scoreText=txt(score()+" / 100",54,WHITE,true);scoreText.setTypeface(Typeface.create("sans-serif-black",Typeface.BOLD));add(h,scoreText);gap(h,4);add(h,txt("مؤشر تقديري للموارد، وليس نتيجة فحص فيروسات",12,0xffD0E2EF,false));gap(h,18);
   ProgressBar p=new ProgressBar(this,null,android.R.attr.progressBarStyleHorizontal);p.setMax(100);p.setProgress(score());p.setProgressTintList(ColorStateList.valueOf(CYAN));add(h,p);gap(h,19);
-  Button scan=new Button(this);scan.setText("⬡   ابدأ الفحص الأمني الآن");scan.setTextSize(17);scan.setTypeface(Typeface.create("sans-serif-black",Typeface.BOLD));scan.setAllCaps(false);scan.setTextColor(BG);scan.setBackground(gradient(0xff26C9FF,0xff82F2FF,17,0));add(h,scan);scan.setOnClickListener(v->launch(SmartScanActivity.class));
+  Button scan=new Button(this);scan.setText("⬡   ابدأ الفحص الأمني الآن");scan.setTextSize(17);scan.setTypeface(Typeface.create("sans-serif-black",Typeface.BOLD));scan.setAllCaps(false);scan.setTextColor(BG);scan.setBackground(gradient(0xff40D4FF,0xff71F2FF,17,0));add(h,scan);scan.setOnClickListener(v->launch(SmartScanActivity.class));
   add(body,h);gap(body,17);
  }
  private void home(){
