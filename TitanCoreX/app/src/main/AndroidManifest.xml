@@ -18,6 +18,8 @@
    <property android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE" android:value="User-approved DNS-only VPN firewall"/>
    <intent-filter><action android:name="android.net.VpnService"/></intent-filter>
   </service>
+  <activity android:name=".NetworkSpeedActivity" android:exported="false"/>
+  <activity android:name=".DnsDiagnosticsActivity" android:exported="false"/>
   <activity android:name=".DnsFirewallActivity" android:exported="false"/>
   <service android:name=".NetworkWatchJob" android:permission="android.permission.BIND_JOB_SERVICE" android:exported="true"/>
   <service android:name=".ThreatUpdateJob" android:permission="android.permission.BIND_JOB_SERVICE" android:exported="true"/>
