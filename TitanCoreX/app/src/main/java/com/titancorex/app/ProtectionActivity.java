@@ -23,6 +23,7 @@ public class ProtectionActivity extends Activity {
    "\nتطبيقات ظهرت حديثًا: "+p.getString("new_apps","لا توجد بيانات")+
    "\nتنبيهات تثبيت التطبيقات: "+(p.getBoolean("instant_alerts",false)?"مفعلة":"متوقفة")+
    "\nآخر تطبيق تم تثبيته: "+p.getString("last_installed","لا يوجد سجل")+
+   "\nتحديثات قاعدة التهديدات: "+(ThreatFeedUpdater.configured()?(ThreatFeedUpdater.scheduled(this)?"مجدولة":"غير مجدولة"):"بانتظار مصدر موثوق ومفتاح توقيع")+
    "\nقاعدة البصمات: "+ThreatEngine.feedStatus(this)+
    "\n\nهذا رصد لتغيّر قائمة التطبيقات التي يسمح Android برؤيتها، وليس كشفًا لحظيًا للفيروسات. قد يؤخر النظام الفحص لتوفير الطاقة.");
  }
@@ -31,6 +32,8 @@ public class ProtectionActivity extends Activity {
   root.addView(label("TITAN PROTECTION CENTER",23));
   root.addView(label("مراقبة دورية للتغييرات — بفواصل لا تقل عن 15 دقيقة بحسب جدولة Android.",14));
   status=label("",15);root.addView(status);
+  button("تفعيل تحديث قاعدة التهديدات تلقائيًا",()->{try{ThreatFeedUpdater.schedule(this);Toast.makeText(this,"تمت جدولة التحديثات",Toast.LENGTH_SHORT).show();}catch(Exception e){new AlertDialog.Builder(this).setTitle("التحديث غير جاهز").setMessage("يلزم إعداد رابط مصدر تهديدات موثوق ومفتاح تحقق رقمي قبل تفعيل التنزيل.").setPositiveButton("حسنًا",null).show();}refresh();});
+  button("إيقاف تحديثات القاعدة",()->{ThreatFeedUpdater.cancel(this);refresh();});
   button("تفعيل تنبيهات تثبيت التطبيقات",()->{getSharedPreferences("titan_monitor",MODE_PRIVATE).edit().putBoolean("instant_alerts",true).apply();refresh();});
   button("إيقاف تنبيهات التثبيت",()->{getSharedPreferences("titan_monitor",MODE_PRIVATE).edit().putBoolean("instant_alerts",false).apply();refresh();});
   button("تفعيل مراقبة التطبيقات الدورية",()->{SecurityMonitorJob.schedule(this);refresh();});
