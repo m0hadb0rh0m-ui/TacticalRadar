@@ -116,6 +116,7 @@ public class MainActivity extends Activity {
   link(s,"فحص ملفات APK الحقيقي","بصمة SHA-256 والأذونات وبنية الحزمة",()->launch(ApkInspectorActivity.class));
   link(s,"⬡  Smart Security Scan","قفل الجهاز، تصحيح USB، التحديثات والحرارة",()->launch(SmartScanActivity.class));
   link(s,"Security Health Center","مؤشرات إعدادات الحماية",()->launch(SecurityCenterActivity.class));
+  link(s,"TITAN NETWORK DEFENSE X","HTTPS والشهادات ومراقبة تغيّر DNS والكمون",()->launch(NetworkDefenseActivity.class));
   link(s,"TITAN Wi-Fi Security Lab","تشفير الشبكة وDNS والبوابة وقوة الإشارة",()->launch(WifiAuditActivity.class));
   link(s,"Scam Shield","تحليل محلي لمؤشرات روابط التصيّد",()->launch(IntelligenceHubActivity.class));
   link(s,"فحص أذونات التطبيقات","مراجعة الأذونات الحساسة",()->launch(PrivacyAuditActivity.class));
@@ -167,6 +168,7 @@ public class MainActivity extends Activity {
   String type=caps==null?"غير متصل":caps.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)?"Wi-Fi":caps.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)?"شبكة خلوية":"اتصال آخر";
   stat(n,"نوع الاتصال",type,CYAN);
   stat(n,"اتصال تحقق منه Android",caps!=null&&caps.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)?"نعم":"غير مؤكد",WHITE);
+  link(n,"TITAN NETWORK DEFENSE X","مختبر أمان HTTPS وDNS وجودة الاتصال",()->launch(NetworkDefenseActivity.class));
   link(n,"تشخيص الشبكة التفصيلي","عرض DNS ومعلومات الاتصال",()->launch(IntelligenceHubActivity.class));
  }
  private void note(String s){LinearLayout c=col();c.setPadding(dp(14),dp(14),dp(14),dp(14));c.setBackground(gradient(0xff302B28,0xff201E26,16,0xff66533C));add(c,txt("ⓘ  "+s,12,AMBER,false));add(body,c);gap(body,15);}
