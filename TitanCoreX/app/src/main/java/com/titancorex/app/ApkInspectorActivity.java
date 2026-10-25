@@ -15,7 +15,7 @@ import java.util.zip.*;
 
 public class ApkInspectorActivity extends Activity {
  private static final int PICK=7041,BG=0xffF2F8FF,WHITE=0xff173557,CYAN=0xff087BEA,MUTED=0xff536B85,AMBER=0xffA66D00;
- private LinearLayout root;private TextView status;private Button pick;
+ private LinearLayout root;private TextView status;private Button pick,vaultButton;private Uri selectedUri;
  private int dp(int v){return (int)(v*getResources().getDisplayMetrics().density+.5f);}
  private TextView text(String s,int size,int color){TextView t=new TextView(this);t.setText(s);t.setTextColor(color);t.setTextSize(size);t.setPadding(dp(5),dp(8),dp(5),dp(8));return t;}
  private void result(String label,String value){LinearLayout c=new LinearLayout(this);c.setOrientation(1);c.setPadding(dp(13),dp(10),dp(13),dp(10));GradientDrawable d=new GradientDrawable(GradientDrawable.Orientation.TL_BR,new int[]{0xffFFFFFF,0xffEAF4FF});d.setCornerRadius(dp(16));c.setBackground(d);c.addView(text(label,13,CYAN));c.addView(text(value,14,WHITE));root.addView(c);View gap=new View(this);root.addView(gap,new LinearLayout.LayoutParams(1,dp(9)));}
@@ -23,11 +23,36 @@ public class ApkInspectorActivity extends Activity {
   ScrollView sc=new ScrollView(this);root=new LinearLayout(this);root.setOrientation(1);root.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);root.setPadding(dp(18),dp(22),dp(18),dp(22));root.setBackgroundColor(BG);sc.addView(root);setContentView(sc);
   root.addView(text("TITAN APK INSPECTOR",25,CYAN));root.addView(text("تحليل ملف APK تختاره أنت. لا يرفع الملف إلى الإنترنت ولا يثبت التطبيق.",14,MUTED));
   pick=new Button(this);pick.setText("اختيار ملف APK للفحص");root.addView(pick);pick.setOnClickListener(v->{Intent i=new Intent(Intent.ACTION_OPEN_DOCUMENT);i.setType("*/*");i.addCategory(Intent.CATEGORY_OPENABLE);i.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);startActivityForResult(i,PICK);});
-  status=text("النتائج تحليل بنيوي وبصمة SHA-256، وليست حكمًا بأن الملف آمن أو خبيث.",13,AMBER);root.addView(status);
+  vaultButton=new Button(this);vaultButton.setText("حفظ نسخة مشفرة من الملف المختار");vaultButton.setAllCaps(false);vaultButton.setEnabled(false);
+  root.addView(vaultButton);vaultButton.setOnClickListener(v->saveEncryptedSample());
+  Button clearVault=new Button(this);clearVault.setText("حذف جميع النسخ المحفوظة المشفرة");clearVault.setAllCaps(false);root.addView(clearVault);
+  clearVault.setOnClickListener(v->new AlertDialog.Builder(this)
+   .setTitle("حذف النسخ المشفرة")
+   .setMessage("هل تريد حذف جميع عينات APK المحفوظة داخل خزنة TITAN؟ الملفات الأصلية لن تتغير.")
+   .setNegativeButton("إلغاء",null)
+   .setPositiveButton("حذف",(dialog,which)->{int removed=TitanSampleVault.clearAll(this);
+     Toast.makeText(this,"تم حذف "+removed+" نسخة",Toast.LENGTH_LONG).show();}).show());
+  status=text("النتائج تحليل بنيوي وبصمة SHA-256، وليست حكمًا بأن الملف آمن أو خبيث. الخزنة تحفظ نسخة مشفرة فقط؛ لا تعزل التطبيق المثبت أو تحذف الأصل.",13,AMBER);root.addView(status);
  }
  @Override protected void onActivityResult(int request,int result,Intent data){super.onActivityResult(request,result,data);if(request!=PICK||result!=RESULT_OK||data==null||data.getData()==null)return;
-  Uri uri=data.getData();pick.setEnabled(false);status.setText("جارٍ قراءة الملف وتحليله...");
+  Uri uri=data.getData();selectedUri=uri;vaultButton.setEnabled(true);pick.setEnabled(false);status.setText("جارٍ قراءة الملف وتحليله...");
   new Thread(()->{String report;try{report=inspect(uri);}catch(Exception e){report="تعذر الفحص: "+e.getClass().getSimpleName()+" — "+e.getMessage();}final String r=report;runOnUiThread(()->{pick.setEnabled(true);status.setText(r);});}).start();
+ }
+ private void saveEncryptedSample(){
+  if(selectedUri==null)return;
+  Uri uri=selectedUri;vaultButton.setEnabled(false);
+  status.setText("جارٍ إنشاء نسخة AES-256-GCM داخل تخزين التطبيق الخاص...");
+  new Thread(()->{
+   String message;
+   try{
+    TitanSampleVault.Receipt receipt=TitanSampleVault.importSelected(this,uri);
+    message="تم حفظ نسخة مشفرة. حجمها "+String.format(Locale.US,"%.2f MB",receipt.bytes/1048576.0)+
+      "\\nSHA-256: "+receipt.sha256+
+      "\\nتنبيه: الملف الأصلي لا يزال في مكانه؛ هذا حفظ مشفر وليس حجرًا للنظام.";
+   }catch(Exception e){message="فشل حفظ النسخة المشفرة: "+e.getClass().getSimpleName();}
+   final String note=message;
+   runOnUiThread(()->{if(isFinishing()||isDestroyed())return;vaultButton.setEnabled(true);status.setText(note);});
+  },"TitanEncryptedSampleSave").start();
  }
  private String inspect(Uri uri)throws Exception{
   File temp=File.createTempFile("titan-inspect-", ".apk",getCacheDir());long bytes=0;MessageDigest digest=MessageDigest.getInstance("SHA-256");
