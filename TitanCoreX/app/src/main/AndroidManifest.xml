@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
  <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+ <uses-permission android:name="android.permission.INTERNET"/>
  <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
  <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
  <queries>
@@ -10,6 +11,7 @@
   <receiver android:name=".PackageWatchReceiver" android:exported="false">
    <intent-filter><action android:name="android.intent.action.PACKAGE_ADDED"/><data android:scheme="package"/></intent-filter>
   </receiver>
+  <service android:name=".ThreatUpdateJob" android:permission="android.permission.BIND_JOB_SERVICE" android:exported="true"/>
   <service android:name=".SecurityMonitorJob" android:permission="android.permission.BIND_JOB_SERVICE" android:exported="true"/>
   <activity android:name=".AppBehaviorActivity" android:exported="false"/>
   <activity android:name=".ProtectionActivity" android:exported="false"/>
