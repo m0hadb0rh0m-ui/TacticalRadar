@@ -28,10 +28,30 @@ public class MainActivity extends Activity {
   add(c,txt(label,17,WHITE,true));if(description!=null){gap(c,5);add(c,txt(description,12,MUTED,false));}gap(c,10);
   add(body,c);gap(body,13);return c;
  }
+ private int featureColor(String name){
+  if(name.contains("شبك")||name.contains("NETWORK")||name.contains("Wi-Fi")||name.contains("DNS"))return 0xff00D9FF;
+  if(name.contains("حما")||name.contains("Security")||name.contains("Scan")||name.contains("أمان"))return 0xffff506e;
+  if(name.contains("Power")||name.contains("أداء")||name.contains("شحن")||name.contains("بطار"))return 0xffffc83d;
+  if(name.contains("خصوص")||name.contains("أذون"))return 0xffba75ff;
+  if(name.contains("APK")||name.contains("تطبيق"))return 0xff35ee9c;
+  return 0xff5ebaff;
+ }
+ private String featureIcon(String name){
+  if(name.contains("شبك")||name.contains("NETWORK")||name.contains("Wi-Fi")||name.contains("DNS"))return "◎";
+  if(name.contains("حما")||name.contains("Security")||name.contains("Scan")||name.contains("أمان"))return "⬡";
+  if(name.contains("Power")||name.contains("أداء")||name.contains("شحن")||name.contains("بطار"))return "ϟ";
+  if(name.contains("خصوص")||name.contains("أذون"))return "♧";
+  if(name.contains("APK")||name.contains("تطبيق"))return "▣";
+  return "✦";
+ }
  private void link(LinearLayout c,String name,String detail,Runnable action){
   LinearLayout line=row();line.setPadding(dp(12),dp(13),dp(12),dp(13));line.setBackground(gradient(0xff234365,0xff12273F,17,0xff427397));
-  LinearLayout labels=col();add(labels,txt(name,14,WHITE,true));if(detail!=null){gap(labels,4);add(labels,txt(detail,11,MUTED,false));}
-  line.addView(labels,new LinearLayout.LayoutParams(0,-2,1));line.addView(txt("‹",27,CYAN,true));line.setOnClickListener(v->action.run());add(c,line);gap(c,9);
+  int accent=featureColor(name);
+  TextView art=txt(featureIcon(name),26,accent,true);art.setGravity(Gravity.CENTER);
+  art.setBackground(gradient(0xff1A3550,0xff0F253D,13,accent));
+  LinearLayout.LayoutParams artParams=new LinearLayout.LayoutParams(dp(50),dp(50));artParams.setMargins(0,0,dp(12),0);line.addView(art,artParams);
+  LinearLayout labels=col();add(labels,txt(name,15,WHITE,true));if(detail!=null){gap(labels,4);add(labels,txt(detail,11,MUTED,false));}
+  line.addView(labels,new LinearLayout.LayoutParams(0,-2,1));line.addView(txt("‹",27,accent,true));line.setContentDescription(name+" - "+(detail==null?"":detail));line.setOnClickListener(v->action.run());add(c,line);gap(c,9);
  }
  private void guide(String key){Intent i=new Intent(this,FeatureGuideActivity.class);i.putExtra("feature",key);startActivity(i);}
  private void launch(Class<?> activity){startActivity(new Intent(this,activity));}
