@@ -10,7 +10,7 @@ import java.util.*;
 /** HTTPS transport for a pinned, signed threat intelligence feed. */
 public final class ThreatFeedUpdater {
  // Provision both values from a vetted threat-intelligence service before production.
- public static final String FEED_URL="";
+ public static final String FEED_URL="https://raw.githubusercontent.com/m0hadb0rh0m-ui/TacticalRadar/titan-core-x/TitanCoreX/threat-feed/feed.json";
  private static final int MAX_FEED_BYTES=12*1024*1024;
  private ThreatFeedUpdater(){}
  public static boolean configured(){return FEED_URL.startsWith("https://")&&ThreatEngine.isSignatureConfigured();}
