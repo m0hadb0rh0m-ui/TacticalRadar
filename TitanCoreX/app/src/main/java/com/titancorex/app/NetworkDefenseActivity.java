@@ -20,7 +20,7 @@ public class NetworkDefenseActivity extends Activity {
  private void run(Check check){output.setText("جارٍ الفحص...");new Thread(()->{String s;try{s=check.call();}catch(Exception e){s="تعذر الفحص: "+e.getClass().getSimpleName()+" — "+e.getMessage();}final String v=s;runOnUiThread(()->output.setText(v));}).start();}
  private interface Check{String call()throws Exception;}
  @Override public void onCreate(Bundle b){super.onCreate(b);getWindow().setStatusBarColor(0xff080D18);
-  ScrollView sc=new ScrollView(this);root=new LinearLayout(this);root.setOrientation(1);root.setPadding(dp(18),dp(20),dp(18),dp(20));root.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);root.setBackgroundColor(0xff050915);sc.addView(root);setContentView(sc);
+  ScrollView sc=new ScrollView(this);root=new LinearLayout(this);root.setOrientation(1);root.setPadding(dp(18),dp(20),dp(18),dp(20));root.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);root.setBackgroundColor(0xffF2F8FF);sc.addView(root);setContentView(sc);
   root.addView(new TitanCyberSceneView(this,0xff00D9FF),new LinearLayout.LayoutParams(-1,dp(170)));
   TextView title=new TextView(this);title.setText("TITAN NETWORK DEFENSE X");title.setTextSize(25);title.setTypeface(android.graphics.Typeface.create("sans-serif-black",1));title.setTextColor(0xff00D9FF);root.addView(title);
   host=new EditText(this);host.setSingleLine(true);host.setText("example.com");host.setHint("اسم نطاق لفحص HTTPS");host.setTextColor(0xffFFFFFF);host.setInputType(android.text.InputType.TYPE_CLASS_TEXT|android.text.InputType.TYPE_TEXT_VARIATION_URI);root.addView(host);
