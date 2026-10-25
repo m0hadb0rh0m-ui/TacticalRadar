@@ -21,6 +21,8 @@ public class ProtectionActivity extends Activity {
    "\nآخر فحص: "+(last==0?"لم يُنفذ بعد":new SimpleDateFormat("yyyy-MM-dd HH:mm",Locale.getDefault()).format(new Date(last)))+
    "\nعدد التطبيقات المرئية: "+p.getInt("count",0)+
    "\nتطبيقات ظهرت حديثًا: "+p.getString("new_apps","لا توجد بيانات")+
+   "\nتنبيهات تثبيت التطبيقات: "+(p.getBoolean("instant_alerts",false)?"مفعلة":"متوقفة")+
+   "\nآخر تطبيق تم تثبيته: "+p.getString("last_installed","لا يوجد سجل")+
    "\nقاعدة البصمات: "+ThreatEngine.feedStatus(this)+
    "\n\nهذا رصد لتغيّر قائمة التطبيقات التي يسمح Android برؤيتها، وليس كشفًا لحظيًا للفيروسات. قد يؤخر النظام الفحص لتوفير الطاقة.");
  }
@@ -29,6 +31,8 @@ public class ProtectionActivity extends Activity {
   root.addView(label("TITAN PROTECTION CENTER",23));
   root.addView(label("مراقبة دورية للتغييرات — بفواصل لا تقل عن 15 دقيقة بحسب جدولة Android.",14));
   status=label("",15);root.addView(status);
+  button("تفعيل تنبيهات تثبيت التطبيقات",()->{getSharedPreferences("titan_monitor",MODE_PRIVATE).edit().putBoolean("instant_alerts",true).apply();refresh();});
+  button("إيقاف تنبيهات التثبيت",()->{getSharedPreferences("titan_monitor",MODE_PRIVATE).edit().putBoolean("instant_alerts",false).apply();refresh();});
   button("تفعيل مراقبة التطبيقات الدورية",()->{SecurityMonitorJob.schedule(this);refresh();});
   button("إيقاف المراقبة",()->{SecurityMonitorJob.stop(this);refresh();});
   button("فحص ملف APK",()->startActivity(new Intent(this,ApkInspectorActivity.class)));
