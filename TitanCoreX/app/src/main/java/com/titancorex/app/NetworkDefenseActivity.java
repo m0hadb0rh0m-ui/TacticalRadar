@@ -16,12 +16,13 @@ import java.util.*;
 public class NetworkDefenseActivity extends Activity {
  private LinearLayout root;private TextView output;private EditText host;
  private int dp(int x){return (int)(x*getResources().getDisplayMetrics().density+.5f);}
- private void action(String label,Runnable fn){Button b=new Button(this);b.setAllCaps(false);b.setText(label);root.addView(b);b.setOnClickListener(v->fn.run());}
+ private void action(String label,Runnable fn){Button b=new Button(this);b.setAllCaps(false);b.setText(label);b.setTextSize(15);b.setTextColor(0xffF7FBFF);android.graphics.drawable.GradientDrawable d=new android.graphics.drawable.GradientDrawable(android.graphics.drawable.GradientDrawable.Orientation.TL_BR,new int[]{0xff164B72,0xff10273E});d.setCornerRadius(dp(17));d.setStroke(dp(1),0xff2789BD);b.setBackground(d);root.addView(b);View space=new View(this);root.addView(space,new LinearLayout.LayoutParams(1,dp(10)));b.setOnClickListener(v->fn.run());}
  private void run(Check check){output.setText("جارٍ الفحص...");new Thread(()->{String s;try{s=check.call();}catch(Exception e){s="تعذر الفحص: "+e.getClass().getSimpleName()+" — "+e.getMessage();}final String v=s;runOnUiThread(()->output.setText(v));}).start();}
  private interface Check{String call()throws Exception;}
  @Override public void onCreate(Bundle b){super.onCreate(b);getWindow().setStatusBarColor(0xff080D18);
-  ScrollView sc=new ScrollView(this);root=new LinearLayout(this);root.setOrientation(1);root.setPadding(dp(18),dp(20),dp(18),dp(20));root.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);root.setBackgroundColor(0xff080D18);sc.addView(root);setContentView(sc);
-  TextView title=new TextView(this);title.setText("TITAN NETWORK DEFENSE X");title.setTextSize(23);title.setTextColor(0xff58E4EF);root.addView(title);
+  ScrollView sc=new ScrollView(this);root=new LinearLayout(this);root.setOrientation(1);root.setPadding(dp(18),dp(20),dp(18),dp(20));root.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);root.setBackgroundColor(0xff050915);sc.addView(root);setContentView(sc);
+  root.addView(new TitanCyberSceneView(this,0xff00D9FF),new LinearLayout.LayoutParams(-1,dp(170)));
+  TextView title=new TextView(this);title.setText("TITAN NETWORK DEFENSE X");title.setTextSize(25);title.setTypeface(android.graphics.Typeface.create("sans-serif-black",1));title.setTextColor(0xff00D9FF);root.addView(title);
   host=new EditText(this);host.setSingleLine(true);host.setText("example.com");host.setHint("اسم نطاق لفحص HTTPS");host.setTextColor(0xffFFFFFF);host.setInputType(android.text.InputType.TYPE_CLASS_TEXT|android.text.InputType.TYPE_TEXT_VARIATION_URI);root.addView(host);
   action("تحليل مؤشرات رابط مشبوه",()->output.setText(urlRisk(host.getText().toString().trim())));
   action("فحص شهادة HTTPS والكمون",()->{String h=host.getText().toString().trim();run(()->tls(h));});
