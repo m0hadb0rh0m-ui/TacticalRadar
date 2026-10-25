@@ -13,10 +13,10 @@ import java.util.*;
 public class DnsDiagnosticsActivity extends Activity {
  private TextView output;
  @Override public void onCreate(Bundle b){super.onCreate(b);
-  LinearLayout root=new LinearLayout(this);root.setOrientation(1);root.setPadding(24,24,24,24);root.setBackgroundColor(0xff080D18);setContentView(root);
-  TextView title=new TextView(this);title.setText("TITAN DNS PRIVACY LAB");title.setTextSize(23);title.setTextColor(0xff57E5EF);root.addView(title);
+  LinearLayout root=new LinearLayout(this);root.setOrientation(1);root.setPadding(24,24,24,24);root.setBackgroundColor(0xffF1F8FF);setContentView(root);
+  TextView title=new TextView(this);title.setText("TITAN DNS PRIVACY LAB");title.setTextSize(23);title.setTextColor(0xff087BEA);root.addView(title);
   Button check=new Button(this);check.setText("فحص DNS ومقارنة محلل HTTPS");root.addView(check);
-  output=new TextView(this);output.setTextColor(-1);output.setTextSize(15);root.addView(output);
+  output=new TextView(this);output.setTextColor(0xff173557);output.setTextSize(15);root.addView(output);
   check.setOnClickListener(v->runCheck());
   output.setText("يعرض خوادم DNS التي أعلنها Android ويختبر الوصول إلى محلل DNS عبر HTTPS. لا يثبت غياب تسرب DNS؛ يتطلب الاختبار الكامل نقطة قياس خارجية تتحكم بها.");
  }
