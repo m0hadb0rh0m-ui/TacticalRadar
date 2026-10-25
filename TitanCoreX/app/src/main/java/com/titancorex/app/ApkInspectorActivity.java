@@ -14,11 +14,11 @@ import java.util.*;
 import java.util.zip.*;
 
 public class ApkInspectorActivity extends Activity {
- private static final int PICK=7041,BG=0xff080D18,WHITE=0xffF4F8FF,CYAN=0xff58E4EF,MUTED=0xffB0C1D3,AMBER=0xffFFCE7A;
+ private static final int PICK=7041,BG=0xffF2F8FF,WHITE=0xff173557,CYAN=0xff087BEA,MUTED=0xff536B85,AMBER=0xffA66D00;
  private LinearLayout root;private TextView status;private Button pick;
  private int dp(int v){return (int)(v*getResources().getDisplayMetrics().density+.5f);}
  private TextView text(String s,int size,int color){TextView t=new TextView(this);t.setText(s);t.setTextColor(color);t.setTextSize(size);t.setPadding(dp(5),dp(8),dp(5),dp(8));return t;}
- private void result(String label,String value){LinearLayout c=new LinearLayout(this);c.setOrientation(1);c.setPadding(dp(13),dp(10),dp(13),dp(10));GradientDrawable d=new GradientDrawable(GradientDrawable.Orientation.TL_BR,new int[]{0xff1B3049,0xff101D30});d.setCornerRadius(dp(16));c.setBackground(d);c.addView(text(label,13,CYAN));c.addView(text(value,14,WHITE));root.addView(c);View gap=new View(this);root.addView(gap,new LinearLayout.LayoutParams(1,dp(9)));}
+ private void result(String label,String value){LinearLayout c=new LinearLayout(this);c.setOrientation(1);c.setPadding(dp(13),dp(10),dp(13),dp(10));GradientDrawable d=new GradientDrawable(GradientDrawable.Orientation.TL_BR,new int[]{0xffFFFFFF,0xffEAF4FF});d.setCornerRadius(dp(16));c.setBackground(d);c.addView(text(label,13,CYAN));c.addView(text(value,14,WHITE));root.addView(c);View gap=new View(this);root.addView(gap,new LinearLayout.LayoutParams(1,dp(9)));}
  @Override public void onCreate(Bundle b){super.onCreate(b);getWindow().setStatusBarColor(BG);getWindow().setNavigationBarColor(BG);
   ScrollView sc=new ScrollView(this);root=new LinearLayout(this);root.setOrientation(1);root.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);root.setPadding(dp(18),dp(22),dp(18),dp(22));root.setBackgroundColor(BG);sc.addView(root);setContentView(sc);
   root.addView(text("TITAN APK INSPECTOR",25,CYAN));root.addView(text("تحليل ملف APK تختاره أنت. لا يرفع الملف إلى الإنترنت ولا يثبت التطبيق.",14,MUTED));
