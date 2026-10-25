@@ -104,7 +104,17 @@ public class TitanDnsVpnService extends VpnService implements Runnable {
   javax.net.ssl.HttpsURLConnection conn=null;
   try{
    URL url=new URL("https://cloudflare-dns.com/dns-query");
-   conn=(javax.net.ssl.HttpsURLConnection)url.openConnection();
+   android.net.ConnectivityManager cm=(android.net.ConnectivityManager)getSystemService(CONNECTIVITY_SERVICE);
+   android.net.Network upstream=null;
+   for(android.net.Network network:cm.getAllNetworks()){
+    android.net.NetworkCapabilities caps=cm.getNetworkCapabilities(network);
+    if(caps!=null&&!caps.hasTransport(android.net.NetworkCapabilities.TRANSPORT_VPN)
+      &&caps.hasCapability(android.net.NetworkCapabilities.NET_CAPABILITY_INTERNET)){
+     upstream=network;break;
+    }
+   }
+   if(upstream==null)return null;
+   conn=(javax.net.ssl.HttpsURLConnection)upstream.openConnection(url);
    conn.setRequestMethod("POST");conn.setDoOutput(true);conn.setUseCaches(false);
    conn.setConnectTimeout(5000);conn.setReadTimeout(5000);
    conn.setRequestProperty("Accept","application/dns-message");
