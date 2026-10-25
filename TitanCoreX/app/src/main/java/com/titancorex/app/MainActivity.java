@@ -121,6 +121,7 @@ public class MainActivity extends Activity {
     metric(c,"التخزين المتاح",format(disk().getAvailableBytes()),GOLD);
     block(c);
     LinearLayout actions=card("الوصول السريع","تشخيص الجهاز وأدوات النظام الآمنة");
+    action(actions,"مختبر التبريد والرام والتخزين","مراقبة الحرارة والذاكرة والتنظيف الآمن",()->startActivity(new Intent(this,ResourceLabActivity.class)));
     action(actions,"فحص الهاتف","البطارية والذاكرة والتخزين والشبكة",()->show(1));
     action(actions,"مراجعة الحماية","التطبيقات والأذونات",()->show(2));
     action(actions,"مركز أداء الألعاب","تهيئة جلسة لعب",()->show(3));
@@ -220,6 +221,7 @@ public class MainActivity extends Activity {
     LinearLayout u=card("لوحة الأدوات","أدوات نظام الهاتف");
     action(u,"إعدادات الشبكة","إعدادات Wi-Fi وبيانات الهاتف",()->open(Settings.ACTION_WIRELESS_SETTINGS));
     action(u,"إعدادات البطارية","استهلاك البطارية وخيارات الشحن",()->open(Settings.ACTION_BATTERY_SAVER_SETTINGS));
+    action(u,"مركز استعادة الموارد","الحرارة والرام والتخزين في لوحة واحدة",()->startActivity(new Intent(this,ResourceLabActivity.class)));
     action(u,"تحديث القياسات","إعادة قراءة بيانات الهاتف",()->show(page));
     block(u);
     note("Deep app caches and protected system files cannot be erased silently on modern Android. Cleanup always requires user-approved access.");
