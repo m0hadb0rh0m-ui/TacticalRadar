@@ -3,6 +3,8 @@ package com.titancorex.app;
 import android.app.*;
 import android.os.*;
 import android.view.*;
+import android.graphics.*;
+import android.graphics.drawable.GradientDrawable;
 import android.widget.*;
 import java.io.*;
 import java.net.*;
@@ -11,16 +13,20 @@ import java.util.*;
 /** User-initiated transfer test; real bytes and monotonic clock, not estimated link rate. */
 public class NetworkSpeedActivity extends Activity {
  private TextView result;private volatile boolean cancelled=false;
+ private SpeedVisual visual;private TextView visualLabel;
  private static final String BASE="https://speed.cloudflare.com";
  @Override public void onCreate(Bundle state){super.onCreate(state);
   ScrollView scroll=new ScrollView(this);LinearLayout root=new LinearLayout(this);root.setOrientation(1);root.setPadding(24,24,24,24);root.setBackgroundColor(0xffF1F8FF);scroll.addView(root);setContentView(scroll);
   TextView title=new TextView(this);title.setText("TITAN SPEED & RELIABILITY LAB");title.setTextColor(0xff087BEA);title.setTextSize(23);root.addView(title);
+  visual=new SpeedVisual();root.addView(visual,new LinearLayout.LayoutParams(-1,260));
+  visualLabel=new TextView(this);visualLabel.setText("جاهز للفحص");visualLabel.setTextColor(0xff087BEA);visualLabel.setTextSize(18);visualLabel.setGravity(Gravity.CENTER);root.addView(visualLabel);
   result=new TextView(this);result.setTextColor(0xff183453);result.setTextSize(16);root.addView(result);
-  Button start=new Button(this);start.setText("قياس سرعة التنزيل والرفع");root.addView(start);start.setOnClickListener(v->runTest());
-  Button stop=new Button(this);stop.setText("إيقاف القياس");root.addView(stop);stop.setOnClickListener(v->{cancelled=true;result.setText("تم طلب إيقاف الاختبار");});
+  Button start=new Button(this);start.setText("ϟ  بدء قياس سرعة التنزيل والرفع");start.setAllCaps(false);start.setTextColor(0xffffffff);start.setBackground(buttonBackground(0xff078DFF,0xff535FF0));root.addView(start);start.setOnClickListener(v->runTest());
+  Button stop=new Button(this);stop.setText("■  إيقاف القياس");stop.setAllCaps(false);stop.setTextColor(0xffffffff);stop.setBackground(buttonBackground(0xffFF9860,0xffE45480));root.addView(stop);stop.setOnClickListener(v->{cancelled=true;result.setText("تم طلب إيقاف الاختبار");});
   result.setText("اختبار نقل بيانات فعلي إلى Cloudflare. يستهلك قرابة 6 MB في كل تشغيل وقد يستهلك بيانات الهاتف. لا يختبر فقدان حزم ICMP.");
  }
- private void display(String message){runOnUiThread(()->result.setText(message));}
+ private GradientDrawable buttonBackground(int a,int b){GradientDrawable d=new GradientDrawable(GradientDrawable.Orientation.TL_BR,new int[]{a,b});d.setCornerRadius(22);return d;}
+ private void display(String message){runOnUiThread(()->{result.setText(message);if(visualLabel!=null)visualLabel.setText(message.split("\\n")[0]);});}
  private double download(int bytes)throws Exception{
   HttpURLConnection c=(HttpURLConnection)new URL(BASE+"/__down?bytes="+bytes).openConnection();
   c.setConnectTimeout(7000);c.setReadTimeout(12000);c.setUseCaches(false);
@@ -42,11 +48,35 @@ public class NetworkSpeedActivity extends Activity {
    return bytes*8.0/((System.nanoTime()-start)/1e9)/1e6;
   }finally{c.disconnect();}
  }
- private void runTest(){cancelled=false;display("جارٍ نقل بيانات الاختبار...");
+ private void runTest(){cancelled=false;visual.start();display("جارٍ نقل بيانات الاختبار...");
   new Thread(()->{try{
    double down=download(4*1024*1024);if(cancelled)return;display(String.format(Locale.US,"تنزيل: %.2f Mbps\nجارٍ اختبار الرفع...",down));
    double up=upload(2*1024*1024);if(cancelled)return;
    display(String.format(Locale.US,"تنزيل: %.2f Mbps\nرفع: %.2f Mbps\n\nالنتائج مرتبطة بخادم Cloudflare وحالة الشبكة وقت الاختبار، ولا تمثل السرعة القصوى المضمونة.",down,up));
-  }catch(Exception e){display("فشل القياس أو الخادم غير متاح: "+e.getMessage());}}).start();
+  }catch(Exception e){display("فشل القياس أو الخادم غير متاح: "+e.getMessage());}finally{runOnUiThread(()->visual.stop());}}).start();
  }
+ private final class SpeedVisual extends View {
+  private final Paint paint=new Paint(3);
+  private float angle=0;private boolean active=false;
+  private final Runnable frame=new Runnable(){public void run(){if(!active)return;angle=(angle+3)%360;invalidate();postDelayed(this,35);}};
+  SpeedVisual(){super(NetworkSpeedActivity.this);}
+  void start(){active=true;removeCallbacks(frame);post(frame);}
+  void stop(){active=false;removeCallbacks(frame);invalidate();}
+  @Override protected void onDraw(Canvas canvas){
+   super.onDraw(canvas);float cx=getWidth()/2f,cy=getHeight()/2f;
+   float radius=Math.min(getWidth(),getHeight())*.36f;
+   paint.setStyle(Paint.Style.FILL);paint.setColor(0xffE0F3FF);canvas.drawCircle(cx,cy,radius*1.17f,paint);
+   paint.setStyle(Paint.Style.STROKE);paint.setStrokeWidth(15);paint.setStrokeCap(Paint.Cap.ROUND);
+   paint.setColor(0xffC4DCF7);canvas.drawArc(cx-radius,cy-radius,cx+radius,cy+radius,135,270,false,paint);
+   paint.setColor(0xff138BF4);canvas.drawArc(cx-radius,cy-radius,cx+radius,cy+radius,135,active?angle*.75f:175,false,paint);
+   paint.setStrokeWidth(5);paint.setColor(0xff02BBD4);
+   canvas.drawArc(cx-radius*.73f,cy-radius*.73f,cx+radius*.73f,cy+radius*.73f,active?angle:30,65,false,paint);
+   paint.setStyle(Paint.Style.FILL);paint.setColor(0xff193B66);
+   paint.setTypeface(Typeface.create("sans-serif-black",Typeface.BOLD));paint.setTextSize(43);
+   paint.setTextAlign(Paint.Align.CENTER);canvas.drawText("ϟ",cx,cy+10,paint);
+   paint.setTextSize(15);canvas.drawText("TITAN SPEED",cx,cy+38,paint);
+  }
+ }
+ @Override protected void onDestroy(){if(visual!=null)visual.stop();cancelled=true;super.onDestroy();}
 }
+
