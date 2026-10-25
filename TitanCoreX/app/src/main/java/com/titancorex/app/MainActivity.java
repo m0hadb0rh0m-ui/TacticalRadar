@@ -89,16 +89,30 @@ public class MainActivity extends Activity {
  }
  private void navigation(){
   nav.removeAllViews();String[] names={"الرئيسية","الحماية","الأداء","الخصوصية","المزيد"},icons={"⌂","⬡","⚡","◈","☷"};
-  for(int i=0;i<5;i++){final int index=i;LinearLayout item=col();item.setGravity(Gravity.CENTER);item.setPadding(0,dp(8),0,dp(8));if(i==page)item.setBackground(gradient(0xff1D3D52,0xff15273C,13,0));
-   TextView icon=txt(icons[i],23,i==page?CYAN:MUTED,true);icon.setGravity(Gravity.CENTER);add(item,icon);gap(item,4);
-   TextView label=txt(names[i],10,i==page?WHITE:MUTED,i==page);label.setGravity(Gravity.CENTER);add(item,label);
-   nav.addView(item,new LinearLayout.LayoutParams(0,-2,1));item.setOnClickListener(v->show(index));
+  for(int i=0;i<5;i++){final int index=i;LinearLayout item=col();item.setGravity(Gravity.CENTER);item.setPadding(0,dp(8),0,dp(8));if(i==page)item.setBackground(gradient(0xff244A6E,0xff142944,13,0xff4B779B));
+   TextView icon=txt(icons[i],25,i==page?new int[]{CYAN,RED,AMBER,0xffBA75FF,GREEN}[i]:MUTED,true);icon.setGravity(Gravity.CENTER);add(item,icon);gap(item,4);
+   TextView label=txt(names[i],11,i==page?WHITE:MUTED,i==page);label.setGravity(Gravity.CENTER);add(item,label);
+   nav.addView(item,new LinearLayout.LayoutParams(0,-2,1));item.setContentDescription("فتح قسم "+names[i]);item.setOnClickListener(v->show(index));
   }
  }
  private void show(int index){page=index;body.removeAllViews();navigation();topSubtitle.setText(new String[]{"DEVICE COMMAND CENTER","SECURITY CONTROL","PERFORMANCE LAB","PRIVACY INTELLIGENCE","TITAN TOOLKIT"}[index]);
+  if(index!=0)sectionHero(index);
   if(index==0)home();else if(index==1)security();else if(index==2)performance();else if(index==3)privacy();else tools();
  }
  @Override protected void onResume(){super.onResume();if(body!=null)show(page);}
+ private void sectionHero(int index){
+  String[] titles={"","TITAN SECURITY SHIELD","TITAN POWER ENGINE","TITAN PRIVACY VAULT","TITAN INTELLIGENCE"};
+  String[] descriptions={"","الحماية والتهديدات والفحوصات الأمنية في مركز واحد","مراقبة الموارد والحرارة والبطارية","خصوصيتك وأذونات التطبيقات تحت سيطرتك","جميع أدوات التشخيص والتحليل المتقدمة"};
+  String[] symbols={"","⬡","ϟ","◈","✦"};
+  int[] accents={CYAN,RED,AMBER,0xffBA75FF,GREEN};
+  LinearLayout hero=col();hero.setPadding(dp(22),dp(24),dp(22),dp(23));
+  hero.setBackground(gradient(0xff243D60,0xff111D33,26,accents[index]));
+  TextView emblem=txt(symbols[index],53,accents[index],true);emblem.setGravity(Gravity.CENTER);add(hero,emblem);
+  gap(hero,7);TextView heading=txt(titles[index],21,WHITE,true);
+  heading.setTypeface(Typeface.create("sans-serif-black",Typeface.BOLD));heading.setGravity(Gravity.CENTER);add(hero,heading);
+  gap(hero,10);TextView description=txt(descriptions[index],13,MUTED,false);description.setGravity(Gravity.CENTER);add(hero,description);
+  add(body,hero);gap(body,8);
+ }
  private void stat(LinearLayout c,String name,String value,int color){
   LinearLayout l=row();l.setPadding(0,dp(9),0,dp(9));TextView n=txt(name,13,MUTED,false);l.addView(n,new LinearLayout.LayoutParams(0,-2,1));l.addView(txt(value,14,color,true));add(c,l);
   View rule=new View(this);rule.setBackgroundColor(0xff263B52);c.addView(rule,new LinearLayout.LayoutParams(-1,dp(1)));
