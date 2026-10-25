@@ -23,6 +23,7 @@ public class NetworkDefenseActivity extends Activity {
   ScrollView sc=new ScrollView(this);root=new LinearLayout(this);root.setOrientation(1);root.setPadding(dp(18),dp(20),dp(18),dp(20));root.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);root.setBackgroundColor(0xff080D18);sc.addView(root);setContentView(sc);
   TextView title=new TextView(this);title.setText("TITAN NETWORK DEFENSE X");title.setTextSize(23);title.setTextColor(0xff58E4EF);root.addView(title);
   host=new EditText(this);host.setSingleLine(true);host.setText("example.com");host.setHint("اسم نطاق لفحص HTTPS");host.setTextColor(0xffFFFFFF);host.setInputType(android.text.InputType.TYPE_CLASS_TEXT|android.text.InputType.TYPE_TEXT_VARIATION_URI);root.addView(host);
+  action("تحليل مؤشرات رابط مشبوه",()->output.setText(urlRisk(host.getText().toString().trim())));
   action("فحص شهادة HTTPS والكمون",()->{String h=host.getText().toString().trim();run(()->tls(h));});
   action("حفظ خط أساس للشبكة",()->output.setText(baseline(true)));
   action("كشف تغيّر DNS والبوابة",()->output.setText(baseline(false)));
@@ -31,6 +32,25 @@ public class NetworkDefenseActivity extends Activity {
   action("فتح فحص Wi-Fi التفصيلي",()->startActivity(new Intent(this,WifiAuditActivity.class)));
   output=new TextView(this);output.setTextColor(0xffF0F6FF);output.setTextSize(15);output.setPadding(0,dp(15),0,dp(20));root.addView(output);
   output.setText("فحوصات تشخيصية عند الطلب. لا يتم اعتراض اتصالات التطبيقات أو منع المواقع أو مسح أجهزة الشبكة.");
+ }
+ private String urlRisk(String input){
+  try{
+   String raw=input.startsWith("http://")||input.startsWith("https://")?input:"https://"+input;
+   URI uri=new URI(raw);String h=uri.getHost();if(h==null)return "رابط غير صالح";
+   h=java.net.IDN.toASCII(h).toLowerCase(Locale.US);
+   ArrayList<String> flags=new ArrayList<>();
+   if(!"https".equalsIgnoreCase(uri.getScheme()))flags.add("الرابط لا يستخدم HTTPS");
+   if(uri.getUserInfo()!=null)flags.add("الرابط يحتوي بيانات مستخدم قبل اسم المضيف");
+   if(h.startsWith("xn--")||h.contains(".xn--"))flags.add("اسم نطاق دولي Punycode؛ راجع الاسم المرئي");
+   if(h.matches("[0-9.]+"))flags.add("الرابط يستخدم عنوان IP بدل نطاق");
+   if(h.split("\\.").length>5)flags.add("عدد كبير من النطاقات الفرعية");
+   if(raw.contains("@"))flags.add("وجود الرمز @ قد يربك قراءة الرابط");
+   StringBuilder s=new StringBuilder("النطاق الفعلي: "+h+"\\n");
+   if(flags.isEmpty())s.append("لم تُرصد مؤشرات الشكل المحددة. لا يعني ذلك أن الموقع آمن.");
+   else for(String flag:flags)s.append("• ").append(flag).append("\\n");
+   s.append("\\nفحص شكلي محلي فقط، دون قاعدة تصيد حية أو تصفح للموقع.");
+   return s.toString();
+  }catch(Exception e){return "تعذر تحليل الرابط: "+e.getMessage();}
  }
  private String cleanHost(String s)throws Exception{
   if(s.length()>253||!s.matches("(?i)[a-z0-9](?:[a-z0-9.-]*[a-z0-9])?")||s.contains("..")||!s.contains("."))throw new IOException("أدخل اسم نطاق صالحًا دون مسار أو بروتوكول");
