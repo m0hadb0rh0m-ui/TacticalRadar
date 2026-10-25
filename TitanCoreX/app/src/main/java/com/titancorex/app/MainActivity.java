@@ -13,7 +13,7 @@ import android.widget.*;
 import java.util.*;
 
 public class MainActivity extends Activity {
-  private final int BG=0xff080C16, CARD=0xff121B2B, PANEL=0xff19263A, CYAN=0xff42E8F5, WHITE=0xffF4F8FF, MUTED=0xff9CAFC7, GREEN=0xff4EF0A3, GOLD=0xffFFCE77, RED=0xffFF7288;
+  private final int BG=0xff070B14, CARD=0xff121F33, PANEL=0xff192A43, CYAN=0xff42E8F5, WHITE=0xffF4F8FF, MUTED=0xff9CAFC7, GREEN=0xff4EF0A3, GOLD=0xffFFCE77, RED=0xffFF7288;
   private LinearLayout content, navigation;
   private TextView subtitle;
   private int page=0;
@@ -38,8 +38,8 @@ public class MainActivity extends Activity {
   private void add(LinearLayout p,View v){p.addView(v,new LinearLayout.LayoutParams(-1,-2));}
   private void buildShell(){
     LinearLayout root=vertical();root.setBackgroundColor(BG);root.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);setContentView(root);
-    LinearLayout top=vertical();pad(top,22,18,22,14);top.setBackgroundColor(BG);
-    TextView brand=label("◈  TITAN CORE X",25,WHITE,true);add(top,brand);
+    LinearLayout top=vertical();pad(top,22,20,22,18);top.setBackground(new GradientDrawable(GradientDrawable.Orientation.TL_BR,new int[]{0xff112B42,0xff090F1C}));
+    LinearLayout brandRow=horizontal();android.widget.ImageView emblem=new android.widget.ImageView(this);emblem.setImageResource(R.drawable.titan_logo);brandRow.addView(emblem,new LinearLayout.LayoutParams(dp(54),dp(54)));TextView brand=label("TITAN CORE X",24,WHITE,true);brandRow.addView(brand,new LinearLayout.LayoutParams(0,-2,1));add(top,brandRow);
     TextView strap=label("SYSTEM INTELLIGENCE  /  ANDROID",10,CYAN,true);strap.setLetterSpacing(.17f);add(top,strap);
     subtitle=label("COMMAND CENTER",11,MUTED,true);pad(subtitle,0,10,0,0);add(top,subtitle);
     add(root,top);
@@ -50,7 +50,7 @@ public class MainActivity extends Activity {
     add(root,navigation);
   }
   private LinearLayout card(String title,String desc){
-    LinearLayout c=vertical();pad(c,18,17,18,18);c.setBackground(border(CARD,0xff233B53,19));
+    LinearLayout c=vertical();pad(c,18,17,18,18);GradientDrawable premium=new GradientDrawable(GradientDrawable.Orientation.TL_BR,new int[]{0xff172A43,0xff101B2D});premium.setCornerRadius(dp(21));premium.setStroke(dp(1),0xff31536B);c.setBackground(premium);c.setElevation(dp(3));
     TextView t=label(title,17,WHITE,true);add(c,t);
     if(desc!=null){space(c,5);add(c,label(desc,12,MUTED,false));}
     return c;
@@ -64,7 +64,7 @@ public class MainActivity extends Activity {
     View sep=new View(this);sep.setBackgroundColor(0xff223248);p.addView(sep,new LinearLayout.LayoutParams(-1,dp(1)));
   }
   private void action(LinearLayout p,String title,String info,Runnable run){
-    LinearLayout row=horizontal();pad(row,14,14,12,14);row.setBackground(shape(PANEL,13));
+    LinearLayout row=horizontal();pad(row,14,14,12,14);row.setBackground(border(PANEL,0xff2B4B65,15));row.setElevation(dp(1));
     LinearLayout texts=vertical();texts.addView(label(title,14,WHITE,true));
     if(info!=null){space(texts,4);texts.addView(label(info,11,MUTED,false));}
     row.addView(texts,new LinearLayout.LayoutParams(0,-2,1));
@@ -106,7 +106,7 @@ public class MainActivity extends Activity {
     return Math.max(0,result);
   }
   private void home(){
-    LinearLayout hero=vertical();pad(hero,22,23,22,23);hero.setBackground(border(0xff102B39,0xff22667A,24));
+    LinearLayout hero=vertical();pad(hero,22,23,22,23);GradientDrawable heroBg=new GradientDrawable(GradientDrawable.Orientation.TL_BR,new int[]{0xff144A5D,0xff11243D,0xff12162B});heroBg.setCornerRadius(dp(26));heroBg.setStroke(dp(2),0xff39A5B5);hero.setBackground(heroBg);hero.setElevation(dp(6));
     add(hero,label("صحة الجهاز المباشرة",12,CYAN,true));space(hero,10);
     add(hero,label(score()+" / 100",47,WHITE,true));
     add(hero,label("مؤشر تقديري يعتمد على الذاكرة وحرارة البطارية والتخزين",12,MUTED,false));
@@ -122,6 +122,7 @@ public class MainActivity extends Activity {
     metric(c,"التخزين المتاح",format(disk().getAvailableBytes()),GOLD);
     block(c);
     LinearLayout actions=card("الوصول السريع","تشخيص الجهاز وأدوات النظام الآمنة");
+    action(actions,"⬡  مركز القيادة الأمنية","فحص قفل الشاشة وتصحيح USB وإعدادات الحماية",()->startActivity(new Intent(this,SecurityCenterActivity.class)));
     action(actions,"✦  TITAN CORE X PRO","استكشف خطة المزايا المتقدمة بسعر مستهدف 5 دولارات",()->startActivity(new Intent(this,PremiumActivity.class)));
     action(actions,"📈  سجل الأداء والحرارة","تسجيل قياسات ومخطط حرارة البطارية",()->startActivity(new Intent(this,TrendsActivity.class)));
     action(actions,"🌐  "+LanguageActivity.tr(this,"language"),"اختيار لغة الواجهة من 20 لغة",()->startActivity(new Intent(this,LanguageActivity.class)));
@@ -172,6 +173,9 @@ public class MainActivity extends Activity {
     metric(c,"محرك كشف البرمجيات الضارة","غير متوفر حاليًا",GOLD);
     metric(c,"حالة مضاد الفيروسات","غير معتمد",GOLD);
     block(c);
+    LinearLayout shield=card("⬡  TITAN SECURITY COMMAND","مراجعة مؤشرات الأمان الحقيقية");
+    action(shield,"بدء فحص إعدادات الحماية","قفل الشاشة وADB وخيارات المطور",()->startActivity(new Intent(this,SecurityCenterActivity.class)));
+    block(shield);
     LinearLayout a=card("اختصارات الأمان","أدوات الحماية الرسمية في Android");
     action(a,"مختبر الخصوصية المتقدم","فحص الأذونات الحساسة الممنوحة لكل تطبيق ظاهر",()->startActivity(new Intent(this,PrivacyAuditActivity.class)));
     action(a,"أذونات التطبيقات","مراجعة الكاميرا والميكروفون والموقع",()->open(Settings.ACTION_APPLICATION_SETTINGS));
