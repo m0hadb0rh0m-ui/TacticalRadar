@@ -35,6 +35,25 @@ public class SplashActivity extends Activity {
     TextView tag=new TextView(this);tag.setText("POWERED BY REAL ANDROID DIAGNOSTICS");
     tag.setTextColor(0xff9BAEC5);tag.setTextSize(10);tag.setGravity(Gravity.CENTER);tag.setPadding(0,dp(34),0,0);root.addView(tag);
     root.setOnClickListener(v->{handler.removeCallbacks(next);next.run();});
+    if(!BuildConfig.DEBUG){
+      try{
+        TitanAppIntegrity.Result integrity=TitanAppIntegrity.inspect(this);
+        if(!integrity.packageOk||!integrity.signatureConfigured||!integrity.signatureOk||integrity.debuggerAttached){
+          handler.removeCallbacks(next);
+          root.setOnClickListener(null);
+          new android.app.AlertDialog.Builder(this).setTitle("تعذر التحقق من سلامة التطبيق")
+            .setMessage("تعذر تأكيد توقيع نسخة TITAN CORE X أو بيئة تشغيلها. استخدم النسخة الرسمية.")
+            .setCancelable(false).setPositiveButton("إغلاق", (dialog,which)->finish()).show();
+          return;
+        }
+      }catch(Exception error){
+        handler.removeCallbacks(next);root.setOnClickListener(null);
+        new android.app.AlertDialog.Builder(this).setTitle("فشل التحقق الأمني")
+          .setMessage("لم يتم التحقق من سلامة النسخة.").setCancelable(false)
+          .setPositiveButton("إغلاق",(dialog,which)->finish()).show();
+        return;
+      }
+    }
     handler.postDelayed(next,1400);
   }
   @Override protected void onDestroy(){handler.removeCallbacks(next);super.onDestroy();}
