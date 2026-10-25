@@ -14,14 +14,14 @@ public class PrivacyAuditActivity extends Activity {
     private LinearLayout results;
     private EditText search;
     private final ArrayList<AppEntry> entries=new ArrayList<>();
-    private final int BG=0xffF8F4FF, CARD=0xffFFFFFF, CYAN=0xff8048D5, WHITE=0xff243250, MUTED=0xff5E6B86, GOLD=0xffA66B00;
+    private final int BG=0xff0B0F19, CARD=0xff182337, CYAN=0xffC084FC, WHITE=0xffEDF9FF, MUTED=0xffA0B3C5, GOLD=0xffF59E0B;
     private static class AppEntry {String name, pkg;ArrayList<String> permissions=new ArrayList<>();int risk;boolean system;}
     private int dp(int n){return (int)(n*getResources().getDisplayMetrics().density+.5f);}
     private TextView text(String s,int size,int color){TextView v=new TextView(this);v.setText(s);v.setTextSize(size);v.setTextColor(color);v.setPadding(dp(3),dp(6),dp(3),dp(6));return v;}
-    private GradientDrawable background(){GradientDrawable d=new GradientDrawable();d.setColor(CARD);d.setCornerRadius(dp(20));d.setStroke(dp(1),0xff7250A0);return d;}
+    private GradientDrawable background(){GradientDrawable d=new GradientDrawable();d.setColor(CARD);d.setCornerRadius(dp(20));d.setStroke(dp(1),0xff554172);return d;}
     @Override public void onCreate(Bundle b){
         super.onCreate(b);
-        getWindow().setStatusBarColor(BG);getWindow().setNavigationBarColor(BG);
+        getWindow().setStatusBarColor(BG);getWindow().setNavigationBarColor(BG);getWindow().getDecorView().setSystemUiVisibility(0);
         ScrollView scroll=new ScrollView(this);
         LinearLayout root=new LinearLayout(this);root.setOrientation(1);root.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
         root.setPadding(dp(18),dp(22),dp(18),dp(22));root.setBackgroundColor(BG);scroll.addView(root);setContentView(scroll);
@@ -29,8 +29,8 @@ public class PrivacyAuditActivity extends Activity {
         TextView heading=text("TITAN PRIVACY LAB",25,CYAN);heading.setTypeface(android.graphics.Typeface.create("sans-serif-black",1));root.addView(heading);
         root.addView(text("تدقيق الأذونات للتطبيقات الظاهرة",17,WHITE));
         root.addView(text("نراجع الأذونات الحساسة المطلوبة في ملفات التطبيقات، ونوضح ما إذا كانت ممنوحة. وجود إذن لا يعني أن التطبيق خبيث. نتائج الفحص مقتصرة على التطبيقات التي يسمح Android برؤيتها.",13,MUTED));
-        search=new EditText(this);search.setSingleLine(true);search.setHint("ابحث باسم التطبيق أو الحزمة");search.setHintTextColor(MUTED);search.setTextColor(WHITE);root.addView(search);
-        Button scan=new Button(this);scan.setText("فحص الأذونات الآن");root.addView(scan);
+        search=new EditText(this);search.setSingleLine(true);search.setHint("ابحث باسم التطبيق أو الحزمة");search.setHintTextColor(MUTED);search.setTextColor(WHITE);search.setBackground(background());search.setPadding(dp(12),dp(12),dp(12),dp(12));root.addView(search);
+        Button scan=new Button(this);scan.setText("فحص الأذونات الآن");scan.setAllCaps(false);scan.setTextColor(WHITE);root.addView(scan);
         TextView status=text("جاهز للفحص",13,GOLD);root.addView(status);
         results=new LinearLayout(this);results.setOrientation(1);root.addView(results);
         scan.setOnClickListener(v->{scanApps();status.setText("التطبيقات الظاهرة: "+entries.size()+" — التقييم إرشادي فقط");render();});
