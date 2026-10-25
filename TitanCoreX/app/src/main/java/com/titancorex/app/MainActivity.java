@@ -54,7 +54,7 @@ public class MainActivity extends Activity {
   LinearLayout line=row();line.setPadding(dp(12),dp(13),dp(12),dp(13));line.setBackground(gradient(0xffEAF5FF,0xffD9EAFD,17,0xffB9D8F6));
   int accent=featureColor(name);
   TextView art=txt(featureIcon(name),26,accent,true);art.setGravity(Gravity.CENTER);
-  art.setBackground(gradient(0xff1A3550,0xff0F253D,13,accent));
+  art.setBackground(gradient(0xffFFFFFF,0xffE2F0FF,13,accent));
   LinearLayout.LayoutParams artParams=new LinearLayout.LayoutParams(dp(50),dp(50));artParams.setMargins(0,0,dp(12),0);line.addView(art,artParams);
   LinearLayout labels=col();add(labels,txt(name,15,WHITE,true));if(detail!=null){gap(labels,4);add(labels,txt(detail,11,MUTED,false));}
   line.addView(labels,new LinearLayout.LayoutParams(0,-2,1));line.addView(txt("‹",27,accent,true));line.setContentDescription(name+" - "+(detail==null?"":detail));line.setOnClickListener(v->action.run());add(c,line);gap(c,9);
