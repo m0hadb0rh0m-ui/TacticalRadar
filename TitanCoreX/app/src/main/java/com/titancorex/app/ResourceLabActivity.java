@@ -13,7 +13,7 @@ import java.io.File;
 import java.util.*;
 
 public class ResourceLabActivity extends Activity {
-  private static final int BG=0xffFFF9EE,CARD=0xffFFFFFF,CYAN=0xffBA7900,WHITE=0xff253650,MUTED=0xff5C6E86,GREEN=0xff087C58,GOLD=0xffA66D00,RED=0xffCB3656;
+  private static final int BG=0xff0B0F19,CARD=0xff162538,CYAN=0xff06B6D4,WHITE=0xffEDF9FF,MUTED=0xffA1B4C6,GREEN=0xff10B981,GOLD=0xffF59E0B,RED=0xffFB7185;
   private LinearLayout root,readouts;
   private TextView status;
   private Handler handler=new Handler(Looper.getMainLooper());
@@ -22,7 +22,7 @@ public class ResourceLabActivity extends Activity {
   private final Runnable updater=new Runnable(){public void run(){refresh();handler.postDelayed(this,4000);}};
   private int dp(int v){return (int)(v*getResources().getDisplayMetrics().density+.5f);}
   private TextView t(String s,int size,int color){TextView v=new TextView(this);v.setText(s);v.setTextSize(size);v.setTextColor(color);v.setPadding(dp(2),dp(7),dp(2),dp(7));return v;}
-  private GradientDrawable bg(){GradientDrawable d=new GradientDrawable();d.setColor(CARD);d.setCornerRadius(dp(16));d.setStroke(dp(1),0xff2A435B);return d;}
+  private GradientDrawable bg(){GradientDrawable d=new GradientDrawable();d.setColor(CARD);d.setCornerRadius(dp(16));d.setStroke(dp(1),0xff345567);return d;}
   private LinearLayout card(String title){
     LinearLayout l=new LinearLayout(this);l.setOrientation(1);l.setPadding(dp(15),dp(15),dp(15),dp(15));l.setBackground(bg());l.addView(t(title,18,CYAN));
     root.addView(l);View gap=new View(this);root.addView(gap,new LinearLayout.LayoutParams(1,dp(15)));return l;
