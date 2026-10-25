@@ -15,7 +15,7 @@ import java.util.*;
 
 /** V3 network diagnostics: Android traffic counters + real HTTPS round-trip sampling. */
 public final class NetworkInsightActivity extends Activity {
- private static final int BG=0xffEFF7FF,INK=0xff193652,BLUE=0xff087BEA,MUTED=0xff59728A,TEAL=0xff008C91;
+ private static final int BG=0xff0B0F19,INK=0xffEDF9FF,BLUE=0xff06B6D4,MUTED=0xffA0B3C5,TEAL=0xff10B981;
  private LinearLayout root;private TextView summary,result,history;private Button start,stop;
  private LatencyGraph graph;
  private volatile boolean cancel=false,testing=false;
@@ -25,17 +25,18 @@ public final class NetworkInsightActivity extends Activity {
  private GradientDrawable bg(int a,int b,int stroke){GradientDrawable d=new GradientDrawable(GradientDrawable.Orientation.TL_BR,new int[]{a,b});d.setCornerRadius(dp(22));if(stroke!=0)d.setStroke(dp(1),stroke);return d;}
  private LinearLayout box(String header){
   LinearLayout l=new LinearLayout(this);l.setOrientation(1);l.setPadding(dp(16),dp(15),dp(16),dp(15));
-  l.setBackground(bg(0xffffffff,0xffE8F4FF,0xffD1E6FC));l.addView(text(header,19,INK));
+  l.setBackground(bg(0xff18283A,0xff111D2D,0xff315165));l.addView(text(header,19,INK));
   LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(-1,-2);p.setMargins(0,dp(13),0,dp(2));root.addView(l,p);return l;
  }
  private String bytes(long n){if(n==TrafficStats.UNSUPPORTED||n<0)return "غير متاح";
   if(n<1048576)return String.format(Locale.US,"%.1f KB",n/1024.0);
+  if(n<1073741824L)return String.format(Locale.US,"%.2f MB",n/1048576.0);
   return String.format(Locale.US,"%.2f GB",n/1073741824.0);
  }
  @Override public void onCreate(Bundle saved){
   super.onCreate(saved);
   getWindow().setStatusBarColor(BG);getWindow().setNavigationBarColor(BG);
-  getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR|View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
+  getWindow().getDecorView().setSystemUiVisibility(0);
   ScrollView scroll=new ScrollView(this);root=new LinearLayout(this);root.setOrientation(1);
   root.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);root.setPadding(dp(17),dp(19),dp(17),dp(25));
   root.setBackgroundColor(BG);scroll.addView(root);setContentView(scroll);
@@ -139,8 +140,8 @@ public final class NetworkInsightActivity extends Activity {
   void setValues(ArrayList<Long> v){values=v;invalidate();}
   @Override protected void onDraw(Canvas c){
    super.onDraw(c);float w=getWidth(),h=getHeight(),left=dp(18),top=dp(18),right=w-dp(18),bottom=h-dp(20);
-   p.setStyle(Paint.Style.FILL);p.setColor(0xffffffff);c.drawRoundRect(0,0,w,h,dp(18),dp(18),p);
-   p.setStyle(Paint.Style.STROKE);p.setStrokeWidth(dp(1));p.setColor(0xffDBE9F7);
+   p.setStyle(Paint.Style.FILL);p.setColor(0xff142536);c.drawRoundRect(0,0,w,h,dp(18),dp(18),p);
+   p.setStyle(Paint.Style.STROKE);p.setStrokeWidth(dp(1));p.setColor(0xff30475A);
    for(int k=1;k<4;k++){float y=top+(bottom-top)*k/4;c.drawLine(left,y,right,y,p);}
    if(values.size()<1){p.setStyle(Paint.Style.FILL);p.setColor(MUTED);p.setTextSize(dp(14));p.setTextAlign(Paint.Align.CENTER);
     c.drawText("تظهر القراءات الحقيقية هنا",w/2,h/2,p);return;}
