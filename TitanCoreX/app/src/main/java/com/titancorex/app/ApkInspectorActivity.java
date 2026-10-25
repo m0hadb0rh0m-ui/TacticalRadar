@@ -34,12 +34,14 @@ public class ApkInspectorActivity extends Activity {
   try{
    try(InputStream in=getContentResolver().openInputStream(uri);OutputStream out=new FileOutputStream(temp)){if(in==null)throw new IOException("تعذر فتح الملف");byte[] buf=new byte[32768];int n;while((n=in.read(buf))!=-1){bytes+=n;if(bytes>250L*1024*1024)throw new IOException("حجم الملف يتجاوز حد الفحص 250MB");digest.update(buf,0,n);out.write(buf,0,n);}}
    StringBuilder hex=new StringBuilder();for(byte b:digest.digest())hex.append(String.format(Locale.US,"%02x",b&255));
-   int entries=0,dex=0,nativeFiles=0,duplicates=0;Set<String> names=new HashSet<>();boolean manifest=false,signature=false;
-   try(ZipFile zip=new ZipFile(temp)){Enumeration<? extends ZipEntry> e=zip.entries();while(e.hasMoreElements()){ZipEntry z=e.nextElement();entries++;if(entries>40000)throw new IOException("عدد مكونات الأرشيف كبير جدًا");String name=z.getName();if(!names.add(name))duplicates++;if(name.matches("classes[0-9]*\\.dex"))dex++;if(name.startsWith("lib/")&&name.endsWith(".so"))nativeFiles++;if(name.equals("AndroidManifest.xml"))manifest=true;if(name.startsWith("META-INF/")&&(name.endsWith(".RSA")||name.endsWith(".DSA")||name.endsWith(".EC")))signature=true;}}
+   int entries=0,dex=0,nativeFiles=0,duplicates=0,zipAnomalies=0;Set<String> names=new HashSet<>();boolean manifest=false,signature=false;
+   try(ZipFile zip=new ZipFile(temp)){Enumeration<? extends ZipEntry> e=zip.entries();while(e.hasMoreElements()){ZipEntry z=e.nextElement();entries++;if(entries>40000)throw new IOException("عدد مكونات الأرشيف كبير جدًا");String name=z.getName();if(!names.add(name))duplicates++;if(z.getSize()>100L*1024*1024&&z.getCompressedSize()>0&&z.getSize()/Math.max(1,z.getCompressedSize())>200)zipAnomalies++;if(name.matches("classes[0-9]*\\.dex"))dex++;if(name.startsWith("lib/")&&name.endsWith(".so"))nativeFiles++;if(name.equals("AndroidManifest.xml"))manifest=true;if(name.startsWith("META-INF/")&&(name.endsWith(".RSA")||name.endsWith(".DSA")||name.endsWith(".EC")))signature=true;}}
    PackageInfo pkg=getPackageManager().getPackageArchiveInfo(temp.getAbsolutePath(),PackageManager.GET_PERMISSIONS);
    ThreatEngine.Verdict verdict;
    try(InputStream check=new FileInputStream(temp)){verdict=ThreatEngine.scan(this,check);}
+   ApkRiskAnalyzer.Result risk=ApkRiskAnalyzer.evaluate(pkg,manifest,duplicates,dex,nativeFiles,zipAnomalies);
    StringBuilder report=new StringBuilder();
+   report.append("تحليل المخاطر الاسترشادي: ").append(risk.score).append("/100 — ").append(risk.band).append("\n").append(risk.details).append("\n\n");
    report.append("Threat Engine: ").append(verdict.status).append("\n").append(verdict.reason).append("\n").append(ThreatEngine.feedStatus(this)).append("\n");
 
    report.append("SHA-256: ").append(hex).append("\n");
