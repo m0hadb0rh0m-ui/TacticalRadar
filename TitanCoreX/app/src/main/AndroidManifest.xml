@@ -10,7 +10,7 @@
  <queries>
   <intent><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.LAUNCHER"/></intent>
  </queries>
- <application android:label="TITAN CORE X" android:icon="@mipmap/ic_launcher" android:roundIcon="@mipmap/ic_launcher" android:theme="@android:style/Theme.Material.NoActionBar" android:usesCleartextTraffic="false" android:allowBackup="false">
+ <application android:label="TITAN CORE X" android:icon="@mipmap/ic_launcher" android:roundIcon="@mipmap/ic_launcher" android:theme="@android:style/Theme.Material.NoActionBar" android:usesCleartextTraffic="false" android:allowBackup="false" android:fullBackupContent="false" android:dataExtractionRules="@xml/data_extraction_rules">
   <receiver android:name=".PackageWatchReceiver" android:exported="false">
    <intent-filter><action android:name="android.intent.action.PACKAGE_ADDED"/><data android:scheme="package"/></intent-filter>
   </receiver>
