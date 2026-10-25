@@ -88,16 +88,16 @@ public class MainActivity extends Activity {
   nav=row();nav.setPadding(dp(7),dp(9),dp(7),dp(10));nav.setBackground(gradient(0xffFFFFFF,0xffE5F1FF,0,0));add(root,nav);
  }
  private void navigation(){
-  nav.removeAllViews();String[] names={"الرئيسية","الحماية","الأداء","الخصوصية","المزيد"},icons={"⌂","⬡","⚡","◈","☷"};
+  nav.removeAllViews();String[] names={"الرئيسية","الحماية","الشبكة","الأداء","الخصوصية"},icons={"⌂","⬡","◎","⚡","◈"};
   for(int i=0;i<5;i++){final int index=i;LinearLayout item=col();item.setGravity(Gravity.CENTER);item.setPadding(0,dp(8),0,dp(8));if(i==page)item.setBackground(gradient(0xffDBEFFF,0xffC4E0FF,13,0xffA0C9F5));
    TextView icon=txt(icons[i],25,i==page?new int[]{CYAN,RED,AMBER,0xffBA75FF,GREEN}[i]:MUTED,true);icon.setGravity(Gravity.CENTER);add(item,icon);gap(item,4);
    TextView label=txt(names[i],11,i==page?WHITE:MUTED,i==page);label.setGravity(Gravity.CENTER);add(item,label);
    nav.addView(item,new LinearLayout.LayoutParams(0,-2,1));item.setContentDescription("فتح قسم "+names[i]);item.setOnClickListener(v->show(index));
   }
  }
- private void show(int index){page=index;body.removeAllViews();navigation();topSubtitle.setText(new String[]{"DEVICE COMMAND CENTER","SECURITY CONTROL","PERFORMANCE LAB","PRIVACY INTELLIGENCE","TITAN TOOLKIT"}[index]);
+ private void show(int index){page=index;body.removeAllViews();navigation();topSubtitle.setText(new String[]{"DEVICE COMMAND CENTER","SECURITY CONTROL","NETWORK LAB","PERFORMANCE LAB","PRIVACY INTELLIGENCE"}[index]);
   if(index!=0)sectionHero(index);
-  if(index==0)home();else if(index==1)security();else if(index==2)performance();else if(index==3)privacy();else tools();
+  if(index==0)home();else if(index==1)security();else if(index==2)network();else if(index==3)performance();else privacy();
  }
  @Override protected void onResume(){super.onResume();if(body!=null)show(page);}
  private void sectionHero(int index){
