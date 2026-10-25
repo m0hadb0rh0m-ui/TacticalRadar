@@ -20,6 +20,7 @@
    <intent-filter><action android:name="android.net.VpnService"/></intent-filter>
   </service>
   <activity android:name=".V3SecurityScanActivity" android:exported="false"/>
+  <activity android:name=".V3NetworkMonitorActivity" android:exported="false"/>
   <activity android:name=".NetworkSpeedActivity" android:exported="false"/>
   <activity android:name=".NetworkInsightActivity" android:exported="false"/>
   <activity android:name=".DnsDiagnosticsActivity" android:exported="false"/>
