@@ -13,7 +13,7 @@ import android.widget.*;
 import java.util.*;
 
 public class MainActivity extends Activity {
- private static final int BG=0xff070A12,SURFACE=0xff111A2A,PANEL=0xff19283E,CYAN=0xff00D9FF,WHITE=0xffF4F8FF,MUTED=0xff9CAFC7,GREEN=0xff4BE0A3,AMBER=0xffFFCE7B,RED=0xffFF788B;
+ private static final int BG=0xff050915,SURFACE=0xff111D32,PANEL=0xff1A304D,CYAN=0xff00D9FF,WHITE=0xffF8FBFF,MUTED=0xffA6BED9,GREEN=0xff35F0A4,AMBER=0xffFFD044,RED=0xffFF4D6D;
  private LinearLayout body,nav;private TextView topSubtitle;private int page=0;
  private int dp(float x){return (int)(x*getResources().getDisplayMetrics().density+.5f);}
  private GradientDrawable gradient(int a,int b,int r,int stroke){GradientDrawable d=new GradientDrawable(GradientDrawable.Orientation.TL_BR,new int[]{a,b});d.setCornerRadius(dp(r));if(stroke!=0)d.setStroke(dp(1),stroke);return d;}
@@ -24,12 +24,12 @@ public class MainActivity extends Activity {
  private void add(LinearLayout p,View v){p.addView(v,new LinearLayout.LayoutParams(-1,-2));}
  private void title(String s){TextView t=txt(s,19,WHITE,true);t.setPadding(dp(2),dp(14),0,dp(13));add(body,t);}
  private LinearLayout card(String label,String description){
-  LinearLayout c=col();c.setPadding(dp(17),dp(17),dp(17),dp(17));c.setBackground(gradient(0xff19273B,0xff101A2A,22,0xff2B4059));
+  LinearLayout c=col();c.setPadding(dp(17),dp(17),dp(17),dp(17));c.setBackground(gradient(0xff1D3452,0xff101C31,24,0xff396184));
   add(c,txt(label,17,WHITE,true));if(description!=null){gap(c,5);add(c,txt(description,12,MUTED,false));}gap(c,10);
   add(body,c);gap(body,13);return c;
  }
  private void link(LinearLayout c,String name,String detail,Runnable action){
-  LinearLayout line=row();line.setPadding(dp(12),dp(13),dp(12),dp(13));line.setBackground(gradient(0xff20344C,0xff16273C,14,0xff314B63));
+  LinearLayout line=row();line.setPadding(dp(12),dp(13),dp(12),dp(13));line.setBackground(gradient(0xff234365,0xff12273F,17,0xff427397));
   LinearLayout labels=col();add(labels,txt(name,14,WHITE,true));if(detail!=null){gap(labels,4);add(labels,txt(detail,11,MUTED,false));}
   line.addView(labels,new LinearLayout.LayoutParams(0,-2,1));line.addView(txt("‹",27,CYAN,true));line.setOnClickListener(v->action.run());add(c,line);gap(c,9);
  }
@@ -52,14 +52,14 @@ public class MainActivity extends Activity {
  @Override public void onCreate(Bundle b){super.onCreate(b);getWindow().setStatusBarColor(BG);getWindow().setNavigationBarColor(BG);shell();show(0);}
  private void shell(){
   LinearLayout root=col();root.setBackgroundColor(BG);root.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);setContentView(root);
-  LinearLayout header=row();header.setPadding(dp(18),dp(17),dp(18),dp(17));header.setBackground(gradient(0xff152B42,0xff0A1423,0,0));
+  LinearLayout header=row();header.setPadding(dp(18),dp(17),dp(18),dp(17));header.setBackground(gradient(0xff153C62,0xff091428,0,0));
   ImageView logo=new ImageView(this);logo.setImageResource(R.drawable.titan_logo);header.addView(logo,new LinearLayout.LayoutParams(dp(53),dp(53)));
   LinearLayout heading=col();heading.setPadding(dp(12),0,0,0);add(heading,txt("TITAN CORE X",23,WHITE,true));gap(heading,4);
   topSubtitle=txt("SECURITY • PERFORMANCE • INTELLIGENCE",10,CYAN,true);add(heading,topSubtitle);header.addView(heading,new LinearLayout.LayoutParams(0,-2,1));
   TextView refresh=txt("⟳",27,CYAN,true);refresh.setPadding(dp(10),dp(5),dp(10),dp(5));header.addView(refresh);refresh.setOnClickListener(v->show(page));add(root,header);
   ScrollView sc=new ScrollView(this);sc.setFillViewport(false);sc.setVerticalScrollBarEnabled(false);
   body=col();body.setPadding(dp(16),dp(19),dp(16),dp(22));sc.addView(body);root.addView(sc,new LinearLayout.LayoutParams(-1,0,1));
-  nav=row();nav.setPadding(dp(7),dp(9),dp(7),dp(10));nav.setBackgroundColor(0xff0F1828);add(root,nav);
+  nav=row();nav.setPadding(dp(7),dp(9),dp(7),dp(10));nav.setBackground(gradient(0xff142944,0xff091326,0,0));add(root,nav);
  }
  private void navigation(){
   nav.removeAllViews();String[] names={"الرئيسية","الحماية","الأداء","الخصوصية","المزيد"},icons={"⌂","⬡","⚡","◈","☷"};
@@ -78,11 +78,11 @@ public class MainActivity extends Activity {
   View rule=new View(this);rule.setBackgroundColor(0xff263B52);c.addView(rule,new LinearLayout.LayoutParams(-1,dp(1)));
  }
  private void hero(){
-  LinearLayout h=col();h.setPadding(dp(22),dp(23),dp(22),dp(23));h.setBackground(gradient(0xff145366,0xff162943,26,0xff3D9FAE));
+  LinearLayout h=col();h.setPadding(dp(22),dp(23),dp(22),dp(23));h.setBackground(gradient(0xff0C6F95,0xff152047,28,0xff39D8FF));
   add(h,txt("LIVE DEVICE STATUS",11,CYAN,true));gap(h,9);
   add(h,txt(score()+" / 100",46,WHITE,true));gap(h,4);add(h,txt("مؤشر تقديري للموارد، وليس نتيجة فحص فيروسات",12,0xffD0E2EF,false));gap(h,18);
   ProgressBar p=new ProgressBar(this,null,android.R.attr.progressBarStyleHorizontal);p.setMax(100);p.setProgress(score());p.setProgressTintList(ColorStateList.valueOf(CYAN));add(h,p);gap(h,19);
-  Button scan=new Button(this);scan.setText("⬡  بدء الفحص الأمني");scan.setAllCaps(false);scan.setTextColor(BG);scan.setBackground(gradient(0xff62E9EF,0xff9FF6F5,15,0));add(h,scan);scan.setOnClickListener(v->launch(SmartScanActivity.class));
+  Button scan=new Button(this);scan.setText("⬡  بدء الفحص الأمني");scan.setAllCaps(false);scan.setTextColor(BG);scan.setBackground(gradient(0xff26C9FF,0xff82F2FF,17,0));add(h,scan);scan.setOnClickListener(v->launch(SmartScanActivity.class));
   add(body,h);gap(body,17);
  }
  private void home(){
