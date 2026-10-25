@@ -33,6 +33,7 @@ public class MainActivity extends Activity {
   LinearLayout labels=col();add(labels,txt(name,14,WHITE,true));if(detail!=null){gap(labels,4);add(labels,txt(detail,11,MUTED,false));}
   line.addView(labels,new LinearLayout.LayoutParams(0,-2,1));line.addView(txt("‹",27,CYAN,true));line.setOnClickListener(v->action.run());add(c,line);gap(c,9);
  }
+ private void guide(String key){Intent i=new Intent(this,FeatureGuideActivity.class);i.putExtra("feature",key);startActivity(i);}
  private void launch(Class<?> activity){startActivity(new Intent(this,activity));}
  private void settings(String action){try{startActivity(new Intent(action));}catch(Exception e){Toast.makeText(this,"هذا الإعداد غير متاح على الجهاز",Toast.LENGTH_SHORT).show();}}
  private Intent battery(){return registerReceiver(null,new IntentFilter(Intent.ACTION_BATTERY_CHANGED));}
@@ -93,6 +94,11 @@ public class MainActivity extends Activity {
   stat(c,"الذاكرة المتاحة",gb(ram().availMem),WHITE);
   stat(c,"التخزين المتاح",gb(disk().getAvailableBytes()),WHITE);
   title("المراكز الذكية");
+  LinearLayout guides=card("دليل الأنظمة","شرح تفصيلي لكل خيار قبل استخدامه");
+  link(guides,"الحماية والأذونات","تفاصيل الفحص والخصوصية",()->guide("security"));
+  link(guides,"البطارية والألعاب","شرح القياسات وحدود التحسين",()->guide("battery"));
+  link(guides,"الروابط والشبكات","الاحتيال وDNS والاتصال",()->guide("scam"));
+  link(guides,"التخزين والتقارير","الملفات المكررة والرسوم",()->guide("storage"));
   LinearLayout quick=card("TITAN INTELLIGENCE X","الأنظمة العشرة في مركز واحد");
   link(quick,"✦  افتح مركز الذكاء والتحليل","روابط، أمان، بطارية، شبكة، ألعاب وتقارير",()->launch(IntelligenceHubActivity.class));
   link(quick,"⬡  Security Smart Scan","فحص إعدادات الأمان والموارد",()->launch(SmartScanActivity.class));
