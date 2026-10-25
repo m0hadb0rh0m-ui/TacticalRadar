@@ -11,12 +11,12 @@ import android.widget.*;
 import java.util.*;
 
 public class FeatureGuideActivity extends Activity {
- private static final int BG=0xff080D18,WHITE=0xffF5F9FF,CYAN=0xff59E4EC,MUTED=0xffB2C2D5;
+ private static final int BG=0xffF1F8FF,WHITE=0xff173557,CYAN=0xff087BEA,MUTED=0xff536B88;
  private LinearLayout root;private String feature;
  private int dp(int x){return (int)(x*getResources().getDisplayMetrics().density+.5f);}
  private TextView text(String s,int size,int color,boolean bold){TextView t=new TextView(this);t.setText(s);t.setTextSize(size);t.setTextColor(color);if(bold)t.setTypeface(Typeface.DEFAULT,Typeface.BOLD);return t;}
  private void space(int h){View v=new View(this);root.addView(v,new LinearLayout.LayoutParams(1,dp(h)));}
- private GradientDrawable bg(){GradientDrawable d=new GradientDrawable(GradientDrawable.Orientation.TL_BR,new int[]{0xff1A3049,0xff111D30});d.setCornerRadius(dp(18));d.setStroke(dp(1),0xff34566C);return d;}
+ private GradientDrawable bg(){GradientDrawable d=new GradientDrawable(GradientDrawable.Orientation.TL_BR,new int[]{0xffFFFFFF,0xffEAF4FF});d.setCornerRadius(dp(18));d.setStroke(dp(1),0xff34566C);return d;}
  private void section(String title,String content){LinearLayout c=new LinearLayout(this);c.setOrientation(1);c.setPadding(dp(17),dp(16),dp(17),dp(16));c.setBackground(bg());c.addView(text(title,17,WHITE,true));TextView t=text(content,14,MUTED,false);t.setLineSpacing(dp(5),1f);t.setPadding(0,dp(9),0,0);c.addView(t);root.addView(c);space(13);}
  private void action(String label,Class<?> cls){Button b=new Button(this);b.setAllCaps(false);b.setText(label);b.setTextColor(BG);GradientDrawable d=new GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT,new int[]{0xff58E2EA,0xff9DF7F1});d.setCornerRadius(dp(15));b.setBackground(d);root.addView(b,new LinearLayout.LayoutParams(-1,dp(52)));b.setOnClickListener(v->startActivity(new Intent(this,cls)));space(10);}
  private void settings(String label,String action){Button b=new Button(this);b.setAllCaps(false);b.setText(label);root.addView(b);b.setOnClickListener(v->{try{startActivity(new Intent(action));}catch(Exception e){Toast.makeText(this,"الإعداد غير متاح",Toast.LENGTH_SHORT).show();}});space(10);}
