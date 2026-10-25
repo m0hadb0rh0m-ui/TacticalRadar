@@ -13,7 +13,7 @@ import android.widget.*;
 import java.util.*;
 
 public class MainActivity extends Activity {
- private static final int BG=0xff070A12,SURFACE=0xff111A2A,PANEL=0xff19283E,CYAN=0xff57E5EF,WHITE=0xffF4F8FF,MUTED=0xff9CAFC7,GREEN=0xff4BE0A3,AMBER=0xffFFCE7B,RED=0xffFF788B;
+ private static final int BG=0xff070A12,SURFACE=0xff111A2A,PANEL=0xff19283E,CYAN=0xff00D9FF,WHITE=0xffF4F8FF,MUTED=0xff9CAFC7,GREEN=0xff4BE0A3,AMBER=0xffFFCE7B,RED=0xffFF788B;
  private LinearLayout body,nav;private TextView topSubtitle;private int page=0;
  private int dp(float x){return (int)(x*getResources().getDisplayMetrics().density+.5f);}
  private GradientDrawable gradient(int a,int b,int r,int stroke){GradientDrawable d=new GradientDrawable(GradientDrawable.Orientation.TL_BR,new int[]{a,b});d.setCornerRadius(dp(r));if(stroke!=0)d.setStroke(dp(1),stroke);return d;}
