@@ -16,7 +16,7 @@ import android.widget.TextView;
 
 public class SplashActivity extends Activity {
   private final Handler handler=new Handler(Looper.getMainLooper());
-  private final Runnable next=()->{if(!isFinishing()){startActivity(new Intent(this,MainActivity.class));finish();}};
+  private final Runnable next=()->{if(!isFinishing()){startActivity(new Intent(this,AuthActivity.class));finish();}};
   private int dp(int n){return (int)(n*getResources().getDisplayMetrics().density+.5f);}
   @Override public void onCreate(Bundle state){
     super.onCreate(state);
