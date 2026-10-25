@@ -115,15 +115,15 @@ public class MainActivity extends Activity {
  }
  private void stat(LinearLayout c,String name,String value,int color){
   LinearLayout l=row();l.setPadding(0,dp(9),0,dp(9));TextView n=txt(name,13,MUTED,false);l.addView(n,new LinearLayout.LayoutParams(0,-2,1));l.addView(txt(value,14,color,true));add(c,l);
-  View rule=new View(this);rule.setBackgroundColor(0xff263B52);c.addView(rule,new LinearLayout.LayoutParams(-1,dp(1)));
+  View rule=new View(this);rule.setBackgroundColor(0xffD7E5F5);c.addView(rule,new LinearLayout.LayoutParams(-1,dp(1)));
  }
  private void hero(){
   LinearLayout h=col();h.setPadding(dp(22),dp(23),dp(22),dp(23));h.setBackground(gradient(0xffDFF5FF,0xffBCDFFF,28,0xff60B5FF));
   add(h,txt("LIVE DEVICE STATUS",11,CYAN,true));gap(h,9);
   TitanCyberSceneView visual=new TitanCyberSceneView(this,CYAN);h.addView(visual,new LinearLayout.LayoutParams(-1,dp(145)));gap(h,5);
-  TextView scoreText=txt(score()+" / 100",54,WHITE,true);scoreText.setTypeface(Typeface.create("sans-serif-black",Typeface.BOLD));add(h,scoreText);gap(h,4);add(h,txt("مؤشر تقديري للموارد، وليس نتيجة فحص فيروسات",12,0xffD0E2EF,false));gap(h,18);
+  TextView scoreText=txt(score()+" / 100",54,WHITE,true);scoreText.setTypeface(Typeface.create("sans-serif-black",Typeface.BOLD));add(h,scoreText);gap(h,4);add(h,txt("مؤشر تقديري للموارد، وليس نتيجة فحص فيروسات",12,MUTED,false));gap(h,18);
   ProgressBar p=new ProgressBar(this,null,android.R.attr.progressBarStyleHorizontal);p.setMax(100);p.setProgress(score());p.setProgressTintList(ColorStateList.valueOf(CYAN));add(h,p);gap(h,19);
-  Button scan=new Button(this);scan.setText("⬡   ابدأ الفحص الأمني الآن");scan.setTextSize(17);scan.setTypeface(Typeface.create("sans-serif-black",Typeface.BOLD));scan.setAllCaps(false);scan.setTextColor(BG);scan.setBackground(gradient(0xff40D4FF,0xff71F2FF,17,0));add(h,scan);scan.setOnClickListener(v->launch(SmartScanActivity.class));
+  Button scan=new Button(this);scan.setText("⬡   ابدأ الفحص الأمني الآن");scan.setTextSize(17);scan.setTypeface(Typeface.create("sans-serif-black",Typeface.BOLD));scan.setAllCaps(false);scan.setTextColor(WHITE);scan.setBackground(gradient(0xff40D4FF,0xff71F2FF,17,0));add(h,scan);scan.setOnClickListener(v->launch(SmartScanActivity.class));
   add(body,h);gap(body,17);
  }
  private void home(){
